@@ -1,0 +1,39 @@
+<RCC>
+    <qresource prefix="/icon">
+        <file alias="about">images/icons/about.png</file>
+        <file alias="close">images/icons/close.png</file>
+        <file alias="mute">images/icons/mute.png</file>
+        <file alias="open">images/icons/open.png</file>
+        <file alias="pause">images/icons/pause.png</file>
+        <file alias="play">images/icons/play.png</file>
+        <file alias="preferences">images/icons/preferences.png</file>
+        <file alias="quit">images/icons/quit.png</file>
+        <file alias="save">images/icons/save.png</file>
+        <file alias="saveas">images/icons/saveas.png</file>
+        <file alias="stop">images/icons/stop.png</file>
+        <file alias="volumedown">images/icons/volumedown.png</file>
+        <file alias="volumeup">images/icons/volumeup.png</file>
+        <file alias="clear">images/icons/clear.png</file>
+        <file alias="printscreen">images/icons/printscreen.png</file>
+        <file alias="document">images/icons/document.png</file>
+        <file alias="fullscreen">images/icons/fullscreen.png</file>
+        <file alias="control">images/icons/control.png</file>
+        <file alias="bug">images/icons/bug.png</file>
+        <file alias="equalizer">images/icons/equalizer.png</file>
+        <file alias="run">images/icons/run.png</file>
+        <file alias="mobile">images/icons/mobile.png</file>
+        <file alias="tv">images/icons/tv.png</file>
+        <file alias="gingagui">images/icons/icon-gingagui.ico</file>
+        <file alias="gingagui-64x64">images/icons/icon-ginga-64x64.png</file>
+        <file alias="gingagui-128x128">images/icons/icon-ginga-128x128.png</file>
+    </qresource>
+    <qresource prefix="/logo">
+        <file alias="nclplayer">images/logos/logo-nclplayer.png</file>
+        <file alias="gingagui">images/logos/bg-gingagui2.png</file>
+    </qresource>
+    <qresource prefix="/background">
+        <file alias="gingagui">images/backgrounds/bg-gingagui.png</file>
+        <file alias="gingagui3">images/backgrounds/bg-gingagui3.png</file>
+        <file alias="gingagui4">images/backgrounds/bg-gingagui4.fw.png</file>
+    </qresource>
+</RCC>
