@@ -32,7 +32,7 @@ QnplSettings::QnplSettings()
     }
 
 //    if (value("parameters").toString() == ""){
-        setValue("parameters", "--ncl ${NCLFILE} --vmode ${SCREENSIZE} --disable-fkeys --set-exitonend --disable-multicast");
+        setValue("parameters", "--ncl ${NCLFILE} --wid ${WID} --vmode ${SCREENSIZE} --disable-fkeys --set-exitonend --disable-multicast");
 //    }
 
     // fixing parameters for this version (1.0.0)
@@ -46,6 +46,11 @@ QnplSettings::QnplSettings()
     if (value("gingaconfig_file").toString() == ""){
         setValue("gingaconfig_file", "C:\\ProgramData\\Ginga\\contexts.ini");
     }
+
+//    if (value("gingaconfig_file").toString() == ""){
+//        setValue("gingaconfig_file", QDir::homePath()+"/AppData/Roaming/telemidia/ginga/contexts.ini");
+//    }
+
 }
 
 QnplSettings::~QnplSettings()

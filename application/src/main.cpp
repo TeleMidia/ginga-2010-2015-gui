@@ -24,9 +24,10 @@ int main(int argc, char *argv[])
     QnplMainWindow window(settings);
     window.setWindowTitle("Ginga");
     window.setWindowIcon(QIcon(":icon/gingagui"));
-    window.setFixedWidth(256);
-    window.setFixedHeight(172);
+
     window.show();
+
+    qDebug() << window.winId();
 
     if (argc > 1){
         window.performOpen(QString(argv[1]));

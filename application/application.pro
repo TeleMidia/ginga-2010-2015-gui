@@ -4,9 +4,9 @@ TARGET = \
 VERSION = \
     1.0.0
 
-CONFIG += release
-CONFIG -= debug
-DEFINES += QT_NO_DEBUG_OUTPUT QT_NO_DEBUG_WARNING
+#CONFIG += release
+#CONFIG -= debug
+#DEFINES += QT_NO_DEBUG_OUTPUT QT_NO_DEBUG_WARNING
 
 RC_FILE = \
     application.rc

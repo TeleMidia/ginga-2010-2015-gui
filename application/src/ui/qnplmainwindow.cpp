@@ -20,6 +20,21 @@ QnplMainWindow::QnplMainWindow(QnplSettings* settings, QWidget* parent)
     createWidgets();
     createToolbars();
     createConnections();
+
+
+
+    QString ssize = settings->value("screensize").toString();
+
+    QString sw = ssize.section('x',0,0);
+    QString sh = ssize.section('x',1,1);
+
+    int w = sw.toInt();
+    int h = sh.toInt();
+
+    view->setSceneRect(0,0,w,h);
+
+    setFixedWidth(w+20);
+    setFixedHeight(h+100);
 }
 
 QnplMainWindow::~QnplMainWindow()
@@ -224,6 +239,7 @@ void QnplMainWindow::createWidgets()
 
     view = new QnplView(this); setCentralWidget(view);
 
+
     preferencesDialog = new QnplPreferencesDialog(this);
 
     aboutDialog = new QnplAboutDialog(this);
@@ -240,9 +256,9 @@ void  QnplMainWindow::createConnections()
     connect(clearAction, SIGNAL(triggered()),SLOT(performClear()));
     connect(aboutAction, SIGNAL(triggered()),SLOT(performAbout()));
 
-    connect(runAsBaseAction, SIGNAL(clicked()), SLOT(saveRunMode()));
-    connect(runAsPassiveAction, SIGNAL(clicked()), SLOT(saveRunMode()));
-    connect(runAsActiveAction, SIGNAL(clicked()), SLOT(saveRunMode()));
+    connect(runAsBaseAction, SIGNAL(triggered()), SLOT(saveRunMode()));
+    connect(runAsPassiveAction, SIGNAL(triggered()), SLOT(saveRunMode()));
+    connect(runAsActiveAction, SIGNAL(triggered()), SLOT(saveRunMode()));
 
     connect(openButton, SIGNAL(clicked()), SLOT(performOpen()));
     connect(playButton, SIGNAL(clicked()), SLOT(performRun()));
@@ -253,8 +269,6 @@ void  QnplMainWindow::createConnections()
 
 void QnplMainWindow::buildRecents()
 {
-    openMenu->clear();
-
     QStringList recents = settings->value("recents").toStringList();
 
     if (recents.count() > 0){
@@ -273,6 +287,8 @@ void QnplMainWindow::buildRecents()
 
 void QnplMainWindow::performOpen()
 {
+    qDebug() << view->winId();;
+
     if (location != "*"){
         performClose();
     }
@@ -397,6 +413,38 @@ void QnplMainWindow::performPlay()
 
         QString context_dir = QFileInfo(conf_location).absoluteDir().path();
 
+        void* vhwnd = view->winId();
+        unsigned long int value = (unsigned long int) vhwnd;
+
+
+
+        char dst[32];
+        char digits[32];
+        unsigned long int i = 0, j = 0, n = 0;
+
+        do {
+          n = value % 10;
+          digits[i++] = (n < 10 ? (char)n+'0' : (char)n-10+'a');
+          value /= 10;
+
+          if (i > 31) {
+            break;
+          }
+
+        } while (value != 0);
+
+        n = i;
+        i--;
+
+        while (i >= 0 && j < 32) {
+          dst[j] = digits[i];
+          i--;
+          j++;
+        }
+
+        QString strValue = QString(dst);
+
+        plist.replaceInStrings("${WID}", strValue);
         plist.replaceInStrings("${NCLFILE}", location);
         plist.replaceInStrings("${SCREENSIZE}", settings->value("screensize").toString());
 
@@ -439,7 +487,7 @@ void QnplMainWindow::performPlay()
     }
 }
 
-void QnplMainWindow::performStop()
+void QnplMainWindow:: performStop()
 {
     if (process != NULL){
         process->close();
@@ -477,6 +525,19 @@ void QnplMainWindow::performPreferences()
 {
     preferencesDialog->init(settings);
     preferencesDialog->exec();
+
+    QString ssize = settings->value("screensize").toString();
+
+    QString sw = ssize.section('x',0,0);
+    QString sh = ssize.section('x',1,1);
+
+    int w = sw.toInt();
+    int h = sh.toInt();
+
+    view->setSceneRect(0,0,w,h);
+
+    setFixedWidth(w+20);
+    setFixedHeight(h+100);
 }
 
 void QnplMainWindow::performBug()

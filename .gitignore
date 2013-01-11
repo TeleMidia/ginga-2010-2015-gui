@@ -45,3 +45,4 @@ ui_PreferencesDialog.h
 *.a
 *.Debug
 *.Release
+release
