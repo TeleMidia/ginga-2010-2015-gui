@@ -489,6 +489,9 @@ void QnplMainWindow::performPlay()
 
 void QnplMainWindow:: performStop()
 {
+  setFocusProxy(this);
+  view->releaseKeyboard();
+
     if (process != NULL){
         process->close();
 
@@ -545,6 +548,19 @@ void QnplMainWindow::performBug()
     // TODO
 }
 
+//bool QnplMainWindow::winEvent(MSG *message, long *result)
+//{
+//  if ((message->message == WM_USER ))
+//  {
+//    *result = 0;
+//    return true;
+//  }
+//  else
+//  {
+//    return false;
+//  }
+//}
+
 void QnplMainWindow::performAbout()
 {
     aboutDialog->show();
@@ -552,6 +568,11 @@ void QnplMainWindow::performAbout()
 
 void QnplMainWindow::performRun()
 {
+  view->activateWindow();
+  view->setFocusPolicy(Qt::StrongFocus);
+  view->setFocus();
+  view->grabKeyboard();
+
   if (runAsBaseAction->isChecked())
   {
     qDebug() << "run as base";

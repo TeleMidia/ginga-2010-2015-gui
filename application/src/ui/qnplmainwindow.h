@@ -19,6 +19,8 @@
 #include <QTranslator>
 #include <QFileInfo>
 
+#include <windows.h>
+
 #include "qnplview.h"
 #include "qnplsettings.h"
 #include "qnplpreferencesdialog.h"
@@ -31,6 +33,8 @@ class QnplMainWindow : public QMainWindow
 public:
     QnplMainWindow(QnplSettings* settings, QWidget* parent = 0);
     virtual ~QnplMainWindow();
+
+//    bool winEvent(MSG *message, long *result);
 
 public slots:
     void performOpen();

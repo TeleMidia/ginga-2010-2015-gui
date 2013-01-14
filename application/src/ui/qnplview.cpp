@@ -18,6 +18,20 @@ void QnplView::createScene()
     scene = new QnplScene(this); setScene(scene);
 }
 
+//void QnplView::keyPressEvent(QKeyEvent *event)
+//{
+//  qDebug() << "Key!!!";
+
+//  QGraphicsView::keyPressEvent(event);
+//}
+
+
+bool QnplView::winEvent(MSG *message, long *result)
+{
+  *result = 0;
+  return true;
+}
+
 void QnplView::resizeEvent(QResizeEvent* event)
 {
     QGraphicsView::resizeEvent(event);

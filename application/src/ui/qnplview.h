@@ -3,8 +3,11 @@
 
 #include <QGraphicsView>
 #include <QResizeEvent>
+#include <QDebug>
 
 #include "qnplscene.h"
+
+#include <QKeyEvent>
 
 class QnplView : public QGraphicsView
 {
@@ -15,6 +18,10 @@ public:
 
 protected:
     void resizeEvent(QResizeEvent* event);
+
+//    void keyPressEvent(QKeyEvent *event);
+
+    bool winEvent(MSG *message, long *result);
 
 private:
     void createScene();
