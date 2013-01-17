@@ -19,7 +19,6 @@
 #include <QTranslator>
 #include <QFileInfo>
 
-#include <windows.h>
 
 #include "qnplview.h"
 #include "qnplsettings.h"
@@ -33,8 +32,6 @@ class QnplMainWindow : public QMainWindow
 public:
     QnplMainWindow(QnplSettings* settings, QWidget* parent = 0);
     virtual ~QnplMainWindow();
-
-//    bool winEvent(MSG *message, long *result);
 
 public slots:
     void performOpen();
@@ -60,6 +57,8 @@ public slots:
 
     void performCloseWindow(int);
 
+    void notifyKey(QString key);
+
 private:
     void load();
 
@@ -68,6 +67,8 @@ private:
     void createWidgets();
     void createToolbars();
     void createConnections();
+
+    QString hwndToString(WId winid);
 
     void buildRecents();
 

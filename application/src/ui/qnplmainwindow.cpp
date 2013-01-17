@@ -265,6 +265,8 @@ void  QnplMainWindow::createConnections()
     connect(stopButton, SIGNAL(clicked()), SLOT(performStop()));
 
     connect(openMenu,SIGNAL(triggered(QAction*)),SLOT(performRecentOpen(QAction*)));
+
+    connect(view,SIGNAL(keyPressed(QString)),SLOT(notifyKey(QString)));
 }
 
 void QnplMainWindow::buildRecents()
@@ -386,8 +388,6 @@ void QnplMainWindow::performQuit()
 
 void QnplMainWindow::performPlay()
 {
-
-
     qDebug() << "Playing" << location;
 
     if (location != "*" && location != ""){
@@ -413,38 +413,7 @@ void QnplMainWindow::performPlay()
 
         QString context_dir = QFileInfo(conf_location).absoluteDir().path();
 
-        void* vhwnd = view->winId();
-        unsigned long int value = (unsigned long int) vhwnd;
-
-
-
-        char dst[32];
-        char digits[32];
-        unsigned long int i = 0, j = 0, n = 0;
-
-        do {
-          n = value % 10;
-          digits[i++] = (n < 10 ? (char)n+'0' : (char)n-10+'a');
-          value /= 10;
-
-          if (i > 31) {
-            break;
-          }
-
-        } while (value != 0);
-
-        n = i;
-        i--;
-
-        while (i >= 0 && j < 32) {
-          dst[j] = digits[i];
-          i--;
-          j++;
-        }
-
-        QString strValue = QString(dst);
-
-        plist.replaceInStrings("${WID}", strValue);
+        plist.replaceInStrings("${WID}", hwndToString(view->winId()));
         plist.replaceInStrings("${NCLFILE}", location);
         plist.replaceInStrings("${SCREENSIZE}", settings->value("screensize").toString());
 
@@ -489,7 +458,6 @@ void QnplMainWindow::performPlay()
 
 void QnplMainWindow:: performStop()
 {
-  setFocusProxy(this);
   view->releaseKeyboard();
 
     if (process != NULL){
@@ -548,18 +516,6 @@ void QnplMainWindow::performBug()
     // TODO
 }
 
-//bool QnplMainWindow::winEvent(MSG *message, long *result)
-//{
-//  if ((message->message == WM_USER ))
-//  {
-//    *result = 0;
-//    return true;
-//  }
-//  else
-//  {
-//    return false;
-//  }
-//}
 
 void QnplMainWindow::performAbout()
 {
@@ -568,9 +524,6 @@ void QnplMainWindow::performAbout()
 
 void QnplMainWindow::performRun()
 {
-  view->activateWindow();
-  view->setFocusPolicy(Qt::StrongFocus);
-  view->setFocus();
   view->grabKeyboard();
 
   if (runAsBaseAction->isChecked())
@@ -598,6 +551,7 @@ void QnplMainWindow::performRunAsPassive()
       QString context_dir = QFileInfo(conf_location).absoluteDir().path();
 
       QStringList plist;
+      plist << "--wid" << hwndToString(view->winId());
       plist << "--device-class" << "1";
       plist << "--vmode" << settings->value("screensize").toString();
       plist << "--context-dir" << context_dir;
@@ -653,6 +607,7 @@ void QnplMainWindow::performRunAsActive()
     }
 
     QStringList plist;
+    plist << "--wid" << hwndToString(view->winId());
     plist << "--device-class" << "2";
     plist << "--device-srv-port" << QString::number(port);
     plist << "--vmode" << settings->value("screensize").toString();
@@ -690,10 +645,52 @@ void QnplMainWindow::performCloseWindow(int)
     performStop();
 }
 
+void QnplMainWindow::notifyKey(QString key)
+{
+  if (process != NULL)
+  {
+    qDebug() << "Writing:" << key;
+
+    process->write(QString(key+"\n").toStdString().c_str());
+  }
+}
+
 void QnplMainWindow::performRecentOpen(QAction* act)
 {
     if (act != clearAction)
     {
         performOpen(act->text());
     }
+}
+
+QString QnplMainWindow::hwndToString(WId winid)
+{
+  void* vhwnd = winid;
+  unsigned long int value = (unsigned long int) vhwnd;
+
+  char dst[32];
+  char digits[32];
+  unsigned long int i = 0, j = 0, n = 0;
+
+  do {
+    n = value % 10;
+    digits[i++] = (n < 10 ? (char)n+'0' : (char)n-10+'a');
+    value /= 10;
+
+    if (i > 31) {
+      break;
+    }
+
+  } while (value != 0);
+
+  n = i;
+  i--;
+
+  while (i >= 0 && j < 32) {
+    dst[j] = digits[i];
+    i--;
+    j++;
+  }
+
+  return QString(dst);
 }

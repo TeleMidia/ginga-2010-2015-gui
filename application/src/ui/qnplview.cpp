@@ -18,18 +18,65 @@ void QnplView::createScene()
     scene = new QnplScene(this); setScene(scene);
 }
 
-//void QnplView::keyPressEvent(QKeyEvent *event)
-//{
-//  qDebug() << "Key!!!";
-
-//  QGraphicsView::keyPressEvent(event);
-//}
-
-
-bool QnplView::winEvent(MSG *message, long *result)
+void QnplView::keyPressEvent(QKeyEvent *event)
 {
-  *result = 0;
-  return true;
+  if (event->key() - Qt::Key_0 >= 0 && event->key() - Qt::Key_0 <= 9)
+  {
+    emit keyPressed("SDLK_"+QString::number(event->key() - Qt::Key_0));
+  }
+  else if (event->key() - Qt::Key_A >= 0 && event->key() - Qt::Key_A <= 26)
+  {
+    if (event->modifiers() == Qt::ShiftModifier)
+      emit keyPressed("SDLK_"+QString(('a'+(event->key() - Qt::Key_A)))+"+5000");
+    else
+      emit keyPressed("SDLK_"+QString(('a'+(event->key() - Qt::Key_A))));
+  }
+  else if (event->key() == Qt::Key_PageDown)
+  {
+    emit keyPressed("SDLK_PAGEDOWN");
+  }
+  else if (event->key() == Qt::Key_PageUp)
+  {
+    emit keyPressed("SDLK_PAGEUP");
+  }
+  else if (event->key() - Qt::Key_F1 >= 0 && event->key() - Qt::Key_F1 <= 11)
+  {
+    emit keyPressed("SDLK_F"+QString::number(event->key() - Qt::Key_F1 + 1));
+  }
+  else if (event->key() == Qt::Key_Down)
+  {
+    emit keyPressed("SDLK_DOWN");
+  }
+  else if (event->key() == Qt::Key_Left)
+  {
+    emit keyPressed("SDLK_LEFT");
+  }
+  else if (event->key() == Qt::Key_Right)
+  {
+    emit keyPressed("SDLK_RIGHT");
+  }
+  else if (event->key() == Qt::Key_Up)
+  {
+    emit keyPressed("SDLK_UP");
+  }
+  else if (event->key() == Qt::Key_Tab)
+  {
+    emit keyPressed("SDLK_TAB");
+  }
+  else if (event->key() == Qt::Key_Space)
+  {
+    emit keyPressed("SDLK_SPACE");
+  }
+  else if (event->key() == Qt::Key_Backspace)
+  {
+    emit keyPressed("SDLK_BACKSPACE");
+  }
+  else if (event->key() == Qt::Key_Enter)
+  {
+    emit keyPressed("SDLK_RETURN");
+  }
+
+  QGraphicsView::keyPressEvent(event);
 }
 
 void QnplView::resizeEvent(QResizeEvent* event)
