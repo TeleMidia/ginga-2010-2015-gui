@@ -27,7 +27,7 @@ void QnplView::keyPressEvent(QKeyEvent *event)
   else if (event->key() - Qt::Key_A >= 0 && event->key() - Qt::Key_A <= 26)
   {
     if (event->modifiers() == Qt::ShiftModifier)
-      emit keyPressed("SDLK_"+QString(('a'+(event->key() - Qt::Key_A)))+"+5000");
+      emit keyPressed("SDLK_"+QString(('A'+(event->key() - Qt::Key_A))));
     else
       emit keyPressed("SDLK_"+QString(('a'+(event->key() - Qt::Key_A))));
   }
