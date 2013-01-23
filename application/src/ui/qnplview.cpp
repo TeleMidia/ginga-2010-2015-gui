@@ -71,7 +71,7 @@ void QnplView::keyPressEvent(QKeyEvent *event)
   {
     emit keyPressed("SDLK_BACKSPACE");
   }
-  else if (event->key() == Qt::Key_Enter)
+  else if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
   {
     emit keyPressed("SDLK_RETURN");
   }

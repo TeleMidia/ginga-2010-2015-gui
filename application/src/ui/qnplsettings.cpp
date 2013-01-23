@@ -32,7 +32,7 @@ QnplSettings::QnplSettings()
     }
 
 //    if (value("parameters").toString() == ""){
-        setValue("parameters", "--ncl ${NCLFILE} --wid ${WID} --vmode ${SCREENSIZE} --disable-fkeys --set-exitonend --disable-multicast");
+        setValue("parameters", "--ncl ${NCLFILE} --wid ${WID} --vmode ${SCREENSIZE} --disable-fkeys --set-exitonend --disable-multicast --poll-stdin");
 //    }
 
     // fixing parameters for this version (1.0.0)
