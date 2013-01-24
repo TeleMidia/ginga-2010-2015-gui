@@ -19,7 +19,6 @@
 #include <QTranslator>
 #include <QFileInfo>
 
-
 #include "qnplview.h"
 #include "qnplsettings.h"
 #include "qnplpreferencesdialog.h"
@@ -68,7 +67,11 @@ private:
     void createToolbars();
     void createConnections();
 
+#ifdef Q_OS_MAC
+    QString hwndToString(NSView winid);
+#else
     QString hwndToString(WId winid);
+#endif
 
     void buildRecents();
 

@@ -33,8 +33,7 @@ QnplMainWindow::QnplMainWindow(QnplSettings* settings, QWidget* parent)
 
     view->setSceneRect(0,0,w,h);
 
-    setFixedWidth(w+20);
-    setFixedHeight(h+100);
+    resize(w+20, h+100);
 }
 
 QnplMainWindow::~QnplMainWindow()
@@ -507,8 +506,7 @@ void QnplMainWindow::performPreferences()
 
     view->setSceneRect(0,0,w,h);
 
-    setFixedWidth(w+20);
-    setFixedHeight(h+100);
+    resize(w+20, h+100);
 }
 
 void QnplMainWindow::performBug()
@@ -663,6 +661,41 @@ void QnplMainWindow::performRecentOpen(QAction* act)
     }
 }
 
+#ifdef Q_OS_MAC
+QString hwndToString(NSView winid)
+{
+  void* vhwnd = winid;
+  unsigned long int value = (unsigned long int) vhwnd;
+
+  char dst[32];
+  char digits[32];
+  unsigned long int i = 0, j = 0, n = 0;
+
+  do {
+    n = value % 10;
+    digits[i++] = (n < 10 ? (char)n+'0' : (char)n-10+'a');
+    value /= 10;
+
+    if (i > 31) {
+      break;
+    }
+
+  } while (value != 0);
+
+  n = i;
+  i--;
+
+  while (i >= 0 && j < 32) {
+    dst[j] = digits[i];
+    i--;
+    j++;
+  }
+
+  return QString(dst);
+}
+
+#else
+
 QString QnplMainWindow::hwndToString(WId winid)
 {
   void* vhwnd = winid;
@@ -694,3 +727,5 @@ QString QnplMainWindow::hwndToString(WId winid)
 
   return QString(dst);
 }
+
+#endif
