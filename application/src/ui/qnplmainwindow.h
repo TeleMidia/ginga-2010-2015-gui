@@ -31,13 +31,14 @@ class QnplMainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    QnplMainWindow(QnplSettings* settings, QWidget* parent = 0);
-    virtual ~QnplMainWindow();
+    QnplMainWindow(QWidget* parent = 0);
+    ~QnplMainWindow();
+
+    void load(QString location);
 
 public slots:
     void performOpen();
-    void performOpen(QString f);
-    void performRecentOpen(QAction* act);
+    void performOpen(QAction* action);
     void performClear();
     void performClose();
     void performQuit();
@@ -61,8 +62,6 @@ public slots:
     void notifyKey(QString key);
 
 private:
-    void load();
-
     void createMenus();
     void createActions();
     void createWidgets();
@@ -75,7 +74,7 @@ private:
 
     QMenu* fileMenu;
     QMenu* openMenu;
-    QMenu* playMenu;
+    QMenu* deviceMenu;
     QMenu* windowMenu;
     QMenu* helpMenu;
 

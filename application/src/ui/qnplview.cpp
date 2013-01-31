@@ -4,8 +4,8 @@ QnplView::QnplView(QWidget* parent)
     : QGraphicsView(parent)
 {
     createScene();
-    setStyleSheet("background: #000");
-//    setStyleSheet("background: #000 url(\':icon/gingagui-64x64\') no-repeat center center;");
+//    setStyleSheet("background: #000");
+    setStyleSheet("background: #000 url(\':icon/gingagui-64x64\') no-repeat right bottom;");
 }
 
 QnplView::~QnplView()

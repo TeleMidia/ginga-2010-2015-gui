@@ -2,14 +2,10 @@ TARGET = \
     gingagui
 
 VERSION = \
-    1.0.0
+   1.0.5
 
-#CONFIG += release
-#CONFIG -= debug
-#DEFINES += QT_NO_DEBUG_OUTPUT QT_NO_DEBUG_WARNING
-
-RC_FILE = \
-    application.rc
+DEFINES += \
+    VERSION=\\\"$${VERSION}\\\"
 
 SOURCES += \
     src/main.cpp \
@@ -18,7 +14,8 @@ SOURCES += \
     src/ui/qnplscene.cpp \
     src/ui/qnplsettings.cpp \
     src/ui/qnplpreferencesdialog.cpp \
-    src/ui/qnplaboutdialog.cpp
+    src/ui/qnplaboutdialog.cpp \
+    src/util/qnplutil.cpp
 
 HEADERS += \
     src/ui/qnplmainwindow.h \
@@ -26,10 +23,14 @@ HEADERS += \
     src/ui/qnplscene.h \
     src/ui/qnplsettings.h \
     src/ui/qnplpreferencesdialog.h \
-    src/ui/qnplaboutdialog.h
+    src/ui/qnplaboutdialog.h \
+    src/util/qnplutil.h
 
 RESOURCES += \
     application.qrc
+
+RC_FILE = \
+    application.rc
 
 FORMS += \
     forms/QnplPreferencesForm.ui \
@@ -41,6 +42,3 @@ TRANSLATIONS += \
     translations/en.ts \
     translations/es.ts \
     translations/pt_br.ts
-
-
-

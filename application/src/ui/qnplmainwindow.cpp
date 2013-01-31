@@ -5,15 +5,18 @@
 #include <QDebug>
 #include <QProcessEnvironment>
 
-QnplMainWindow::QnplMainWindow(QnplSettings* settings, QWidget* parent)
+QnplMainWindow::QnplMainWindow(QWidget* parent)
     : QMainWindow(parent)
 {
+  setWindowTitle("Ginga");
+  setWindowIcon(QIcon(":icon/gingagui-128x128"));
+
+
     location = "*";
     process = NULL;
 
-    this->settings = settings;
+    settings = new QnplSettings();
 
-    passiveIsRunning = false;
 
     createActions();
     createMenus();
@@ -21,7 +24,7 @@ QnplMainWindow::QnplMainWindow(QnplSettings* settings, QWidget* parent)
     createToolbars();
     createConnections();
 
-
+    passiveIsRunning = false;
 
     QString ssize = settings->value("screensize").toString();
 
@@ -159,17 +162,13 @@ void  QnplMainWindow::createMenus()
     fileMenu->addAction(openAction);
     fileMenu->addMenu(openMenu);
     fileMenu->addSeparator();
-    fileMenu->addAction(runAsBaseAction);
-    fileMenu->addAction(runAsPassiveAction);
-    fileMenu->addAction(runAsActiveAction);
-//    fileMenu->addAction(closeAction);
-    fileMenu->addSeparator();
     fileMenu->addAction(quitAction);
 
-    // playback menu
-//    playMenu = menuBar()->addMenu(tr("Playback"));
-//    playMenu->addAction(playAction);
-//    playMenu->addAction(stopAction);
+    // device menu
+    deviceMenu = menuBar()->addMenu(tr("Device"));
+    deviceMenu->addAction(runAsBaseAction);
+    deviceMenu->addAction(runAsPassiveAction);
+    deviceMenu->addAction(runAsActiveAction);
 
     // window menu
     windowMenu = menuBar()->addMenu(tr("Window"));
@@ -263,7 +262,7 @@ void  QnplMainWindow::createConnections()
     connect(playButton, SIGNAL(clicked()), SLOT(performRun()));
     connect(stopButton, SIGNAL(clicked()), SLOT(performStop()));
 
-    connect(openMenu,SIGNAL(triggered(QAction*)),SLOT(performRecentOpen(QAction*)));
+    connect(openMenu,SIGNAL(triggered(QAction*)),SLOT(performOpen(QAction*)));
 
     connect(view,SIGNAL(keyPressed(QString)),SLOT(notifyKey(QString)));
 }
@@ -271,6 +270,8 @@ void  QnplMainWindow::createConnections()
 void QnplMainWindow::buildRecents()
 {
     QStringList recents = settings->value("recents").toStringList();
+
+    openMenu->clear();
 
     if (recents.count() > 0){
         foreach(QString r, recents){
@@ -300,17 +301,17 @@ void QnplMainWindow::performOpen()
     if (QFile::exists(f)){
         QDir d(f); settings->setValue("lastdir_opened", d.absolutePath());
 
-        performOpen(f);
+        load(f);
     }
 }
 
-void QnplMainWindow::performOpen(QString file)
+void QnplMainWindow::load(QString location)
 {
     QStringList recents = settings->value("recents").toStringList();
 
     QStringList newRecents;
 
-    newRecents << file << recents;
+    newRecents << location << recents;
 
     newRecents.removeDuplicates();
 
@@ -320,7 +321,7 @@ void QnplMainWindow::performOpen(QString file)
 
     settings->setValue("recents", newRecents); buildRecents();
 
-    location = file;
+    location = location;
 
     openLine->setText(location);
 
@@ -392,7 +393,7 @@ void QnplMainWindow::performPlay()
     if (location != "*" && location != ""){
 
         if (location != openLine->text()){
-            performOpen(openLine->text());
+            load(openLine->text());
         }
 
         QStringList plist;
@@ -653,11 +654,11 @@ void QnplMainWindow::notifyKey(QString key)
   }
 }
 
-void QnplMainWindow::performRecentOpen(QAction* act)
+void QnplMainWindow::performOpen(QAction* act)
 {
     if (act != clearAction)
     {
-        performOpen(act->text());
+        load(act->text());
     }
 }
 
@@ -667,7 +668,7 @@ QString QnplMainWindow::hwndToString(WId winid)
   void* vhwnd = winid;
   unsigned long int value = (unsigned long int) vhwnd;
 #endif
-#ifdef Q_WS_MAC
+#ifdef Q_WS_X11
   unsigned long value = (unsigned long) winid;
 #endif
 

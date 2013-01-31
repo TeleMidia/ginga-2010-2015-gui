@@ -86,17 +86,15 @@ void QnplPreferencesDialog::loadSettings()
     }else if (settings->value("screensize").toString() == "1920x1080"){
         formRun.comboBox->setCurrentIndex(5);
     }else if (settings->value("screensize").toString() == "320x400"){
-        formRun.comboBox->setCurrentIndex(8); // (!) index 6 is an empty option
+        formRun.comboBox->setCurrentIndex(7); // (!) index 6 is an empty option
     }else if (settings->value("screensize").toString() == "400x320"){
-        formRun.comboBox->setCurrentIndex(9);
+        formRun.comboBox->setCurrentIndex(8);
     }else if (settings->value("screensize").toString() == "320x180"){
-        formRun.comboBox->setCurrentIndex(10);
+        formRun.comboBox->setCurrentIndex(9);
     }else if (settings->value("screensize").toString() == "320x240"){
-        formRun.comboBox->setCurrentIndex(11);
+        formRun.comboBox->setCurrentIndex(10);
     }else if (settings->value("screensize").toString() == "240x320"){
-        formRun.comboBox->setCurrentIndex(12);
-    }else if (settings->value("screensize").toString() == "fullscreen"){
-        formRun.comboBox->setCurrentIndex(6);
+        formRun.comboBox->setCurrentIndex(11);
     }
 
     if (settings->value("lang").toString() == "en"){
@@ -145,22 +143,22 @@ void QnplPreferencesDialog::saveSettings()
     case 5:
         settings->setValue("screensize","1920x1080");
         break;
-	case 6:
-        settings->setValue("screensize","fullscreen");
+    case 6:
+
         break;
-    case 8:
+    case 7:
         settings->setValue("screensize","320x400");
         break;
-    case 9:
+    case 8:
         settings->setValue("screensize","400x320");
         break;
-    case 10:
+    case 9:
         settings->setValue("screensize","320x180");
         break;
-    case 11:
+    case 10:
         settings->setValue("screensize","320x240");
         break;
-    case 12:
+    case 11:
         settings->setValue("screensize","240x320");
         break;
     

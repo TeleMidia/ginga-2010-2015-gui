@@ -1,36 +1,29 @@
 #include <QApplication>
 #include <QTranslator>
+
 #include <QDebug>
 
 #include "ui/qnplmainwindow.h"
 #include "ui/qnplsettings.h"
 
-
 int main(int argc, char *argv[])
 {
     QApplication application(argc, argv);
-    application.setApplicationName("Ginga");
-    application.setApplicationVersion("1.2.0");
-    application.setOrganizationName("TeleMidia Lab");
+    application.setApplicationName("gingagui");
+    application.setApplicationVersion(QString(VERSION));
+    application.setOrganizationName("telemidia");
     application.setOrganizationDomain("telemidia.puc-rio.br");
 
-    QnplSettings* settings = new QnplSettings();
-
-    QTranslator translator;
-    translator.load(application.applicationDirPath()+"/translations/"+settings->value("lang").toString()+".qm");
-
-    application.installTranslator(&translator);
-
-    QnplMainWindow window(settings);
-    window.setWindowTitle("Ginga");
-    window.setWindowIcon(QIcon(":icon/gingagui"));
-
+    QnplMainWindow window;
     window.show();
 
-    qDebug() << window.winId();
+    if (application.arguments().size() > 1)
+    {
+      QString file = application.arguments().at(1);
+      file = file.replace('/',QDir::separator());
+      file = file.replace('\\',QDir::separator());
 
-    if (argc > 1){
-        window.performOpen(QString(argv[1]));
+      window.load(file);
     }
 
     return application.exec();
