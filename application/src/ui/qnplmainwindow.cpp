@@ -307,6 +307,9 @@ void QnplMainWindow::performOpen()
 
 void QnplMainWindow::load(QString location)
 {
+    location = location.replace('/',QDir::separator());
+    location = location.replace('\\',QDir::separator());
+
     QStringList recents = settings->value("recents").toStringList();
 
     QStringList newRecents;
@@ -321,7 +324,7 @@ void QnplMainWindow::load(QString location)
 
     settings->setValue("recents", newRecents); buildRecents();
 
-    location = location;
+    this->location = location;
 
     openLine->setText(location);
 
