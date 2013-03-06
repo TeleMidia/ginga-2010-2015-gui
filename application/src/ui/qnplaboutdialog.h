@@ -10,21 +10,21 @@
 #include <QDesktopServices>
 #include <QUrl>
 
-#include "ui_QnplAboutForm.h"
+#include "ui_qnplaboutform.h"
 
 class QnplAboutDialog : public QDialog
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    QnplAboutDialog(QWidget* parent = 0);
-    ~QnplAboutDialog();
+  QnplAboutDialog(QWidget* parent = 0);
+  ~QnplAboutDialog();
 
 public slots:
-    void showMore();
+  void showMore();
 
 private:
-    Ui::QnplAboutForm form;
+  Ui::QnplAboutForm form;
 };
 
 #endif // QNPLABOUTDIALOG_H

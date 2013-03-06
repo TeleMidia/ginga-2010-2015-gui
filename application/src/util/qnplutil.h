@@ -1,10 +1,12 @@
 #ifndef QNPLUTIL_H
 #define QNPLUTIL_H
 
+#include <QStringList>
+
 class QnplUtil
 {
 public:
-  QnplUtil();
+  static QStringList split(QString parameters);
 };
 
 #endif // QNPLUTIL_H

@@ -12,23 +12,20 @@
 class QnplView : public QGraphicsView
 {
   Q_OBJECT
-public:
-    QnplView(QWidget* parent = 0);
 
-    ~QnplView();
+public:
+  QnplView(QWidget* parent = 0);
+  ~QnplView();
 
 signals:
-    void keyPressed(QString key);
+  void keyPressed(QString key);
 
 protected:
-    void resizeEvent(QResizeEvent* event);
-
-    void keyPressEvent(QKeyEvent *event);
+  void resizeEvent(QResizeEvent* event);
+  void keyPressEvent(QKeyEvent *event);
 
 private:
-    void createScene();
-
-    QnplScene* scene;
+  QnplScene* scene;
 };
 
 #endif // QNPLVIEW_H

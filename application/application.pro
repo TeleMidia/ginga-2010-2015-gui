@@ -2,10 +2,15 @@ TARGET = \
     gingagui
 
 VERSION = \
-   1.0.5
+  1.0.5
 
 DEFINES += \
     VERSION=\\\"$${VERSION}\\\"
+
+INCLUDEPATH += \
+    src \
+    src/ui \
+    src/util
 
 SOURCES += \
     src/main.cpp \
@@ -33,10 +38,10 @@ RC_FILE = \
     application.rc
 
 FORMS += \
-    forms/QnplPreferencesForm.ui \
-    forms/QnplGeneralForm.ui \
-    forms/QnplRunForm.ui \
-    forms/QnplAboutForm.ui
+    forms/qnplaboutform.ui \
+    forms/qnplenvironmentform.ui \
+    forms/qnplpreferencesform.ui \
+    forms/qnplrunform.ui
 
 TRANSLATIONS += \
     translations/en.ts \

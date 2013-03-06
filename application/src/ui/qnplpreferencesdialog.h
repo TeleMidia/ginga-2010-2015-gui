@@ -6,9 +6,9 @@
 #include <QFileDialog>
 #include <QFile>
 
-#include "ui_QnplGeneralForm.h"
-#include "ui_QnplRunForm.h"
-#include "ui_QnplPreferencesForm.h"
+#include "ui_qnplenvironmentform.h"
+#include "ui_qnplpreferencesform.h"
+#include "ui_qnplrunform.h"
 
 #include "qnplsettings.h"
 

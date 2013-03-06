@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>435</width>
+    <width>421</width>
     <height>217</height>
    </rect>
   </property>
@@ -16,10 +16,16 @@
     <height>217</height>
    </size>
   </property>
+  <property name="maximumSize">
+   <size>
+    <width>421</width>
+    <height>16777215</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>About Ginga</string>
   </property>
-  <widget class="QLabel" name="label">
+  <widget class="QLabel" name="lbIcon">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -35,7 +41,7 @@
     <pixmap resource="../application.qrc">:/icon/gingagui-128x128</pixmap>
    </property>
   </widget>
-  <widget class="QLabel" name="label_2">
+  <widget class="QLabel" name="lbTitle">
    <property name="geometry">
     <rect>
      <x>150</x>
@@ -48,10 +54,10 @@
     <string notr="true">font-weight: bold; font-size: 18px;</string>
    </property>
    <property name="text">
-    <string>Ginga v0.13.5</string>
+    <string>[TITLE]</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="btMore">
    <property name="geometry">
     <rect>
      <x>330</x>
@@ -64,7 +70,7 @@
     <string>More...</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_3">
+  <widget class="QLabel" name="lbCopyright">
    <property name="geometry">
     <rect>
      <x>150</x>
@@ -77,7 +83,7 @@
     <string notr="true">font-size: 12px;</string>
    </property>
    <property name="text">
-    <string>Copyright 1989-2012 PUC-RIO/LABORATORIO TELEMIDIA, All Rights Reserved.</string>
+    <string>Copyright 2012-2013 PUC-RIO/LABORATORIO TELEMIDIA, All Rights Reserved.</string>
    </property>
    <property name="textFormat">
     <enum>Qt::PlainText</enum>
@@ -86,7 +92,7 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QLabel" name="label_4">
+  <widget class="QLabel" name="lbWarranty">
    <property name="geometry">
     <rect>
      <x>150</x>

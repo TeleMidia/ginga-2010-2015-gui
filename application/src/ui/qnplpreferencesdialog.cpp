@@ -6,61 +6,61 @@ QnplPreferencesDialog::QnplPreferencesDialog(QWidget* parent)
     : QDialog(parent)
 {
 
-    wGeneral = new QWidget();
-    wRun = new QWidget();
+//    wGeneral = new QWidget();
+//    wRun = new QWidget();
 
-    formGeneral.setupUi(new QDialog(this));
-    formRun.setupUi(new QDialog(this));
+//    formGeneral.setupUi(new QDialog(this));
+//    formRun.setupUi(new QDialog(this));
 
-    wGeneral->setLayout(formGeneral.verticalLayout);
-    wRun->setLayout(formRun.verticalLayout);
+//    wGeneral->setLayout(formGeneral.lyMain);
+//    wRun->setLayout(formRun.lyMain);
 
     formPreferences.setupUi(this);
 
 
-    connect(formPreferences.dTree, SIGNAL(clicked(QModelIndex)), SLOT(showPreferencesItem(QModelIndex)));
-    connect(formPreferences.dButtons, SIGNAL(accepted()), SLOT(saveSettings()));
-    connect(formRun.pushButton,SIGNAL(clicked()), SLOT(browseExecutable()));
-    connect(formRun.pushButton_2,SIGNAL(clicked()), SLOT(browseGingaSettingsFile()));
+//    connect(formPreferences.trItems, SIGNAL(clicked(QModelIndex)), SLOT(showPreferencesItem(QModelIndex)));
+//    connect(formPreferences.dButtons, SIGNAL(accepted()), SLOT(saveSettings()));
+//    connect(formRun.pushButton,SIGNAL(clicked()), SLOT(browseExecutable()));
+//    connect(formRun.pushButton_2,SIGNAL(clicked()), SLOT(browseGingaSettingsFile()));
 }
 
 QnplPreferencesDialog::~QnplPreferencesDialog()
 {
-    delete wGeneral;
-    delete wRun;
+//    delete wGeneral;
+//    delete wRun;
 }
 
 void QnplPreferencesDialog::init(QnplSettings* s)
 {
-    settings = s;
+//    settings = s;
 
-    QStandardItemModel* model = new QStandardItemModel(2,1);
-    QStandardItem* g = new QStandardItem(tr("General"));
-    g->setEditable(false);
-    g->setIcon(QIcon(":icon/preferences"));
-    QStandardItem* r = new QStandardItem(tr("Run"));
-    r->setEditable(false);
-    r->setIcon(QIcon(":icon/run"));
+//    QStandardItemModel* model = new QStandardItemModel(2,1);
+//    QStandardItem* g = new QStandardItem(tr("General"));
+//    g->setEditable(false);
+//    g->setIcon(QIcon(":icon/preferences"));
+//    QStandardItem* r = new QStandardItem(tr("Run"));
+//    r->setEditable(false);
+//    r->setIcon(QIcon(":icon/run"));
 
-    model->setItem(0, g);
-    model->setItem(1, r);
-
-
-    formPreferences.dTree->setModel(model);
-    formPreferences.dTree->selectionModel()->select(formPreferences.dTree->model()->index(0,0), QItemSelectionModel::Select);
-    formPreferences.dTree->header()->hide();
+//    model->setItem(0, g);
+//    model->setItem(1, r);
 
 
-    formPreferences.dLabel->setText(tr("General"));
-    formPreferences.dLabel->setStyleSheet("font-weight: bold; font-size 32px;");
+//    formPreferences.trItems->setModel(model);
+//    formPreferences.trItems->selectionModel()->select(formPreferences.trItems->model()->index(0,0), QItemSelectionModel::Select);
+//    formPreferences.trItems->header()->hide();
 
 
-    formPreferences.verticalLayout->addWidget(wGeneral);
-    formPreferences.verticalLayout->addWidget(wRun);
-    wGeneral->show();
-    wRun->hide();
+//    formPreferences.lbTitle->setText(tr("General"));
+//    formPreferences.lbTitle->setStyleSheet("font-weight: bold; font-size 32px;");
 
-    loadSettings();
+
+//    formPreferences.lyMain->addWidget(wGeneral);
+//    formPreferences.lyMain->addWidget(wRun);
+//    wGeneral->show();
+//    wRun->hide();
+
+//    loadSettings();
 }
 
 void QnplPreferencesDialog::loadSettings()
@@ -184,15 +184,15 @@ void QnplPreferencesDialog::saveSettings()
 
 void QnplPreferencesDialog::showPreferencesItem(QModelIndex index)
 {
-    if (index == formPreferences.dTree->model()->index(0,0)){
+    if (index == formPreferences.trItems->model()->index(0,0)){
         wGeneral->show();
         wRun->hide();
-        formPreferences.dLabel->setText(tr("General"));
+        formPreferences.lbTitle->setText(tr("General"));
 
     }else{
         wGeneral->hide();
         wRun->show();
-        formPreferences.dLabel->setText(tr("Run"));
+        formPreferences.lbTitle->setText(tr("Run"));
     }
 }
 

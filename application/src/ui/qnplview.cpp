@@ -1,20 +1,17 @@
 #include "qnplview.h"
 
 QnplView::QnplView(QWidget* parent)
-    : QGraphicsView(parent)
+  : QGraphicsView(parent)
 {
-    createScene();
-    setStyleSheet("background: #000 url(\':icon/gingaguibac\') no-repeat right bottom;");
+  setStyleSheet("background: #000000");
+
+  scene = new QnplScene(this);
+  setScene(scene);
 }
 
 QnplView::~QnplView()
 {
 
-}
-
-void QnplView::createScene()
-{
-    scene = new QnplScene(this); setScene(scene);
 }
 
 void QnplView::keyPressEvent(QKeyEvent *event)
@@ -80,10 +77,10 @@ void QnplView::keyPressEvent(QKeyEvent *event)
 
 void QnplView::resizeEvent(QResizeEvent* event)
 {
-    QGraphicsView::resizeEvent(event);
+  QGraphicsView::resizeEvent(event);
 
-    qreal w = event->size().width();
-    qreal h = event->size().height();
+  qreal w = event->size().width();
+  qreal h = event->size().height();
 
-    scene->setSize(w,h);
+  scene->setSize(w,h);
 }

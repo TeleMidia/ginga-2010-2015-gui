@@ -1,10 +1,8 @@
 #include <QApplication>
-#include <QTranslator>
 
-#include <QDebug>
-
-#include "ui/qnplmainwindow.h"
-#include "ui/qnplsettings.h"
+#include "qnplmainwindow.h"
+#include "qnplsettings.h"
+#include "qnplutil.h"
 
 int main(int argc, char *argv[])
 {

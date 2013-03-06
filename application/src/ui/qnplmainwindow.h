@@ -18,6 +18,7 @@
 #include <QDir>
 #include <QTranslator>
 #include <QFileInfo>
+#include <QDesktopServices>
 
 #include <QMacNativeWidget>
 
@@ -25,6 +26,7 @@
 #include "qnplsettings.h"
 #include "qnplpreferencesdialog.h"
 #include "qnplaboutdialog.h"
+#include "qnplutil.h"
 
 class QnplMainWindow : public QMainWindow
 {
@@ -43,19 +45,19 @@ public slots:
     void performClose();
     void performQuit();
 
-    void performRun();
-    void performRunAsPassive();
-    void performRunAsActive();
-
-    void saveRunMode();
-
-    void performPlay();
-    void performStop();
+    void performDevice();
 
     void performPreferences();
 
     void performBug();
     void performAbout();
+
+    void performPlay();
+    void performStop();
+
+    void performRun();
+    void performRunAsPassive();
+    void performRunAsActive();
 
     void performCloseWindow(int);
 
@@ -63,39 +65,35 @@ public slots:
 
 private:
     void createMenus();
+    void createRecent();
     void createActions();
     void createWidgets();
+    void createDialogs();
     void createToolbars();
     void createConnections();
 
     QString hwndToString(WId winid);
 
-    void buildRecents();
-
-    QMenu* fileMenu;
-    QMenu* openMenu;
+    QMenu* fileMenu;    
+    QMenu* recentMenu;
     QMenu* deviceMenu;
     QMenu* windowMenu;
     QMenu* helpMenu;
 
-    QToolBar* playToolbar;
-    QToolBar* openToolbar;
-
     QAction* openAction;
-    QAction* runAsBaseAction;
-    QAction* runAsPassiveAction;
-    QAction* runAsActiveAction;
-    QAction* clearAction;
-    QAction* closeAction;
     QAction* quitAction;
-
-    QAction* playAction;
-    QAction* stopAction;
-
+    QAction* clearAction;
+    QAction* baseAction;
+    QAction* passiveAction;
+    QAction* activeAction;
     QAction* preferencesAction;
-
     QAction* bugAction;
     QAction* aboutAction;
+
+    QActionGroup* deviceGroup;
+
+    QToolBar* playToolbar;
+    QToolBar* openToolbar;
 
     QLineEdit* openLine;
 
@@ -115,7 +113,7 @@ private:
     QnplPreferencesDialog* preferencesDialog;
     QnplAboutDialog* aboutDialog;
 
-    QActionGroup* runGroup;
+
 };
 
 #endif // QNPLMAINWINDOW_H
