@@ -36,27 +36,24 @@ QnplSettings::QnplSettings()
       setValue("enablelog", false);
     }
 
-
-//    if (value("parameters").toString() == ""){
+    if (value("parameters").toString() == ""){
         setValue("parameters", "--ncl ${NCLFILE} --wid ${WID} --vmode ${SCREENSIZE} --disable-fkeys --set-exitonend --disable-multicast --poll-stdin");
-//    }
-
-    // fixing parameters for this version (1.0.0)
-
+    }
 
     if (value("lang").toString() == ""){
         setValue("lang", "en");
     }
 
 
+#ifdef Q_OS_WIN
     if (value("gingaconfig_file").toString() == ""){
-        setValue("gingaconfig_file", "C:\\ProgramData\\Ginga\\contexts.ini");
+        setValue("gingaconfig_file", QDir::homePath()+"\\AppData\\Roaming\\telemidia\\ginga\\contexts.ini");
     }
-
-//    if (value("gingaconfig_file").toString() == ""){
-//        setValue("gingaconfig_file", QDir::homePath()+"/AppData/Roaming/telemidia/ginga/contexts.ini");
-//    }
-
+#else
+    if (value("gingaconfig_file").toString() == ""){
+        setValue("gingaconfig_file", "");
+    }
+#endif
 }
 
 QnplSettings::~QnplSettings()

@@ -378,6 +378,7 @@ void QnplMainWindow::performPlay()
 
     recentMenu->setEnabled(false);
 
+    baseAction->setEnabled(false);
     passiveAction->setEnabled(false);
     activeAction->setEnabled(false);
 
@@ -457,6 +458,7 @@ void QnplMainWindow:: performStop()
 
   recentMenu->setEnabled(true);
 
+  baseAction->setEnabled(true);
   passiveAction->setEnabled(true);
   activeAction->setEnabled(true);
 }
@@ -551,6 +553,7 @@ void QnplMainWindow::performRunAsPassive()
 
     recentMenu->setEnabled(false);
 
+    baseAction->setEnabled(false);
     passiveAction->setEnabled(false);
     activeAction->setEnabled(false);
   }
@@ -607,6 +610,7 @@ void QnplMainWindow::performRunAsActive()
 
   recentMenu->setEnabled(false);
 
+  baseAction->setEnabled(false);
   passiveAction->setEnabled(false);
   activeAction->setEnabled(false);
 }

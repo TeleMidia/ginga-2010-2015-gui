@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <QTranslator>
 
 #include "qnplmainwindow.h"
 #include "qnplsettings.h"
@@ -11,6 +12,21 @@ int main(int argc, char *argv[])
     application.setApplicationVersion(QString(VERSION));
     application.setOrganizationName("telemidia");
     application.setOrganizationDomain("telemidia.puc-rio.br");
+
+    QnplSettings settings;
+    QString lang = settings.value("lang").toString();
+
+    qDebug() << lang;
+
+    if (lang == "pt_br"){
+      QTranslator* translator = new QTranslator();
+      translator->load("translations/"+lang+".qm");
+      application.installTranslator(translator);
+    }else if (lang == "es"){
+      QTranslator* translator = new QTranslator();
+      translator->load("translations/"+lang+".qm");
+      application.installTranslator(translator);
+    }
 
     QnplMainWindow window;
     window.show();

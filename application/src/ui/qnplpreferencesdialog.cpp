@@ -206,14 +206,14 @@ void QnplPreferencesDialog::showPreferencesItem(QModelIndex index)
     }
 }
 
-void QnplPreferencesDialog::loadGingaPreferences()
+void QnplPreferencesDialog::  loadGingaPreferences()
 {
     if (QFile::exists(formRun.lineEdit_2->text())){
 
         QFile* file = new QFile(formRun.lineEdit_2->text());
 
         if (file->open(QIODevice::ReadOnly)){
-            QMap<QString, QString> params;
+            QVector<QPair<QString, QString> > params;
 
             QTextStream* stream = new QTextStream(file);
 
@@ -227,7 +227,7 @@ void QnplPreferencesDialog::loadGingaPreferences()
                 if (line.contains(rx)){
                     rx.indexIn(line);
 
-                    params[rx.cap(1).trimmed()] = rx.cap(2).trimmed();
+                    params.push_back(QPair<QString, QString>(rx.cap(1).trimmed(),rx.cap(2).trimmed()));
                 }
             }
 
@@ -249,12 +249,13 @@ void QnplPreferencesDialog::loadGingaPreferences()
 
             int i = 0;
 
-            foreach(QString name, params.keys()){
-                if (name != "::" && name != "||"){
-                    QStandardItem* nitem = new QStandardItem(name);
+            QPair<QString, QString> p;
+            foreach(p, params){
+                if (p.first != "::" && p.first != "||"){
+                    QStandardItem* nitem = new QStandardItem(p.first);
                     nitem->setEditable(true);
 
-                    QStandardItem* vitem = new QStandardItem(params[name]);
+                    QStandardItem* vitem = new QStandardItem(p.second);
 
                     model->setItem(i, 0, nitem);
                     model->setItem(i, 1, vitem);
