@@ -31,6 +31,12 @@ QnplSettings::QnplSettings()
       setValue("run_as", "base");
     }
 
+    if (value("enablelog").toString() == "")
+    {
+      setValue("enablelog", false);
+    }
+
+
 //    if (value("parameters").toString() == ""){
         setValue("parameters", "--ncl ${NCLFILE} --wid ${WID} --vmode ${SCREENSIZE} --disable-fkeys --set-exitonend --disable-multicast --poll-stdin");
 //    }

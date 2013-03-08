@@ -24,7 +24,6 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
   process = NULL;
 
 
-
   if (settings->value("run_as") == "base")
   {
     baseAction->setChecked(true);
@@ -41,6 +40,8 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
   passiveIsRunning = false;
 
   QString ssize = settings->value("screensize").toString();
+
+  qDebug() << "open" << ssize;
 
   QString sw = ssize.section('x',0,0);
   QString sh = ssize.section('x',1,1);
@@ -279,7 +280,7 @@ void QnplMainWindow::load(QString location)
   location = location.replace('/',QDir::separator());
   location = location.replace('\\',QDir::separator());
 
-  QStringList recents = settings->value("recents").toStringList();
+  QStringList recents = settings->value("files").toStringList();
 
   QStringList newRecents;
 
@@ -291,7 +292,7 @@ void QnplMainWindow::load(QString location)
     newRecents.pop_back();
   }
 
-  settings->setValue("recents", newRecents); createRecent();
+  settings->setValue("files", newRecents); createRecent();
 
   this->location = location;
 
@@ -299,7 +300,7 @@ void QnplMainWindow::load(QString location)
 
   playButton->setEnabled(true);
 
-  setWindowTitle("Ginga - "+QFileInfo(location).completeBaseName()+"."+
+  setWindowTitle("Ginga GUI - "+QFileInfo(location).completeBaseName()+"."+
                  QFileInfo(location).completeSuffix());
 
   if (settings->value("autoplay").toString() == "true"){
@@ -309,7 +310,7 @@ void QnplMainWindow::load(QString location)
 
 void QnplMainWindow::performClear()
 {
-  settings->setValue("recents",QStringList());
+  settings->setValue("files",QStringList());
 
   recentMenu->clear();
 
@@ -387,9 +388,14 @@ void QnplMainWindow::performPlay()
 
       parameters << "--context-dir" << settings->value("gingaconfig_file").toString();
 
+      if (settings->value("enablelog").toBool()){
+        parameters << "--enable-log" << "file";
+      }
+
       parameters.replaceInStrings("${WID}", hwndToString(view->winId()));
       parameters.replaceInStrings("${NCLFILE}", location);
       parameters.replaceInStrings("${SCREENSIZE}", settings->value("screensize").toString());
+
 
 #ifdef Q_OS_LINUX
       process->setProcessEnvironment(enviroment);
@@ -397,6 +403,11 @@ void QnplMainWindow::performPlay()
 
       QFileInfo finfo(location);
       process->setWorkingDirectory(finfo.absoluteDir().absolutePath());
+
+      qDebug() << settings->value("location").toString() << parameters;
+
+      // executing
+      process->start(settings->value("location").toString(), parameters);
     }
     // play as passive device
     else if (passiveAction->isChecked())
@@ -410,9 +421,6 @@ void QnplMainWindow::performPlay()
 
       performRunAsActive();
     }
-
-    // executing
-    process->start(settings->value("location").toString(), parameters);
   }
   else
   {
@@ -514,6 +522,10 @@ void QnplMainWindow::performRunAsPassive()
     plist << "--context-dir" << context_dir;
     plist << "--disable-multicast";
 
+    if (settings->value("enablelog").toBool()){
+      plist << "--enable-log" << "file";
+    }
+
     process = new QProcess(this);
 
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
@@ -521,6 +533,8 @@ void QnplMainWindow::performRunAsPassive()
     process->setProcessEnvironment(env);
 
     connect(process, SIGNAL(finished(int)), SLOT(performCloseWindow(int)), Qt::QueuedConnection);
+
+    qDebug() << settings->value("location").toString() << plist;
 
     process->start(settings->value("location").toString(), plist);
 
@@ -567,6 +581,10 @@ void QnplMainWindow::performRunAsActive()
   plist << "--vmode" << settings->value("screensize").toString();
   plist << "--context-dir" << context_dir;
 
+  if (settings->value("enablelog").toBool()){
+    plist << "--enable-log" << "file";
+  }
+
   process = new QProcess(this);
 
   QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
@@ -574,6 +592,8 @@ void QnplMainWindow::performRunAsActive()
   process->setProcessEnvironment(env);
 
   connect(process, SIGNAL(finished(int)), SLOT(performCloseWindow(int)), Qt::QueuedConnection);
+
+  qDebug() << settings->value("location").toString() << plist;
 
   process->start(settings->value("location").toString(), plist);
 
@@ -619,10 +639,6 @@ QString QnplMainWindow::hwndToString(WId winid)
 #ifdef Q_WS_WIN
   void* vhwnd = winid;
   unsigned long int value = (unsigned long int) vhwnd;
-#endif
-#ifdef Q_WS_X11
-  unsigned long value = (unsigned long) winid;
-#endif
 
   char dst[32];
   char digits[32];
@@ -649,5 +665,26 @@ QString QnplMainWindow::hwndToString(WId winid)
   }
 
   return QString(dst);
+#endif
+
+#ifdef Q_WS_X11
+  unsigned long int value = (unsigned long int) winid;
+  return QString::number(value);
+#endif
 }
+
+void QnplMainWindow::resizeEvent(QResizeEvent* event)
+{
+  QMainWindow::resizeEvent(event);
+
+  qDebug() << "resizing...";
+
+  qreal w = event->size().width()-20;
+  qreal h = event->size().height()-100;
+
+  settings->setValue("screensize",QString::number(w)+"x"+QString::number(h));
+
+  view->setSceneRect(0,0,w,h);
+}
+
 

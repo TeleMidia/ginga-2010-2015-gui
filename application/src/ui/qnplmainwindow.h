@@ -63,6 +63,9 @@ public slots:
 
     void notifyKey(QString key);
 
+protected:
+    void resizeEvent(QResizeEvent* event);
+
 private:
     void createMenus();
     void createRecent();

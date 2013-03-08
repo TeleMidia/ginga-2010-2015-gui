@@ -6,65 +6,70 @@ QnplPreferencesDialog::QnplPreferencesDialog(QWidget* parent)
     : QDialog(parent)
 {
 
-//    wGeneral = new QWidget();
-//    wRun = new QWidget();
+    wGeneral = new QWidget();
+    wRun = new QWidget();
 
-//    formGeneral.setupUi(new QDialog(this));
-//    formRun.setupUi(new QDialog(this));
+    formGeneral.setupUi(new QDialog(this));
+    formRun.setupUi(new QDialog(this));
 
-//    wGeneral->setLayout(formGeneral.lyMain);
-//    wRun->setLayout(formRun.lyMain);
+    wGeneral->setLayout(formGeneral.verticalLayout);
+    wRun->setLayout(formRun.verticalLayout);
 
     formPreferences.setupUi(this);
 
-
-//    connect(formPreferences.trItems, SIGNAL(clicked(QModelIndex)), SLOT(showPreferencesItem(QModelIndex)));
-//    connect(formPreferences.dButtons, SIGNAL(accepted()), SLOT(saveSettings()));
-//    connect(formRun.pushButton,SIGNAL(clicked()), SLOT(browseExecutable()));
-//    connect(formRun.pushButton_2,SIGNAL(clicked()), SLOT(browseGingaSettingsFile()));
+    connect(formPreferences.trItems, SIGNAL(clicked(QModelIndex)), SLOT(showPreferencesItem(QModelIndex)));
+    connect(formPreferences.btGroups, SIGNAL(accepted()), SLOT(saveSettings()));
+    connect(formRun.pushButton,SIGNAL(clicked()), SLOT(browseExecutable()));
+    connect(formRun.pushButton_2,SIGNAL(clicked()), SLOT(browseGingaSettingsFile()));
 }
 
 QnplPreferencesDialog::~QnplPreferencesDialog()
 {
-//    delete wGeneral;
-//    delete wRun;
+    delete wGeneral;
+    delete wRun;
 }
 
 void QnplPreferencesDialog::init(QnplSettings* s)
 {
-//    settings = s;
+    settings = s;
 
-//    QStandardItemModel* model = new QStandardItemModel(2,1);
-//    QStandardItem* g = new QStandardItem(tr("General"));
-//    g->setEditable(false);
-//    g->setIcon(QIcon(":icon/preferences"));
-//    QStandardItem* r = new QStandardItem(tr("Run"));
-//    r->setEditable(false);
-//    r->setIcon(QIcon(":icon/run"));
+    QStandardItemModel* model = new QStandardItemModel(2,1);
+    QStandardItem* g = new QStandardItem(tr("Environment"));
+    g->setEditable(false);
+    g->setIcon(QIcon(":icon/preferences"));
+    QStandardItem* r = new QStandardItem(tr("Ginga"));
+    r->setEditable(false);
+    r->setIcon(QIcon(":icon/run"));
 
-//    model->setItem(0, g);
-//    model->setItem(1, r);
-
-
-//    formPreferences.trItems->setModel(model);
-//    formPreferences.trItems->selectionModel()->select(formPreferences.trItems->model()->index(0,0), QItemSelectionModel::Select);
-//    formPreferences.trItems->header()->hide();
+    model->setItem(0, g);
+    model->setItem(1, r);
 
 
-//    formPreferences.lbTitle->setText(tr("General"));
-//    formPreferences.lbTitle->setStyleSheet("font-weight: bold; font-size 32px;");
+    formPreferences.trItems->setModel(model);
+    formPreferences.trItems->selectionModel()->select(formPreferences.trItems->model()->index(0,0), QItemSelectionModel::Select);
+    formPreferences.trItems->header()->hide();
 
 
-//    formPreferences.lyMain->addWidget(wGeneral);
-//    formPreferences.lyMain->addWidget(wRun);
-//    wGeneral->show();
-//    wRun->hide();
+    formPreferences.lbTitle->setText(tr("Environment"));
+    formPreferences.lbTitle->setStyleSheet("font-weight: bold; font-size 32px;");
 
-//    loadSettings();
+
+    formPreferences.lyMain->addWidget(wGeneral);
+    formPreferences.lyMain->addWidget(wRun);
+    wGeneral->show();
+    wRun->hide();
+
+    loadSettings();
 }
 
 void QnplPreferencesDialog::loadSettings()
 {
+    if (settings->value("enablelog").toString() == "true"){
+        formGeneral.checkBox_2->setChecked(true);
+    }else{
+        formGeneral.checkBox_2->setChecked(false);
+    }
+
     if (settings->value("autoplay").toString() == "true"){
         formGeneral.checkBox->setChecked(true);
     }else{
@@ -74,27 +79,29 @@ void QnplPreferencesDialog::loadSettings()
     formRun.lineEdit->setText(settings->value("location").toString());
 
     if (settings->value("screensize").toString() == "640x480"){
-        formRun.comboBox->setCurrentIndex(0);
+        formGeneral.comboBox_2->setCurrentIndex(1);
     }else if (settings->value("screensize").toString() == "800x600"){
-        formRun.comboBox->setCurrentIndex(1);
+        formGeneral.comboBox_2->setCurrentIndex(2);
     }else if (settings->value("screensize").toString() == "1024x768"){
-        formRun.comboBox->setCurrentIndex(2);
+        formGeneral.comboBox_2->setCurrentIndex(3);
     }else if (settings->value("screensize").toString() == "854x480"){
-        formRun.comboBox->setCurrentIndex(3);
+        formGeneral.comboBox_2->setCurrentIndex(4);
     }else if (settings->value("screensize").toString() == "1280x720"){
-        formRun.comboBox->setCurrentIndex(4);
+        formGeneral.comboBox_2->setCurrentIndex(5);
     }else if (settings->value("screensize").toString() == "1920x1080"){
-        formRun.comboBox->setCurrentIndex(5);
+        formGeneral.comboBox_2->setCurrentIndex(6);
     }else if (settings->value("screensize").toString() == "320x400"){
-        formRun.comboBox->setCurrentIndex(7); // (!) index 6 is an empty option
+        formGeneral.comboBox_2->setCurrentIndex(7); // (!) index 6 is an empty option
     }else if (settings->value("screensize").toString() == "400x320"){
-        formRun.comboBox->setCurrentIndex(8);
+        formGeneral.comboBox_2->setCurrentIndex(8);
     }else if (settings->value("screensize").toString() == "320x180"){
-        formRun.comboBox->setCurrentIndex(9);
+        formGeneral.comboBox_2->setCurrentIndex(9);
     }else if (settings->value("screensize").toString() == "320x240"){
-        formRun.comboBox->setCurrentIndex(10);
+        formGeneral.comboBox_2->setCurrentIndex(10);
     }else if (settings->value("screensize").toString() == "240x320"){
-        formRun.comboBox->setCurrentIndex(11);
+        formGeneral.comboBox_2->setCurrentIndex(11);
+    }else{
+        formGeneral.comboBox_2->setCurrentIndex(0);
     }
 
     if (settings->value("lang").toString() == "en"){
@@ -122,29 +129,32 @@ void QnplPreferencesDialog::saveSettings()
         settings->setValue("autoplay",false);
     }
 
+    if (formGeneral.checkBox_2->isChecked()){
+        settings->setValue("enablelog",true);
+    }else{
+        settings->setValue("enablelog",false);
+    }
+
     settings->setValue("location",formRun.lineEdit->text());
 
-    switch (formRun.comboBox->currentIndex()){
-    case 0:
+    switch (formGeneral.comboBox_2->currentIndex()){
+    case 1:
         settings->setValue("screensize","640x480");
         break;
-    case 1:
+    case 2:
         settings->setValue("screensize","800x600");
         break;
-    case 2:
+    case 3:
         settings->setValue("screensize","1024x768");
         break;
-    case 3:
+    case 4:
         settings->setValue("screensize","854x480");
         break;
-    case 4:
+    case 5:
         settings->setValue("screensize","1280x720");
         break;
-    case 5:
-        settings->setValue("screensize","1920x1080");
-        break;
     case 6:
-
+        settings->setValue("screensize","1920x1080");
         break;
     case 7:
         settings->setValue("screensize","320x400");
@@ -187,12 +197,12 @@ void QnplPreferencesDialog::showPreferencesItem(QModelIndex index)
     if (index == formPreferences.trItems->model()->index(0,0)){
         wGeneral->show();
         wRun->hide();
-        formPreferences.lbTitle->setText(tr("General"));
+        formPreferences.lbTitle->setText(tr("Environment"));
 
     }else{
         wGeneral->hide();
         wRun->show();
-        formPreferences.lbTitle->setText(tr("Run"));
+        formPreferences.lbTitle->setText(tr("Ginga"));
     }
 }
 
