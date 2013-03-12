@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QDateTime>
 
 #include "ui_qnplaboutform.h"
 

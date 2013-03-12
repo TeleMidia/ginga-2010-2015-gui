@@ -27,6 +27,11 @@
         <file alias="gingagui-64x64">images/icons/icon-ginga-64x64.png</file>
         <file alias="gingagui-128x128">images/icons/icon-ginga-128x128.png</file>
         <file alias="gingaguibac">images/icons/icon-ginga-64x642.fw.png</file>
+        <file alias="down">images/icons/down.png</file>
+        <file alias="refresh">images/icons/refresh.png</file>
+        <file alias="up">images/icons/up.png</file>
+        <file alias="channels">images/icons/channels.png</file>
+        <file alias="pc">images/icons/pc.png</file>
     </qresource>
     <qresource prefix="/logo">
         <file alias="nclplayer">images/logos/logo-nclplayer.png</file>

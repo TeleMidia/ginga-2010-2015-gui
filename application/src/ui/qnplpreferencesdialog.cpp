@@ -36,7 +36,7 @@ void QnplPreferencesDialog::init(QnplSettings* s)
     QStandardItemModel* model = new QStandardItemModel(2,1);
     QStandardItem* g = new QStandardItem(tr("Environment"));
     g->setEditable(false);
-    g->setIcon(QIcon(":icon/preferences"));
+    g->setIcon(QIcon(":icon/pc"));
     QStandardItem* r = new QStandardItem(tr("Ginga"));
     r->setEditable(false);
     r->setIcon(QIcon(":icon/run"));

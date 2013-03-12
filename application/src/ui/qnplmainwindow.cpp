@@ -83,6 +83,14 @@ void  QnplMainWindow::createActions()
   openAction->setText(tr("Open..."));
   openAction->setShortcut(QKeySequence("Ctrl+O"));
 
+  tuneAppChannellAction = new QAction(this);
+  tuneAppChannellAction->setEnabled(true);
+  tuneAppChannellAction->setText(tr("Tune Application Channel..."));
+
+  tuneBroadChannellAction = new QAction(this);
+  tuneBroadChannellAction->setEnabled(true);
+  tuneBroadChannellAction->setText(tr("Tune Broadcast Channel..."));
+
   // quit action
   quitAction = new QAction(this);
   quitAction->setEnabled(true);
@@ -147,6 +155,9 @@ void  QnplMainWindow::createMenus()
   fileMenu->addAction(openAction);
   fileMenu->addMenu(recentMenu);
   fileMenu->addSeparator();
+  fileMenu->addAction(tuneBroadChannellAction);
+  fileMenu->addAction(tuneAppChannellAction);
+  fileMenu->addSeparator();
   fileMenu->addAction(quitAction);
 
   // device menu
@@ -199,6 +210,26 @@ void QnplMainWindow::createWidgets()
   openButton->setIcon(QIcon(":icon/open"));
   openButton->setToolTip(tr("Open a new document"));
 
+  nextButton = new QPushButton(this);
+  nextButton->setEnabled(true);
+  nextButton->setIcon(QIcon(":icon/up"));
+  nextButton->setToolTip(tr("Next Channel"));
+
+  previousButton = new QPushButton(this);
+  previousButton->setEnabled(true);
+  previousButton->setIcon(QIcon(":icon/down"));
+  previousButton->setToolTip(tr("Previous Channel"));
+
+  refreshButton = new QPushButton(this);
+  refreshButton->setEnabled(true);
+  refreshButton->setIcon(QIcon(":icon/refresh"));
+  refreshButton->setToolTip(tr("Retune Channel"));
+
+  channelsButton = new QPushButton(this);
+  channelsButton->setEnabled(true);
+  channelsButton->setIcon(QIcon(":icon/channels"));
+  channelsButton->setToolTip(tr("Channel List"));
+
   openLine = new QLineEdit(this);
   openLine->setEnabled(true);
 
@@ -220,6 +251,7 @@ void QnplMainWindow::createToolbars()
   playToolbar->setFloatable(false);
   playToolbar->addWidget(playButton);
   playToolbar->addWidget(stopButton);
+  playToolbar->addSeparator();
 
   addToolBar(Qt::BottomToolBarArea, playToolbar);
 
@@ -229,6 +261,14 @@ void QnplMainWindow::createToolbars()
   openToolbar->setFloatable(false);
   openToolbar->addWidget(openLine);
   openToolbar->addWidget(openButton);
+  openToolbar->addSeparator();
+  openToolbar->addWidget(new QLabel("CH: "));
+  openToolbar->addWidget(nextButton);
+  openToolbar->addWidget(previousButton);
+  openToolbar->addWidget(refreshButton);
+  openToolbar->addWidget(new QLabel("  "));
+  openToolbar->addWidget(channelsButton);
+
 
   addToolBar(Qt::BottomToolBarArea, openToolbar);
 }

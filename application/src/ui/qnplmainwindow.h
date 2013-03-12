@@ -84,6 +84,8 @@ private:
     QMenu* helpMenu;
 
     QAction* openAction;
+    QAction* tuneAppChannellAction;
+    QAction* tuneBroadChannellAction;
     QAction* quitAction;
     QAction* clearAction;
     QAction* baseAction;
@@ -103,12 +105,17 @@ private:
     QPushButton* playButton;
     QPushButton* stopButton;
     QPushButton* openButton;
+    QPushButton* nextButton;
+    QPushButton* previousButton;
+    QPushButton* refreshButton;
+    QPushButton* channelsButton;
 
     QString location;
 
     QProcess* process;
 
     bool passiveIsRunning;
+
 
     QnplView* view;
     QnplSettings* settings;
