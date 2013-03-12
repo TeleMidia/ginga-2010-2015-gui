@@ -266,7 +266,7 @@ void QnplMainWindow::performOpen()
   }
 
   QString f = QFileDialog::getOpenFileName(this,"Open File",
-                                           settings->value("lastdir_opened").toString());
+                                           settings->value("lastdir_opened").toString(),"NCL (*.ncl)");
 
   if (QFile::exists(f)){
     QDir d(f); settings->setValue("lastdir_opened", d.absolutePath());
@@ -329,7 +329,7 @@ void QnplMainWindow::performClose()
 
   openLine->setText("");
 
-  setWindowTitle("Ginga");
+  setWindowTitle("Ginga GUI");
 }
 
 void QnplMainWindow::performQuit()
