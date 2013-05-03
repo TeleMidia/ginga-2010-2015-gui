@@ -2,7 +2,7 @@ TARGET = \
     gingagui
 
 VERSION = \
-  1.0.5
+  1.0.6
 
 DEFINES += \
     VERSION=\\\"$${VERSION}\\\"
@@ -20,7 +20,9 @@ SOURCES += \
     src/ui/qnplsettings.cpp \
     src/ui/qnplpreferencesdialog.cpp \
     src/ui/qnplaboutdialog.cpp \
-    src/util/qnplutil.cpp
+    src/util/qnplutil.cpp \
+    src/ui/qnplchannelsdialog.cpp \
+    src/ui/qnpliptvtunerdialog.cpp
 
 HEADERS += \
     src/ui/qnplmainwindow.h \
@@ -29,7 +31,9 @@ HEADERS += \
     src/ui/qnplsettings.h \
     src/ui/qnplpreferencesdialog.h \
     src/ui/qnplaboutdialog.h \
-    src/util/qnplutil.h
+    src/util/qnplutil.h \
+    src/ui/qnplchannelsdialog.h \
+    src/ui/qnpliptvtunerdialog.h
 
 RESOURCES += \
     application.qrc
@@ -41,7 +45,9 @@ FORMS += \
     forms/qnplaboutform.ui \
     forms/qnplenvironmentform.ui \
     forms/qnplpreferencesform.ui \
-    forms/qnplrunform.ui
+    forms/qnplrunform.ui \
+    forms/qnplchannelsform.ui \
+    forms/qnpliptvtunerform.ui
 
 TRANSLATIONS += \
     translations/en.ts \

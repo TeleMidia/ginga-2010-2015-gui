@@ -25,6 +25,10 @@
   <property name="windowTitle">
    <string>About Ginga GUI</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../application.qrc">
+    <normaloff>:/icon/about</normaloff>:/icon/about</iconset>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="1">
     <widget class="QTabWidget" name="tabWidget">

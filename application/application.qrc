@@ -36,6 +36,7 @@
     <qresource prefix="/logo">
         <file alias="nclplayer">images/logos/logo-nclplayer.png</file>
         <file alias="gingagui">images/logos/bg-gingagui2.png</file>
+        <file alias="gingagui-g">images/icons/icon-ginga-G-256x256.fw.png</file>
     </qresource>
     <qresource prefix="/background">
         <file alias="gingagui">images/backgrounds/bg-gingagui.png</file>

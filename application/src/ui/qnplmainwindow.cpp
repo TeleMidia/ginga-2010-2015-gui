@@ -24,18 +24,18 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
   process = NULL;
 
 
-  if (settings->value("run_as") == "base")
-  {
+//  if (settings->value("run_as") == "base")
+//  {
     baseAction->setChecked(true);
-  }
-  else if (settings->value("run_as") == "passive")
-  {
-    passiveAction->setChecked(true);
-  }
-  else if (settings->value("run_as") == "active")
-  {
-    activeAction->setChecked(true);
-  }
+//  }
+//  else if (settings->value("run_as") == "passive")
+//  {
+//    passiveAction->setChecked(true);
+//  }
+//  else if (settings->value("run_as") == "active")
+//  {
+//    activeAction->setChecked(true);
+//  }
 
   passiveIsRunning = false;
 
@@ -90,6 +90,11 @@ void  QnplMainWindow::createActions()
   tuneBroadChannellAction = new QAction(this);
   tuneBroadChannellAction->setEnabled(true);
   tuneBroadChannellAction->setText(tr("Tune Broadcast Channel..."));
+
+  tuneIPTVChannellAction = new QAction(this);
+  tuneIPTVChannellAction->setEnabled(true);
+  tuneIPTVChannellAction->setText(tr("Tune IPTV Channel..."));
+
 
   // quit action
   quitAction = new QAction(this);
@@ -156,6 +161,7 @@ void  QnplMainWindow::createMenus()
   fileMenu->addMenu(recentMenu);
   fileMenu->addSeparator();
   fileMenu->addAction(tuneBroadChannellAction);
+  fileMenu->addAction(tuneIPTVChannellAction);
   fileMenu->addAction(tuneAppChannellAction);
   fileMenu->addSeparator();
   fileMenu->addAction(quitAction);
@@ -211,17 +217,17 @@ void QnplMainWindow::createWidgets()
   openButton->setToolTip(tr("Open a new document"));
 
   nextButton = new QPushButton(this);
-  nextButton->setEnabled(true);
+  nextButton->setEnabled(false);
   nextButton->setIcon(QIcon(":icon/up"));
   nextButton->setToolTip(tr("Next Channel"));
 
   previousButton = new QPushButton(this);
-  previousButton->setEnabled(true);
+  previousButton->setEnabled(false);
   previousButton->setIcon(QIcon(":icon/down"));
   previousButton->setToolTip(tr("Previous Channel"));
 
   refreshButton = new QPushButton(this);
-  refreshButton->setEnabled(true);
+  refreshButton->setEnabled(false);
   refreshButton->setIcon(QIcon(":icon/refresh"));
   refreshButton->setToolTip(tr("Retune Channel"));
 
@@ -306,7 +312,7 @@ void QnplMainWindow::performOpen()
   }
 
   QString f = QFileDialog::getOpenFileName(this,"Open File",
-                                           settings->value("lastdir_opened").toString(),"NCL (*.ncl)");
+                                           settings->value("lastdir_opened").toString(),"NCL (*.ncl);; TS (.ts)");
 
   if (QFile::exists(f)){
     QDir d(f); settings->setValue("lastdir_opened", d.absolutePath());

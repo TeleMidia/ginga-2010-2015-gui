@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QnplChannelsForm</class>
+ <widget class="QWidget" name="QnplChannelsForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>252</width>
+    <height>369</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Channel List</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../application.qrc">
+    <normaloff>:/icon/channels</normaloff>:/icon/channels</iconset>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QTableWidget" name="tableWidget"/>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../application.qrc"/>
+ </resources>
+ <connections/>
+</ui>

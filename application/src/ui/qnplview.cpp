@@ -3,7 +3,7 @@
 QnplView::QnplView(QWidget* parent)
   : QGraphicsView(parent)
 {
-  setStyleSheet("background: #000000");
+  setStyleSheet("background: #000000;");
 
   scene = new QnplScene(this);
   setScene(scene);

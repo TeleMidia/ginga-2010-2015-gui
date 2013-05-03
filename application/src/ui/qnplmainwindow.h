@@ -85,6 +85,7 @@ private:
 
     QAction* openAction;
     QAction* tuneAppChannellAction;
+    QAction* tuneIPTVChannellAction;
     QAction* tuneBroadChannellAction;
     QAction* quitAction;
     QAction* clearAction;

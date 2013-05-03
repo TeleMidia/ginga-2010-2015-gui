@@ -94,7 +94,7 @@ p, li { white-space: pre-wrap; }
       <item>
        <widget class="QCheckBox" name="checkBox">
         <property name="text">
-         <string>Load broadcasted applications</string>
+         <string>Load  channel application</string>
         </property>
        </widget>
       </item>
