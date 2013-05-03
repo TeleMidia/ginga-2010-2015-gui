@@ -247,6 +247,12 @@ void QnplMainWindow::createDialogs()
   preferencesDialog = new QnplPreferencesDialog(this);
 
   aboutDialog = new QnplAboutDialog(this);
+
+  channelDialog = new QnplChannelsDialog(this);
+
+  iptvDialog = new QnplIPTVTunerDialog(this);
+
+
 }
 
 void QnplMainWindow::createToolbars()
@@ -285,6 +291,7 @@ void  QnplMainWindow::createConnections()
   connect(recentMenu,SIGNAL(triggered(QAction*)),SLOT(performOpen(QAction*)));
   connect(clearAction, SIGNAL(triggered()),SLOT(performClear()));
   connect(quitAction, SIGNAL(triggered()), SLOT(performQuit()));
+  connect(tuneIPTVChannellAction, SIGNAL(triggered()),SLOT(performIptv()));
 
   connect(baseAction, SIGNAL(triggered()), SLOT(performDevice()));
   connect(passiveAction, SIGNAL(triggered()), SLOT(performDevice()));
@@ -296,6 +303,8 @@ void  QnplMainWindow::createConnections()
   connect(aboutAction, SIGNAL(triggered()),SLOT(performAbout()));
 
   connect(openButton, SIGNAL(clicked()), SLOT(performOpen()));
+  connect(channelsButton, SIGNAL(clicked()), SLOT(performChannels()));
+  connect(tuneBroadChannellAction, SIGNAL(triggered()), SLOT(performChannels()));
   connect(playButton, SIGNAL(clicked()), SLOT(performRun()));
   connect(stopButton, SIGNAL(clicked()), SLOT(performStop()));
 
@@ -508,7 +517,16 @@ void QnplMainWindow:: performStop()
   passiveAction->setEnabled(true);
   activeAction->setEnabled(true);
 }
+void QnplMainWindow::performIptv()
+{
+    iptvDialog->exec();
+}
 
+void QnplMainWindow::performChannels()
+{
+    channelDialog->exec();
+
+}
 void QnplMainWindow::performPreferences()
 {
   preferencesDialog->init(settings);

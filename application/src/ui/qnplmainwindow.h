@@ -27,6 +27,8 @@
 #include "qnplpreferencesdialog.h"
 #include "qnplaboutdialog.h"
 #include "qnplutil.h"
+#include "qnplchannelsdialog.h"
+#include "qnpliptvtunerdialog.h"
 
 class QnplMainWindow : public QMainWindow
 {
@@ -48,6 +50,9 @@ public slots:
     void performDevice();
 
     void performPreferences();
+    void performChannels();
+    void performIptv();
+
 
     void performBug();
     void performAbout();
@@ -123,7 +128,8 @@ private:
 
     QnplPreferencesDialog* preferencesDialog;
     QnplAboutDialog* aboutDialog;
-
+    QnplChannelsDialog * channelDialog;
+    QnplIPTVTunerDialog * iptvDialog;
 
 };
 
