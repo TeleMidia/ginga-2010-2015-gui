@@ -44,10 +44,9 @@ QnplSettings::QnplSettings()
         setValue("lang", "en");
     }
 
-
 #ifdef Q_OS_WIN
-    if (value("gingaconfig_file").toString() == ""  || value("version").toInt() < 105){
-        setValue("gingaconfig_file", QDir::homePath()+"\\AppData\\Roaming\\telemidia\\ginga\\contexts.ini");
+    if (value("gingaconfig_file").toString() == "" || value("version").toInt() < 105){
+        setValue("gingaconfig_file", QDir::toNativeSeparators(QDir::homePath())+"\\AppData\\Roaming\\telemidia\\ginga\\contexts.ini");
     }
 #else
     if (value("gingaconfig_file").toString() == ""){
