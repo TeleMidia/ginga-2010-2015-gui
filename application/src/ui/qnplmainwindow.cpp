@@ -538,6 +538,7 @@ void QnplMainWindow::performIptv()
 
 void QnplMainWindow::performChannels()
 {
+    channelDialog->loadGingaChannels();
     channelDialog->exec();
 
 }

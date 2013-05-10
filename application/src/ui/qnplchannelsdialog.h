@@ -12,6 +12,7 @@
 #include <QDateTime>
 
 #include "ui_qnplchannelsform.h"
+#include "qnplsettings.h"
 
 class QnplChannelsDialog : public QDialog
 {
@@ -20,9 +21,16 @@ class QnplChannelsDialog : public QDialog
 public:
   QnplChannelsDialog(QWidget* parent = 0);
   ~QnplChannelsDialog();
+  void loadGingaChannels();
 
 private:
-  Ui::QnplChannelsForm form;
+
+  void loadSettings();
+  Ui::QnplChannelsForm formchannel;
+
+
+
+
 };
 
 #endif // QNPLCHANNELSDIALOG_H
