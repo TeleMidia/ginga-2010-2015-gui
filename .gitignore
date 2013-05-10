@@ -46,3 +46,4 @@ ui_PreferencesDialog.h
 *.Debug
 *.Release
 release
+*.autosave

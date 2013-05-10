@@ -22,7 +22,8 @@ SOURCES += \
     src/ui/qnplaboutdialog.cpp \
     src/util/qnplutil.cpp \
     src/ui/qnplchannelsdialog.cpp \
-    src/ui/qnpliptvtunerdialog.cpp
+    src/ui/qnpliptvtunerdialog.cpp \
+    src/ui/qnplaplication.cpp
 
 HEADERS += \
     src/ui/qnplmainwindow.h \
@@ -33,7 +34,8 @@ HEADERS += \
     src/ui/qnplaboutdialog.h \
     src/util/qnplutil.h \
     src/ui/qnplchannelsdialog.h \
-    src/ui/qnpliptvtunerdialog.h
+    src/ui/qnpliptvtunerdialog.h \
+    src/ui/qnplaplicationdialog.h
 
 RESOURCES += \
     application.qrc
@@ -47,7 +49,8 @@ FORMS += \
     forms/qnplpreferencesform.ui \
     forms/qnplrunform.ui \
     forms/qnplchannelsform.ui \
-    forms/qnpliptvtunerform.ui
+    forms/qnpliptvtunerform.ui \
+    forms/qnplaplicationform.ui
 
 TRANSLATIONS += \
     translations/en.ts \

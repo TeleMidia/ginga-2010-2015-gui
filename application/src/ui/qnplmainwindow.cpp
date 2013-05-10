@@ -252,6 +252,10 @@ void QnplMainWindow::createDialogs()
 
   iptvDialog = new QnplIPTVTunerDialog(this);
 
+  aplication = new QnplAplicationDialog(this);
+
+
+
 
 }
 
@@ -292,6 +296,7 @@ void  QnplMainWindow::createConnections()
   connect(clearAction, SIGNAL(triggered()),SLOT(performClear()));
   connect(quitAction, SIGNAL(triggered()), SLOT(performQuit()));
   connect(tuneIPTVChannellAction, SIGNAL(triggered()),SLOT(performIptv()));
+  connect(tuneAppChannellAction, SIGNAL(triggered()),SLOT(performaplication()));
 
   connect(baseAction, SIGNAL(triggered()), SLOT(performDevice()));
   connect(passiveAction, SIGNAL(triggered()), SLOT(performDevice()));
@@ -517,9 +522,18 @@ void QnplMainWindow:: performStop()
   passiveAction->setEnabled(true);
   activeAction->setEnabled(true);
 }
+
+void QnplMainWindow::performaplication()
+{
+    aplication->exec();
+}
+
+
 void QnplMainWindow::performIptv()
 {
     iptvDialog->exec();
+
+
 }
 
 void QnplMainWindow::performChannels()
