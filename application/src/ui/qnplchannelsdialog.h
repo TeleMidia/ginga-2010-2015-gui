@@ -10,6 +10,9 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QDateTime>
+#include <QStandardItemModel>
+#include <QFileDialog>
+
 
 #include "ui_qnplchannelsform.h"
 #include "qnplsettings.h"

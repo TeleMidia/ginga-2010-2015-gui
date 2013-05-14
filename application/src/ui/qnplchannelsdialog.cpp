@@ -38,29 +38,21 @@ void QnplChannelsDialog::  loadGingaChannels()
                 QString line = in.readLine();
                 QStringList  aa = line.split(" ");
 
-                qDebug() << aa[0];
-                qDebug() << aa[1];
-                qDebug() << aa[2];
 
+                if(aa.size()==3)
+                {
                 nome.push_back(aa[0]);
                 id.push_back(aa[1]);
                 frequencia.push_back(aa[2]);
+                }
             }
 
+            delete formchannel.table->model();
+            formchannel.table->setModel(NULL);
 
 
-
-
-
-
-
-
-
-
-            // desenhar na tela
-            /*
             int ncol = 3;
-            int nrow = 32;
+            int nrow = 1;
 
             formchannel.table->verticalHeader()->hide();
             formchannel.table->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
@@ -68,26 +60,27 @@ void QnplChannelsDialog::  loadGingaChannels()
             QStandardItemModel *model = new QStandardItemModel(nrow, ncol);
 
             model->setHorizontalHeaderItem(0, new QStandardItem("Name"));
-            model->setHorizontalHeaderItem(1, new QStandardItem("Value"));
+            model->setHorizontalHeaderItem(1, new QStandardItem("Id"));
+            model->setHorizontalHeaderItem(2, new QStandardItem("frequencia"));
 
-            int i = 0;
 
-            QPair<QString, QString> p;
-            foreach(p, params){
-                if (p.first != "::" && p.first != "||"){
-                    QStandardItem* nitem = new QStandardItem(p.first);
-                    nitem->setEditable(true);
-
-                    QStandardItem* vitem = new QStandardItem(p.second);
+            for(int i=0;i<nome.size();i++)
+              {
+                    QStandardItem* nitem = new QStandardItem(nome[i]);
+                    nitem->setEditable(false);
+                    QStandardItem* vitem = new QStandardItem(id[i]);
+                    vitem->setEditable(false);
+                    QStandardItem* pitem = new QStandardItem(frequencia[i]);
+                    pitem->setEditable(false);
 
                     model->setItem(i, 0, nitem);
                     model->setItem(i, 1, vitem);
+                    model->setItem(i, 2, pitem);
 
-                    ++i;
-                }
-            }
+               }
 
-            formchannel.table->setModel(model);*/
+
+            formchannel.table->setModel(model);
         }
 
         delete file;
