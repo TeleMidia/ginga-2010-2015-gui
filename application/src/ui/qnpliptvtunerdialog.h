@@ -11,6 +11,7 @@
 #include <QUrl>
 #include <QDateTime>
 
+#include "qnplsettings.h"
 #include "ui_qnpliptvtunerform.h"
 
 class QnplIPTVTunerDialog :public QDialog
@@ -20,10 +21,11 @@ class QnplIPTVTunerDialog :public QDialog
 public:
     QnplIPTVTunerDialog(QWidget* parent = 0);
     ~QnplIPTVTunerDialog();
-
+    QString ler_caixa();
 
 private:
   Ui::QnplIPTVTunerForm form;
+
 };
 
 #endif // QNPLIPTVTUNERDIALOG_H

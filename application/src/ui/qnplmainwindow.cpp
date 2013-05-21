@@ -531,7 +531,12 @@ void QnplMainWindow::performaplication()
 
 void QnplMainWindow::performIptv()
 {
+
     iptvDialog->exec();
+    qDebug() << iptvDialog->ler_caixa();
+
+
+
 
 
 }
@@ -540,6 +545,9 @@ void QnplMainWindow::performChannels()
 {
     channelDialog->loadGingaChannels();
     channelDialog->exec();
+    channelDialog->destroiGingaChannels();
+    channelDialog->exec();
+
 
 }
 void QnplMainWindow::performPreferences()

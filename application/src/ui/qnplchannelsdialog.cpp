@@ -86,3 +86,23 @@ void QnplChannelsDialog::  loadGingaChannels()
         delete file;
     }
 }
+
+
+void QnplChannelsDialog::  destroiGingaChannels()
+{
+
+
+    if (QFile::exists("/home/eduardo/teste")){
+
+        QFile* file = new QFile("/home/eduardo/teste");
+
+
+        if (file->open(QIODevice::ReadOnly)){
+
+         delete formchannel.table->model();
+            formchannel.table->setModel(model);
+        }
+
+        delete file;
+    }
+}

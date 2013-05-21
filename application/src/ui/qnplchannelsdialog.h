@@ -14,6 +14,7 @@
 #include <QFileDialog>
 
 
+
 #include "ui_qnplchannelsform.h"
 #include "qnplsettings.h"
 
@@ -25,11 +26,11 @@ public:
   QnplChannelsDialog(QWidget* parent = 0);
   ~QnplChannelsDialog();
   void loadGingaChannels();
+  void destroiGingaChannels();
 
 private:
 
-  void loadSettings();
-  Ui::QnplChannelsForm formchannel;
+    Ui::QnplChannelsForm formchannel;
 
 
 

@@ -1,5 +1,7 @@
 #include "qnpliptvtunerdialog.h"
 
+#include <iostream>
+
 QnplIPTVTunerDialog::QnplIPTVTunerDialog(QWidget *parent)
     : QDialog(parent)
 {
@@ -16,4 +18,10 @@ QnplIPTVTunerDialog::QnplIPTVTunerDialog(QWidget *parent)
 QnplIPTVTunerDialog::~QnplIPTVTunerDialog()
 {
 
+}
+
+
+QString QnplIPTVTunerDialog::ler_caixa()
+{
+    return form.lineEdit->text();
 }
