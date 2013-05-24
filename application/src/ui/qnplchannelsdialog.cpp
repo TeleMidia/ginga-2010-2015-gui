@@ -1,5 +1,6 @@
 #include "qnplchannelsdialog.h"
 #include <QDebug>
+#include <QModelIndex>
 QnplChannelsDialog::QnplChannelsDialog(QWidget *parent)
     : QDialog(parent)
 {
@@ -11,7 +12,9 @@ QnplChannelsDialog::QnplChannelsDialog(QWidget *parent)
 
 
     // connecting
-    //connect(form.btMore, SIGNAL(clicked()), SLOT(showMore()));
+    connect(formchannel.Retune, SIGNAL(clicked()), SLOT(destroiGingaChannels()));
+
+
   }
 
 QnplChannelsDialog::~QnplChannelsDialog()
@@ -59,9 +62,11 @@ void QnplChannelsDialog::  loadGingaChannels()
 
             QStandardItemModel *model = new QStandardItemModel(nrow, ncol);
 
+
             model->setHorizontalHeaderItem(0, new QStandardItem("Name"));
             model->setHorizontalHeaderItem(1, new QStandardItem("Id"));
             model->setHorizontalHeaderItem(2, new QStandardItem("frequencia"));
+
 
 
             for(int i=0;i<nome.size();i++)
@@ -73,14 +78,25 @@ void QnplChannelsDialog::  loadGingaChannels()
                     QStandardItem* pitem = new QStandardItem(frequencia[i]);
                     pitem->setEditable(false);
 
+
                     model->setItem(i, 0, nitem);
                     model->setItem(i, 1, vitem);
                     model->setItem(i, 2, pitem);
+
+
+
+
 
                }
 
 
             formchannel.table->setModel(model);
+
+
+
+            connect(formchannel.table->selectionModel(),
+                                SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+                                SLOT(printrow(QItemSelection,QItemSelection)));
         }
 
         delete file;
@@ -90,19 +106,27 @@ void QnplChannelsDialog::  loadGingaChannels()
 
 void QnplChannelsDialog::  destroiGingaChannels()
 {
+    delete formchannel.table->model();
+    formchannel.table->setModel(NULL);
+    loadGingaChannels();
+}
+
+void  QnplChannelsDialog:: printrow(QItemSelection a ,QItemSelection b)
+{
+    QString texto;
+    QStandardItemModel *mymodel;
+    int linha=a.indexes().at(0).row();
+    int coluna=a.indexes().at(0).column();
+    mymodel=(QStandardItemModel*) formchannel.table->model();
+   texto= mymodel->item(linha,coluna)->text();
+   qDebug() << texto;
 
 
-    if (QFile::exists("/home/eduardo/teste")){
-
-        QFile* file = new QFile("/home/eduardo/teste");
 
 
-        if (file->open(QIODevice::ReadOnly)){
 
-         delete formchannel.table->model();
-            formchannel.table->setModel(model);
-        }
 
-        delete file;
-    }
+
+
+
 }

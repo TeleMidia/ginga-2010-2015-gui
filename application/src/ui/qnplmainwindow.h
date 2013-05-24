@@ -120,6 +120,8 @@ private:
     QPushButton* refreshButton;
     QPushButton* channelsButton;
 
+
+
     QString location;
 
     QProcess* process;

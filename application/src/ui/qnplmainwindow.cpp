@@ -236,6 +236,8 @@ void QnplMainWindow::createWidgets()
   channelsButton->setIcon(QIcon(":icon/channels"));
   channelsButton->setToolTip(tr("Channel List"));
 
+
+
   openLine = new QLineEdit(this);
   openLine->setEnabled(true);
 
@@ -309,6 +311,7 @@ void  QnplMainWindow::createConnections()
 
   connect(openButton, SIGNAL(clicked()), SLOT(performOpen()));
   connect(channelsButton, SIGNAL(clicked()), SLOT(performChannels()));
+
   connect(tuneBroadChannellAction, SIGNAL(triggered()), SLOT(performChannels()));
   connect(playButton, SIGNAL(clicked()), SLOT(performRun()));
   connect(stopButton, SIGNAL(clicked()), SLOT(performStop()));
@@ -545,9 +548,6 @@ void QnplMainWindow::performChannels()
 {
     channelDialog->loadGingaChannels();
     channelDialog->exec();
-    channelDialog->destroiGingaChannels();
-    channelDialog->exec();
-
 
 }
 void QnplMainWindow::performPreferences()

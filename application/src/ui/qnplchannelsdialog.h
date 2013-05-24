@@ -26,7 +26,11 @@ public:
   QnplChannelsDialog(QWidget* parent = 0);
   ~QnplChannelsDialog();
   void loadGingaChannels();
-  void destroiGingaChannels();
+
+
+public slots:
+   void destroiGingaChannels();
+   void printrow(QItemSelection,QItemSelection);
 
 private:
 
