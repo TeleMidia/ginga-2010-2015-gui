@@ -113,20 +113,20 @@ void QnplChannelsDialog::  destroiGingaChannels()
 
 void  QnplChannelsDialog:: printrow(QItemSelection a ,QItemSelection b)
 {
-    QString texto;
+    QString texto1,texto2,texto3;
     QStandardItemModel *mymodel;
-    int linha=a.indexes().at(0).row();
-    int coluna=a.indexes().at(0).column();
+
     mymodel=(QStandardItemModel*) formchannel.table->model();
-   texto= mymodel->item(linha,coluna)->text();
-   qDebug() << texto;
+    int linha=a.indexes().at(0).row();
+    formchannel.table->selectRow(linha);
 
 
 
+    texto1= mymodel->item(linha,0)->text();
+    texto2= mymodel->item(linha,1)->text();
+    texto3= mymodel->item(linha,2)->text();
 
 
-
-
-
+    emit Channelsimprimir(texto1,texto2,texto3);
 
 }

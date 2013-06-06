@@ -300,6 +300,8 @@ void  QnplMainWindow::createConnections()
   connect(tuneIPTVChannellAction, SIGNAL(triggered()),SLOT(performIptv()));
   connect(tuneAppChannellAction, SIGNAL(triggered()),SLOT(performaplication()));
 
+  connect(channelDialog, SIGNAL(Channelsimprimir(QString,QString,QString)), SLOT(imprimirCanais(QString,QString,QString)));
+
   connect(baseAction, SIGNAL(triggered()), SLOT(performDevice()));
   connect(passiveAction, SIGNAL(triggered()), SLOT(performDevice()));
   connect(activeAction, SIGNAL(triggered()), SLOT(performDevice()));
@@ -779,3 +781,9 @@ void QnplMainWindow::resizeEvent(QResizeEvent* event)
 }
 
 
+void QnplMainWindow::imprimirCanais(QString texto1,QString texto2,QString texto3)
+{
+   qDebug() << texto1 <<texto2 <<texto3;
+
+
+}

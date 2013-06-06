@@ -49,6 +49,8 @@ public slots:
     void performClose();
     void performQuit();
 
+    void imprimirCanais(QString texto1,QString texto2,QString texto3);
+
     void performDevice();
 
     void performPreferences();
@@ -103,6 +105,8 @@ private:
     QAction* preferencesAction;
     QAction* bugAction;
     QAction* aboutAction;
+
+
 
 
     QActionGroup* deviceGroup;

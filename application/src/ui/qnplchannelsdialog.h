@@ -22,6 +22,9 @@ class QnplChannelsDialog : public QDialog
 {
     Q_OBJECT
 
+ signals:
+    void Channelsimprimir(QString a,QString b,QString c);
+
 public:
   QnplChannelsDialog(QWidget* parent = 0);
   ~QnplChannelsDialog();
