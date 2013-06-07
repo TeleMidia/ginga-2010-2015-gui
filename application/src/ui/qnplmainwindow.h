@@ -50,6 +50,7 @@ public slots:
     void performQuit();
 
     void imprimirCanais(QString texto1,QString texto2,QString texto3);
+     void imprimiroproximo(QString texto1,QString texto2,QString texto3);
 
     void performDevice();
 
@@ -123,6 +124,7 @@ private:
     QPushButton* previousButton;
     QPushButton* refreshButton;
     QPushButton* channelsButton;
+
 
 
 

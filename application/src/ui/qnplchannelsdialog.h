@@ -38,6 +38,7 @@ public slots:
 private:
 
     Ui::QnplChannelsForm formchannel;
+    int linhaselecionada;
 
 
 

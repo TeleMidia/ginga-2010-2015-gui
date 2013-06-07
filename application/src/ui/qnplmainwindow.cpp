@@ -317,6 +317,7 @@ void  QnplMainWindow::createConnections()
   connect(tuneBroadChannellAction, SIGNAL(triggered()), SLOT(performChannels()));
   connect(playButton, SIGNAL(clicked()), SLOT(performRun()));
   connect(stopButton, SIGNAL(clicked()), SLOT(performStop()));
+  connect(nextButton, SIGNAL(clicked()), SLOT(imprimiroproximo(QString,QString,QString)));
 
   connect(view,SIGNAL(keyPressed(QString)),SLOT(notifyKey(QString)));
 }
@@ -786,4 +787,9 @@ void QnplMainWindow::imprimirCanais(QString texto1,QString texto2,QString texto3
    qDebug() << texto1 <<texto2 <<texto3;
 
 
+}
+
+void QnplMainWindow::imprimiroproximo(QString texto4,QString texto5,QString texto6)
+{
+   qDebug() << texto4 <<texto5 <<texto6;
 }

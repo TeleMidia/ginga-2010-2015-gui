@@ -8,7 +8,7 @@ QnplChannelsDialog::QnplChannelsDialog(QWidget *parent)
 
     formchannel.setupUi(this);
 
-
+     linhaselecionada =-1;
 
 
     // connecting
@@ -113,20 +113,35 @@ void QnplChannelsDialog::  destroiGingaChannels()
 
 void  QnplChannelsDialog:: printrow(QItemSelection a ,QItemSelection b)
 {
-    QString texto1,texto2,texto3;
+
+
+    if(!a.indexes().isEmpty())
+{
+        if ( a.indexes().at(0).row()!=linhaselecionada){
+
+
+
+    QString texto1,texto2,texto3,texto4,texto5,texto6;
     QStandardItemModel *mymodel;
 
     mymodel=(QStandardItemModel*) formchannel.table->model();
-    int linha=a.indexes().at(0).row();
-    formchannel.table->selectRow(linha);
+     linhaselecionada=a.indexes().at(0).row();
 
 
+    texto1= mymodel->item(linhaselecionada,0)->text();
+    texto2= mymodel->item(linhaselecionada,1)->text();
+    texto3= mymodel->item(linhaselecionada,2)->text();
 
-    texto1= mymodel->item(linha,0)->text();
-    texto2= mymodel->item(linha,1)->text();
-    texto3= mymodel->item(linha,2)->text();
+    texto4= mymodel->item(linhaselecionada +1,0)->text();
+    texto5= mymodel->item(linhaselecionada +1,1)->text();
+    texto6= mymodel->item(linhaselecionada +1,2)->text();
 
 
     emit Channelsimprimir(texto1,texto2,texto3);
+
+        }
+
+}
+      formchannel.table->selectRow(linhaselecionada);
 
 }
