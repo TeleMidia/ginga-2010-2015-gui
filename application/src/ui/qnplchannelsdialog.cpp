@@ -23,6 +23,10 @@ QnplChannelsDialog::~QnplChannelsDialog()
 }
 
 
+QStringList QnplChannelsDialog::  getnext()
+{
+    return  listanext;
+}
 
 void QnplChannelsDialog::  loadGingaChannels()
 {
@@ -120,14 +124,15 @@ void  QnplChannelsDialog:: printrow(QItemSelection a ,QItemSelection b)
         if ( a.indexes().at(0).row()!=linhaselecionada){
 
 
-
+    int i;
+    i=formchannel.table->size().height();
     QString texto1,texto2,texto3,texto4,texto5,texto6;
     QStandardItemModel *mymodel;
 
     mymodel=(QStandardItemModel*) formchannel.table->model();
      linhaselecionada=a.indexes().at(0).row();
 
-
+     if(linhaselecionada < i && linhaselecionada +1 < i ){
     texto1= mymodel->item(linhaselecionada,0)->text();
     texto2= mymodel->item(linhaselecionada,1)->text();
     texto3= mymodel->item(linhaselecionada,2)->text();
@@ -135,9 +140,13 @@ void  QnplChannelsDialog:: printrow(QItemSelection a ,QItemSelection b)
     texto4= mymodel->item(linhaselecionada +1,0)->text();
     texto5= mymodel->item(linhaselecionada +1,1)->text();
     texto6= mymodel->item(linhaselecionada +1,2)->text();
+     listanext << texto4 << texto5 << texto6;
+     }
 
 
     emit Channelsimprimir(texto1,texto2,texto3);
+
+
 
         }
 

@@ -24,11 +24,14 @@ class QnplChannelsDialog : public QDialog
 
  signals:
     void Channelsimprimir(QString a,QString b,QString c);
+    void ChannelsimprimirNext(QString a, QString b,QString c);
 
 public:
   QnplChannelsDialog(QWidget* parent = 0);
   ~QnplChannelsDialog();
   void loadGingaChannels();
+  QStringList getnext();
+
 
 
 public slots:
@@ -36,7 +39,7 @@ public slots:
    void printrow(QItemSelection,QItemSelection);
 
 private:
-
+    QStringList listanext;
     Ui::QnplChannelsForm formchannel;
     int linhaselecionada;
 
