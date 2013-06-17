@@ -1,6 +1,9 @@
 TARGET = \
     gingagui
 
+QT += \
+    widgets
+
 VERSION = \
   1.0.6
 

@@ -240,7 +240,7 @@ void QnplPreferencesDialog::  loadGingaPreferences()
             int nrow = 32;
 
             formRun.table->verticalHeader()->hide();
-            formRun.table->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+            formRun.table->horizontalHeader()->resizeSections(QHeaderView::Stretch);
 
             QStandardItemModel *model = new QStandardItemModel(nrow, ncol);
 

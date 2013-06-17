@@ -159,10 +159,10 @@ void  QnplMainWindow::createMenus()
   fileMenu = menuBar()->addMenu(tr("File"));
   fileMenu->addAction(openAction);
   fileMenu->addMenu(recentMenu);
-  fileMenu->addSeparator();
-  fileMenu->addAction(tuneBroadChannellAction);
-  fileMenu->addAction(tuneIPTVChannellAction);
-  fileMenu->addAction(tuneAppChannellAction);
+  // fileMenu->addSeparator();
+  // fileMenu->addAction(tuneBroadChannellAction);
+  // fileMenu->addAction(tuneIPTVChannellAction);
+  // fileMenu->addAction(tuneAppChannellAction);
   fileMenu->addSeparator();
   fileMenu->addAction(quitAction);
 
@@ -201,42 +201,40 @@ void QnplMainWindow::createRecent()
 
 void QnplMainWindow::createWidgets()
 {
-  playButton = new QPushButton(this);
+  playButton = new QPushButton();
   playButton->setEnabled(true);
   playButton->setIcon(QIcon(":icon/play"));
   playButton->setToolTip(tr("Play"));
 
-  stopButton = new QPushButton(this);
+  stopButton = new QPushButton();
   stopButton->setEnabled(false);
   stopButton->setIcon(QIcon(":icon/stop"));
   stopButton->setToolTip(tr("Stop"));
 
-  openButton = new QPushButton(this);
+  openButton = new QPushButton();
   openButton->setEnabled(true);
   openButton->setIcon(QIcon(":icon/open"));
   openButton->setToolTip(tr("Open a new document"));
 
-  nextButton = new QPushButton(this);
+  nextButton = new QPushButton();
   nextButton->setEnabled(false);
   nextButton->setIcon(QIcon(":icon/up"));
   nextButton->setToolTip(tr("Next Channel"));
 
-  previousButton = new QPushButton(this);
+  previousButton = new QPushButton();
   previousButton->setEnabled(false);
   previousButton->setIcon(QIcon(":icon/down"));
   previousButton->setToolTip(tr("Previous Channel"));
 
-  refreshButton = new QPushButton(this);
+  refreshButton = new QPushButton();
   refreshButton->setEnabled(false);
   refreshButton->setIcon(QIcon(":icon/refresh"));
   refreshButton->setToolTip(tr("Retune Channel"));
 
-  channelsButton = new QPushButton(this);
+  channelsButton = new QPushButton();
   channelsButton->setEnabled(true);
   channelsButton->setIcon(QIcon(":icon/channels"));
   channelsButton->setToolTip(tr("Channel List"));
-
-
 
   openLine = new QLineEdit(this);
   openLine->setEnabled(true);
@@ -279,13 +277,13 @@ void QnplMainWindow::createToolbars()
   openToolbar->setFloatable(false);
   openToolbar->addWidget(openLine);
   openToolbar->addWidget(openButton);
-  openToolbar->addSeparator();
-  openToolbar->addWidget(new QLabel("CH: "));
-  openToolbar->addWidget(nextButton);
-  openToolbar->addWidget(previousButton);
-  openToolbar->addWidget(refreshButton);
-  openToolbar->addWidget(new QLabel("  "));
-  openToolbar->addWidget(channelsButton);
+  // openToolbar->addSeparator();
+  // openToolbar->addWidget(new QLabel("CH: "));
+  // openToolbar->addWidget(nextButton);
+  // openToolbar->addWidget(previousButton);
+  // openToolbar->addWidget(refreshButton);
+  // openToolbar->addWidget(new QLabel("  "));
+  // openToolbar->addWidget(channelsButton);
 
 
   addToolBar(Qt::BottomToolBarArea, openToolbar);
@@ -300,7 +298,7 @@ void  QnplMainWindow::createConnections()
   connect(tuneIPTVChannellAction, SIGNAL(triggered()),SLOT(performIptv()));
   connect(tuneAppChannellAction, SIGNAL(triggered()),SLOT(performaplication()));
 
-  connect(channelDialog, SIGNAL(Channelsimprimir(QString,QString,QString)), SLOT(imprimirCanais(QString,QString,QString)));
+  // connect(channelDialog, SIGNAL(Channelsimprimir(QString,QString,QString)), SLOT(imprimirCanais(QString,QString,QString)));
 
   connect(baseAction, SIGNAL(triggered()), SLOT(performDevice()));
   connect(passiveAction, SIGNAL(triggered()), SLOT(performDevice()));
@@ -312,12 +310,12 @@ void  QnplMainWindow::createConnections()
   connect(aboutAction, SIGNAL(triggered()),SLOT(performAbout()));
 
   connect(openButton, SIGNAL(clicked()), SLOT(performOpen()));
-  connect(channelsButton, SIGNAL(clicked()), SLOT(performChannels()));
+  // connect(channelsButton, SIGNAL(clicked()), SLOT(performChannels()));
 
-  connect(tuneBroadChannellAction, SIGNAL(triggered()), SLOT(performChannels()));
+  // connect(tuneBroadChannellAction, SIGNAL(triggered()), SLOT(performChannels()));
   connect(playButton, SIGNAL(clicked()), SLOT(performRun()));
   connect(stopButton, SIGNAL(clicked()), SLOT(performStop()));
-  connect(nextButton, SIGNAL(clicked()), SLOT(imprimiroproximo()));
+  // connect(nextButton, SIGNAL(clicked()), SLOT(imprimiroproximo()));
 
   connect(view,SIGNAL(keyPressed(QString)),SLOT(notifyKey(QString)));
 }
@@ -451,7 +449,11 @@ void QnplMainWindow::performPlay()
     // playing as base device
     if (baseAction->isChecked())
     {
+
+
       parameters = QnplUtil::split(settings->value("parameters").toString());
+
+      qDebug() << "=========" << parameters;
 
       parameters << "--context-dir" << settings->value("gingaconfig_file").toString();
 
@@ -459,10 +461,13 @@ void QnplMainWindow::performPlay()
         parameters << "--enable-log" << "file";
       }
 
+      qDebug() << "=========" << parameters;
+
       parameters.replaceInStrings("${WID}", hwndToString(view->winId()));
       parameters.replaceInStrings("${NCLFILE}", location);
       parameters.replaceInStrings("${SCREENSIZE}", settings->value("screensize").toString());
 
+      qDebug() << "=========" << parameters;
 
 #ifdef Q_OS_LINUX
       process->setProcessEnvironment(enviroment);
@@ -730,8 +735,8 @@ void QnplMainWindow::performOpen(QAction* act)
 
 QString QnplMainWindow::hwndToString(WId winid)
 {
-#ifdef Q_WS_WIN
-  void* vhwnd = winid;
+#ifdef Q_OS_WIN
+  void* vhwnd = (void*) winid;
   unsigned long int value = (unsigned long int) vhwnd;
 
   char dst[32];

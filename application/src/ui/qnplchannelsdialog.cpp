@@ -62,7 +62,7 @@ void QnplChannelsDialog::  loadGingaChannels()
             int nrow = 1;
 
             formchannel.table->verticalHeader()->hide();
-            formchannel.table->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+            formchannel.table->horizontalHeader()->resizeSections(QHeaderView::Stretch);
 
             QStandardItemModel *model = new QStandardItemModel(nrow, ncol);
 
