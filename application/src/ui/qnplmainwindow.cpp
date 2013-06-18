@@ -464,7 +464,8 @@ void QnplMainWindow::performPlay()
 
       if (location.endsWith(".ncl"))
       {
-        parameters.replaceInStrings("${FILE}", "--ncl "+location);
+          parameters.insert(parameters.begin(),"--ncl");
+        parameters.replaceInStrings("${FILE}", location);
       }
       else if (location.endsWith(".ts"))
       {
