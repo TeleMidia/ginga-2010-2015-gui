@@ -449,16 +449,26 @@ void QnplMainWindow::performPlay()
     // playing as base device
     if (baseAction->isChecked())
     {
-
-
       parameters = QnplUtil::split(settings->value("parameters").toString());
-
 
       parameters << "--context-dir" << settings->value("gingaconfig_file").toString();
 
       if (settings->value("enablelog").toBool()){
         parameters << "--enable-log" << "file";
       }
+
+      qDebug() << view->winId();
+      qDebug() << view->winId();
+      qDebug() << view->winId();
+      qDebug() << view->winId();
+
+      qDebug() << hwndToString(view->winId());
+      qDebug() << hwndToString(view->winId());
+      qDebug() << hwndToString(view->winId());
+      qDebug() << hwndToString(view->winId());
+      qDebug() << hwndToString(view->winId());
+      qDebug() << hwndToString(view->winId());
+      qDebug() << hwndToString(view->winId());
 
       parameters.replaceInStrings("${WID}", QString(hwndToString(view->winId())));
 
@@ -741,6 +751,10 @@ void QnplMainWindow::performOpen(QAction* act)
 
 QString QnplMainWindow::hwndToString(WId winid)
 {
+    unsigned long int value = (unsigned long int) winid;
+    return QString::number(value);
+
+    /*
 #ifdef Q_OS_WIN
   void* vhwnd = (void*) winid;
   unsigned long int value = (unsigned long int) vhwnd;
@@ -776,6 +790,7 @@ QString QnplMainWindow::hwndToString(WId winid)
   unsigned long int value = (unsigned long int) winid;
   return QString::number(value);
 #endif
+    */
 }
 
 void QnplMainWindow::resizeEvent(QResizeEvent* event)
