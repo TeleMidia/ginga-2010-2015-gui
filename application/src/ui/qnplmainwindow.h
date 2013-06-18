@@ -107,9 +107,6 @@ private:
     QAction* bugAction;
     QAction* aboutAction;
 
-
-
-
     QActionGroup* deviceGroup;
 
     QToolBar* playToolbar;
@@ -124,9 +121,6 @@ private:
     QPushButton* previousButton;
     QPushButton* refreshButton;
     QPushButton* channelsButton;
-
-
-
 
     QString location;
 

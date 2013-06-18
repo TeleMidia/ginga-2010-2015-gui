@@ -330,7 +330,7 @@ void QnplMainWindow::performOpen()
   }
 
   QString f = QFileDialog::getOpenFileName(this,"Open File",
-                                           settings->value("lastdir_opened").toString(),"NCL (*.ncl);; TS (.ts)");
+                                           settings->value("lastdir_opened").toString(),"NCL (*.ncl);; TS (*.ts)");
 
   if (QFile::exists(f)){
     QDir d(f); settings->setValue("lastdir_opened", d.absolutePath());
@@ -453,7 +453,6 @@ void QnplMainWindow::performPlay()
 
       parameters = QnplUtil::split(settings->value("parameters").toString());
 
-      qDebug() << "=========" << parameters;
 
       parameters << "--context-dir" << settings->value("gingaconfig_file").toString();
 
@@ -461,13 +460,19 @@ void QnplMainWindow::performPlay()
         parameters << "--enable-log" << "file";
       }
 
-      qDebug() << "=========" << parameters;
+      parameters.replaceInStrings("${WID}", QString(hwndToString(view->winId())));
 
-      parameters.replaceInStrings("${WID}", hwndToString(view->winId()));
-      parameters.replaceInStrings("${NCLFILE}", location);
+      if (location.endsWith(".ncl"))
+      {
+        parameters.replaceInStrings("${FILE}", "--ncl "+location);
+      }
+      else if (location.endsWith(".ts"))
+      {
+        parameters.insert(parameters.begin(),"--set-tuner");
+        parameters.replaceInStrings("${FILE}", "fs:"+location);
+      }
+
       parameters.replaceInStrings("${SCREENSIZE}", settings->value("screensize").toString());
-
-      qDebug() << "=========" << parameters;
 
 #ifdef Q_OS_LINUX
       process->setProcessEnvironment(enviroment);
@@ -478,8 +483,8 @@ void QnplMainWindow::performPlay()
 
       qDebug() << settings->value("location").toString() << parameters;
 
-      // executing
       process->start(settings->value("location").toString(), parameters);
+
     }
     // play as passive device
     else if (passiveAction->isChecked())
@@ -806,5 +811,3 @@ void QnplMainWindow::imprimirCanais(QString texto1,QString texto2,QString texto3
 
 
 }
-
-

@@ -36,13 +36,14 @@ QnplSettings::QnplSettings()
       setValue("enablelog", false);
     }
 
-    if (value("parameters").toString() == ""){
-        setValue("parameters", "--ncl ${NCLFILE} --wid ${WID} --vmode ${SCREENSIZE} --disable-fkeys --set-exitonend --disable-multicast --poll-stdin");
-    }
-
     if (value("lang").toString() == ""){
         setValue("lang", "en");
     }
+
+    //if (value("parameters").toString() == "" || value("version").toInt() < 106)
+    //{
+        setValue("parameters", "${FILE} --wid ${WID} --vmode ${SCREENSIZE} --disable-fkeys --set-exitonend --disable-multicast --poll-stdin");
+    //}
 
 #ifdef Q_OS_WIN
     if (value("gingaconfig_file").toString() == "" || value("version").toInt() < 105){
@@ -54,7 +55,7 @@ QnplSettings::QnplSettings()
     }
 #endif
 
-   setValue("version", 105);
+   setValue("version", 106);
 }
 
 QnplSettings::~QnplSettings()
