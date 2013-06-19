@@ -17,6 +17,8 @@ public:
   QnplView(QWidget* parent = 0);
   ~QnplView();
 
+  QnplScene* getScene();
+
 signals:
   void keyPressed(QString key);
 

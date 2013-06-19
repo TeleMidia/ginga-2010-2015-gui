@@ -248,15 +248,9 @@ void QnplMainWindow::createDialogs()
 
   aboutDialog = new QnplAboutDialog(this);
 
-  channelDialog = new QnplChannelsDialog(this);
-
-  iptvDialog = new QnplIPTVTunerDialog(this);
-
-  aplication = new QnplAplicationDialog(this);
-
-
-
-
+  //channelDialog = new QnplChannelsDialog(this);
+  //iptvDialog = new QnplIPTVTunerDialog(this);
+  //aplication = new QnplAplicationDialog(this);
 }
 
 void QnplMainWindow::createToolbars()
@@ -330,7 +324,7 @@ void QnplMainWindow::performOpen()
   }
 
   QString f = QFileDialog::getOpenFileName(this,"Open File",
-                                           settings->value("lastdir_opened").toString(),"NCL (*.ncl);; TS (*.ts)");
+                                           settings->value("lastdir_opened").toString(),"Files (*.ncl *.ts)");
 
   if (QFile::exists(f)){
     QDir d(f); settings->setValue("lastdir_opened", d.absolutePath());
@@ -411,7 +405,6 @@ void QnplMainWindow::performQuit()
     process = NULL;
   }
 
-
   exit(0);
 }
 
@@ -457,20 +450,18 @@ void QnplMainWindow::performPlay()
         parameters << "--enable-log" << "file";
       }
 
-      qDebug() << view->winId();
-      qDebug() << view->winId();
-      qDebug() << view->winId();
-      qDebug() << view->winId();
+      QString WID = "";
 
-      qDebug() << hwndToString(view->winId());
-      qDebug() << hwndToString(view->winId());
-      qDebug() << hwndToString(view->winId());
-      qDebug() << hwndToString(view->winId());
-      qDebug() << hwndToString(view->winId());
-      qDebug() << hwndToString(view->winId());
-      qDebug() << hwndToString(view->winId());
+      foreach (QObject* ob, view->children()) {
+          QWidget* w = qobject_cast<QWidget*>(ob);
 
-      parameters.replaceInStrings("${WID}", QString(hwndToString(view->winId())));
+          if (w)
+          {
+              WID =  hwndToString(w->winId());
+          }
+      };
+
+      parameters.replaceInStrings("${WID}", WID);
 
       if (location.endsWith(".ncl"))
       {
@@ -495,7 +486,6 @@ void QnplMainWindow::performPlay()
       qDebug() << settings->value("location").toString() << parameters;
 
       process->start(settings->value("location").toString(), parameters);
-
     }
     // play as passive device
     else if (passiveAction->isChecked())
@@ -552,15 +542,15 @@ void QnplMainWindow:: performStop()
 
 void QnplMainWindow::performaplication()
 {
-    aplication->exec();
+    //aplication->exec();
 }
 
 
 void QnplMainWindow::performIptv()
 {
 
-    iptvDialog->exec();
-    qDebug() << iptvDialog->ler_caixa();
+    //iptvDialog->exec();
+    //qDebug() << iptvDialog->ler_caixa();
 
 
 
@@ -570,8 +560,8 @@ void QnplMainWindow::performIptv()
 
 void QnplMainWindow::performChannels()
 {
-    channelDialog->loadGingaChannels();
-    channelDialog->exec();
+    //channelDialog->loadGingaChannels();
+    //channelDialog->exec();
 
 }
 void QnplMainWindow::performPreferences()
@@ -809,21 +799,21 @@ void QnplMainWindow::resizeEvent(QResizeEvent* event)
 
 void QnplMainWindow::imprimiroproximo()
 {
-    QStringList a = channelDialog->getnext();
-    if(a.empty())
-    {
-        qDebug() << "LISTA VAZIA";
-     }
-    else
-        qDebug() << a;
+    //QStringList a = channelDialog->getnext();
+    //if(a.empty())
+    //{
+    //    qDebug() << "LISTA VAZIA";
+    // }
+    //else
+    //    qDebug() << a;
 
 }
 
 void QnplMainWindow::imprimirCanais(QString texto1,QString texto2,QString texto3)
 {
-   nextButton->setEnabled(true);
+   //nextButton->setEnabled(true);
 
-    qDebug() << texto1 << texto2 << texto3;
+   // qDebug() << texto1 << texto2 << texto3;
 
 
 }

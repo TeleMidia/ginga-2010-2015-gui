@@ -14,6 +14,11 @@ QnplView::~QnplView()
 
 }
 
+QnplScene* QnplView::getScene()
+{
+    return scene;
+}
+
 void QnplView::keyPressEvent(QKeyEvent *event)
 {
   if (event->key() - Qt::Key_0 >= 0 && event->key() - Qt::Key_0 <= 9)
