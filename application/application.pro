@@ -7,8 +7,15 @@ QT += \
 VERSION = \
   1.0.6
 
-DEFINES += \
-    VERSION=\\\"$${VERSION}\\\"
+*-msvc* {
+	DEFINES += \
+		VERSION=\"$${VERSION}\"
+}
+else {
+	DEFINES += \
+		VERSION=\\\"$${VERSION}\\\"
+}
+
 
 INCLUDEPATH += \
     src \
