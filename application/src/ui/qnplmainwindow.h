@@ -134,9 +134,9 @@ private:
 
     QnplPreferencesDialog* preferencesDialog;
     QnplAboutDialog* aboutDialog;
-    //QnplChannelsDialog * channelDialog;
-    //QnplIPTVTunerDialog * iptvDialog;
-    //QnplAplicationDialog * aplication;
+    QnplChannelsDialog * channelDialog;
+    QnplIPTVTunerDialog * iptvDialog;
+    QnplAplicationDialog * aplication;
 };
 
 #endif // QNPLMAINWINDOW_H

@@ -30,13 +30,14 @@ QStringList QnplChannelsDialog::  getnext()
 
 void QnplChannelsDialog::  loadGingaChannels()
 {
+    QString FILE = "/home/edcaraujo/Desktop/channels.txt";
 
     QVector<QString> nome;
     QVector<QString> id;
     QVector<QString> frequencia;
-    if (QFile::exists("/home/eduardo/teste")){
+    if (QFile::exists(FILE)){
 
-        QFile* file = new QFile("/home/eduardo/teste");
+        QFile* file = new QFile(FILE);
         QTextStream in(file);
 
         if (file->open(QIODevice::ReadOnly)){

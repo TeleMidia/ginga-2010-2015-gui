@@ -159,10 +159,10 @@ void  QnplMainWindow::createMenus()
   fileMenu = menuBar()->addMenu(tr("File"));
   fileMenu->addAction(openAction);
   fileMenu->addMenu(recentMenu);
-  // fileMenu->addSeparator();
-  // fileMenu->addAction(tuneBroadChannellAction);
-  // fileMenu->addAction(tuneIPTVChannellAction);
-  // fileMenu->addAction(tuneAppChannellAction);
+  fileMenu->addSeparator();
+  fileMenu->addAction(tuneBroadChannellAction);
+  fileMenu->addAction(tuneIPTVChannellAction);
+  fileMenu->addAction(tuneAppChannellAction);
   fileMenu->addSeparator();
   fileMenu->addAction(quitAction);
 
@@ -248,9 +248,9 @@ void QnplMainWindow::createDialogs()
 
   aboutDialog = new QnplAboutDialog(this);
 
-  //channelDialog = new QnplChannelsDialog(this);
-  //iptvDialog = new QnplIPTVTunerDialog(this);
-  //aplication = new QnplAplicationDialog(this);
+  channelDialog = new QnplChannelsDialog(this);
+  iptvDialog = new QnplIPTVTunerDialog(this);
+  aplication = new QnplAplicationDialog(this);
 }
 
 void QnplMainWindow::createToolbars()
@@ -271,13 +271,13 @@ void QnplMainWindow::createToolbars()
   openToolbar->setFloatable(false);
   openToolbar->addWidget(openLine);
   openToolbar->addWidget(openButton);
-  // openToolbar->addSeparator();
-  // openToolbar->addWidget(new QLabel("CH: "));
-  // openToolbar->addWidget(nextButton);
-  // openToolbar->addWidget(previousButton);
-  // openToolbar->addWidget(refreshButton);
-  // openToolbar->addWidget(new QLabel("  "));
-  // openToolbar->addWidget(channelsButton);
+  openToolbar->addSeparator();
+  openToolbar->addWidget(new QLabel("CH: "));
+  openToolbar->addWidget(nextButton);
+  openToolbar->addWidget(previousButton);
+  openToolbar->addWidget(refreshButton);
+  openToolbar->addWidget(new QLabel("  "));
+  openToolbar->addWidget(channelsButton);
 
 
   addToolBar(Qt::BottomToolBarArea, openToolbar);
@@ -292,7 +292,7 @@ void  QnplMainWindow::createConnections()
   connect(tuneIPTVChannellAction, SIGNAL(triggered()),SLOT(performIptv()));
   connect(tuneAppChannellAction, SIGNAL(triggered()),SLOT(performaplication()));
 
-  // connect(channelDialog, SIGNAL(Channelsimprimir(QString,QString,QString)), SLOT(imprimirCanais(QString,QString,QString)));
+  connect(channelDialog, SIGNAL(Channelsimprimir(QString,QString,QString)), SLOT(imprimirCanais(QString,QString,QString)));
 
   connect(baseAction, SIGNAL(triggered()), SLOT(performDevice()));
   connect(passiveAction, SIGNAL(triggered()), SLOT(performDevice()));
@@ -304,12 +304,12 @@ void  QnplMainWindow::createConnections()
   connect(aboutAction, SIGNAL(triggered()),SLOT(performAbout()));
 
   connect(openButton, SIGNAL(clicked()), SLOT(performOpen()));
-  // connect(channelsButton, SIGNAL(clicked()), SLOT(performChannels()));
+  connect(channelsButton, SIGNAL(clicked()), SLOT(performChannels()));
 
-  // connect(tuneBroadChannellAction, SIGNAL(triggered()), SLOT(performChannels()));
+  connect(tuneBroadChannellAction, SIGNAL(triggered()), SLOT(performChannels()));
   connect(playButton, SIGNAL(clicked()), SLOT(performRun()));
   connect(stopButton, SIGNAL(clicked()), SLOT(performStop()));
-  // connect(nextButton, SIGNAL(clicked()), SLOT(imprimiroproximo()));
+  connect(nextButton, SIGNAL(clicked()), SLOT(imprimiroproximo()));
 
   connect(view,SIGNAL(keyPressed(QString)),SLOT(notifyKey(QString)));
 }
@@ -542,17 +542,15 @@ void QnplMainWindow:: performStop()
 
 void QnplMainWindow::performaplication()
 {
-    //aplication->exec();
+    aplication->exec();
 }
 
 
 void QnplMainWindow::performIptv()
 {
 
-    //iptvDialog->exec();
-    //qDebug() << iptvDialog->ler_caixa();
-
-
+    iptvDialog->exec();
+    qDebug() << iptvDialog->ler_caixa();
 
 
 
@@ -560,8 +558,8 @@ void QnplMainWindow::performIptv()
 
 void QnplMainWindow::performChannels()
 {
-    //channelDialog->loadGingaChannels();
-    //channelDialog->exec();
+    channelDialog->loadGingaChannels();
+    channelDialog->exec();
 
 }
 void QnplMainWindow::performPreferences()
@@ -799,21 +797,19 @@ void QnplMainWindow::resizeEvent(QResizeEvent* event)
 
 void QnplMainWindow::imprimiroproximo()
 {
-    //QStringList a = channelDialog->getnext();
-    //if(a.empty())
-    //{
-    //    qDebug() << "LISTA VAZIA";
-    // }
-    //else
-    //    qDebug() << a;
+    QStringList a = channelDialog->getnext();
+    if(a.empty())
+    {
+        qDebug() << "LISTA VAZIA";
+     }
+    else
+        qDebug() << a;
 
 }
 
 void QnplMainWindow::imprimirCanais(QString texto1,QString texto2,QString texto3)
 {
-   //nextButton->setEnabled(true);
+   nextButton->setEnabled(true);
 
-   // qDebug() << texto1 << texto2 << texto3;
-
-
+   qDebug() << texto1 << texto2 << texto3;
 }

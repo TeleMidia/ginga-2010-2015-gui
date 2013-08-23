@@ -13,8 +13,6 @@ QnplAboutDialog::QnplAboutDialog(QWidget* parent)
   form.label->setStyleSheet("color: red");
   form.label->setText("Cannot identify version! Binary not selected!");
 
-
-
   // connecting
   connect(form.btMore, SIGNAL(clicked()), SLOT(showMore()));
 }
