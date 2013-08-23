@@ -1,157 +1,153 @@
 #include "qnplchannelsdialog.h"
 #include <QDebug>
 #include <QModelIndex>
+
+#include "qnplmainwindow.h"
+
 QnplChannelsDialog::QnplChannelsDialog(QWidget *parent)
     : QDialog(parent)
 {
     setWindowTitle(tr("Listas de canais"));
 
-    formchannel.setupUi(this);
+    formChannel.setupUi(this);
 
-     linhaselecionada =-1;
-
+    selectedRow =-1;
 
     // connecting
-    connect(formchannel.Retune, SIGNAL(clicked()), SLOT(destroiGingaChannels()));
-
-
-  }
+    connect(formChannel.okButton, SIGNAL(clicked()), SLOT(accept()));
+    connect(formChannel.cancelButton, SIGNAL(clicked()), SLOT(reject()));
+    connect(formChannel.retuneButton, SIGNAL(clicked()), SLOT(scanChannels()));
+}
 
 QnplChannelsDialog::~QnplChannelsDialog()
 {
 
 }
 
-
-QStringList QnplChannelsDialog::  getnext()
+Channel QnplChannelsDialog::nextChannel()
 {
-    return  listanext;
+    selectedRow = (selectedRow + 1) % channels.count();
+    return  channels.at(selectedRow);
 }
 
-void QnplChannelsDialog::  loadGingaChannels()
+Channel QnplChannelsDialog::previousChannel()
 {
-    QString FILE = "/home/edcaraujo/Desktop/channels.txt";
+    selectedRow = (--selectedRow < 0) ? selectedRow = channels.count() - 1 : selectedRow;
+    return  channels.at(selectedRow);
+}
 
-    QVector<QString> nome;
-    QVector<QString> id;
-    QVector<QString> frequencia;
-    if (QFile::exists(FILE)){
+void QnplChannelsDialog::  loadGingaChannels(QString channelsFile)
+{
+    channels.clear();
 
-        QFile* file = new QFile(FILE);
+    if (QFile::exists(channelsFile)){
+
+        QFile* file = new QFile(channelsFile);
         QTextStream in(file);
 
         if (file->open(QIODevice::ReadOnly)){
-
             while(!in.atEnd()) {
                 QString line = in.readLine();
-                QStringList  aa = line.split(" ");
+                QStringList tokens = line.split(";");
 
-
-                if(aa.size()==3)
+                if(tokens.size()==4 && tokens[3] != "Unknown")
                 {
-                nome.push_back(aa[0]);
-                id.push_back(aa[1]);
-                frequencia.push_back(aa[2]);
+                    Channel channel;
+                    channel.frequency = tokens[1];
+                    channel.number = tokens[2];
+                    channel.name = tokens[3];
+
+                    channels.push_back(channel);
                 }
             }
-
-            delete formchannel.table->model();
-            formchannel.table->setModel(NULL);
-
+            delete formChannel.table->model();
+            formChannel.table->setModel(NULL);
 
             int ncol = 3;
             int nrow = 1;
 
-            formchannel.table->verticalHeader()->hide();
-            formchannel.table->horizontalHeader()->resizeSections(QHeaderView::Stretch);
+            formChannel.table->verticalHeader()->hide();
+            formChannel.table->horizontalHeader()->resizeSections(QHeaderView::Stretch);
 
             QStandardItemModel *model = new QStandardItemModel(nrow, ncol);
 
 
             model->setHorizontalHeaderItem(0, new QStandardItem("Name"));
-            model->setHorizontalHeaderItem(1, new QStandardItem("Id"));
-            model->setHorizontalHeaderItem(2, new QStandardItem("frequencia"));
+            model->setHorizontalHeaderItem(1, new QStandardItem("Number"));
+            model->setHorizontalHeaderItem(2, new QStandardItem("Frequency"));
+
+            for(int i=0; i < channels.count();i++)
+            {
+                QStandardItem* nitem = new QStandardItem(channels[i].name);
+                nitem->setEditable(false);
+                QStandardItem* vitem = new QStandardItem(channels[i].number);
+                vitem->setEditable(false);
+                QStandardItem* pitem = new QStandardItem(channels[i].frequency);
+                pitem->setEditable(false);
+
+                model->setItem(i, 0, nitem);
+                model->setItem(i, 1, vitem);
+                model->setItem(i, 2, pitem);
+            }
 
 
+            formChannel.table->setModel(model);
 
-            for(int i=0;i<nome.size();i++)
-              {
-                    QStandardItem* nitem = new QStandardItem(nome[i]);
-                    nitem->setEditable(false);
-                    QStandardItem* vitem = new QStandardItem(id[i]);
-                    vitem->setEditable(false);
-                    QStandardItem* pitem = new QStandardItem(frequencia[i]);
-                    pitem->setEditable(false);
+            connect(formChannel.table->selectionModel(),
+                    SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+                    SLOT(printrow(QItemSelection,QItemSelection)));
 
+            connect(formChannel.table,
+                    SIGNAL(doubleClicked(QModelIndex)),
+                    SLOT(selectChannel(QModelIndex)));
 
-                    model->setItem(i, 0, nitem);
-                    model->setItem(i, 1, vitem);
-                    model->setItem(i, 2, pitem);
-
-
-
-
-
-               }
-
-
-            formchannel.table->setModel(model);
-
-
-
-            connect(formchannel.table->selectionModel(),
-                                SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-                                SLOT(printrow(QItemSelection,QItemSelection)));
+            if (channels.count()){
+                formChannel.table->selectRow(0);
+                selectedRow = 0;
+            }
         }
 
         delete file;
     }
 }
 
-
-void QnplChannelsDialog::  destroiGingaChannels()
+void QnplChannelsDialog::selectChannel(QModelIndex selectedRow)
 {
-    delete formchannel.table->model();
-    formchannel.table->setModel(NULL);
-    loadGingaChannels();
+    int rowIndex = selectedRow.row();
+    if (rowIndex < channels.count()){
+        this->selectedRow = rowIndex;
+        accept();
+    }
 }
 
-void  QnplChannelsDialog:: printrow(QItemSelection a ,QItemSelection b)
+Channel QnplChannelsDialog::channel()
 {
+    Channel c;
+    if (selectedRow >=0 && selectedRow < channels.count())
+        c = channels.at(selectedRow);
 
+    return c;
+}
 
-    if(!a.indexes().isEmpty())
+void QnplChannelsDialog::scanChannels()
 {
-        if ( a.indexes().at(0).row()!=linhaselecionada){
+    delete formChannel.table->model();
+    formChannel.table->setModel(NULL);
 
+    emit scanChannelsRequested();
+}
 
-    int i;
-    i=formchannel.table->size().height();
-    QString texto1,texto2,texto3,texto4,texto5,texto6;
-    QStandardItemModel *mymodel;
+void  QnplChannelsDialog:: printrow(QItemSelection itemSelection ,QItemSelection)
+{
+    if(!itemSelection.indexes().isEmpty())
+    {
+        if ( itemSelection.indexes().at(0).row()!= selectedRow){
+            QStandardItemModel *mymodel;
 
-    mymodel=(QStandardItemModel*) formchannel.table->model();
-     linhaselecionada=a.indexes().at(0).row();
-
-     if(linhaselecionada < i && linhaselecionada +1 < i ){
-    texto1= mymodel->item(linhaselecionada,0)->text();
-    texto2= mymodel->item(linhaselecionada,1)->text();
-    texto3= mymodel->item(linhaselecionada,2)->text();
-
-    texto4= mymodel->item(linhaselecionada +1,0)->text();
-    texto5= mymodel->item(linhaselecionada +1,1)->text();
-    texto6= mymodel->item(linhaselecionada +1,2)->text();
-     listanext << texto4 << texto5 << texto6;
-     }
-
-
-    emit Channelsimprimir(texto1,texto2,texto3);
-
-
-
+            mymodel=(QStandardItemModel*) formChannel.table->model();
+            selectedRow = itemSelection.indexes().at(0).row();
         }
 
-}
-      formchannel.table->selectRow(linhaselecionada);
-
+    }
+    formChannel.table->selectRow(selectedRow);
 }

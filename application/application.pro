@@ -4,17 +4,17 @@ TARGET = \
 QT += \
     widgets
 
-VERSION = \
-  1.0.6
+#VERSION = \
+#  1.0.6
 
-*-msvc* {
-	DEFINES += \
-		VERSION=\"$${VERSION}\"
-}
-else {
-	DEFINES += \
-		VERSION=\\\"$${VERSION}\\\"
-}
+#*-msvc* {
+#	DEFINES += \
+#		VERSION=\"$${VERSION}\"
+#}
+#else {
+#	DEFINES += \
+#		VERSION=\\\"$${VERSION}\\\"
+#}
 
 
 INCLUDEPATH += \

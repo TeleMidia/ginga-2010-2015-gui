@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 {
     QApplication application(argc, argv);
     application.setApplicationName("gingagui");
-    application.setApplicationVersion(QString(VERSION));
+    application.setApplicationVersion(QnplUtil::VERSION);
     application.setOrganizationName("telemidia");
     application.setOrganizationDomain("telemidia.puc-rio.br");
 

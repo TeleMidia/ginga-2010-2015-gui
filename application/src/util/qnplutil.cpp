@@ -1,5 +1,7 @@
 #include "qnplutil.h"
 
+QString QnplUtil::VERSION = "1.0.6";
+
 QStringList QnplUtil::split(QString parameters)
 {
 

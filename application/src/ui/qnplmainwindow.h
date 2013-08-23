@@ -19,6 +19,7 @@
 #include <QTranslator>
 #include <QFileInfo>
 #include <QDesktopServices>
+#include <QProgressDialog>
 
 #include <QMacNativeWidget>
 
@@ -50,7 +51,8 @@ public slots:
     void performQuit();
 
     void imprimirCanais(QString texto1,QString texto2,QString texto3);
-     void imprimiroproximo();
+    void playNextChannel();
+    void playPreviousChannel();
 
     void performDevice();
 
@@ -58,7 +60,6 @@ public slots:
     void performChannels();
     void performIptv();
     void performaplication();
-
 
     void performBug();
     void performAbout();
@@ -74,6 +75,10 @@ public slots:
 
     void notifyKey(QString key);
 
+    void writeData ();
+
+    void scan ();
+    void playChannel (Channel channel);
 protected:
     void resizeEvent(QResizeEvent* event);
 
@@ -137,6 +142,8 @@ private:
     QnplChannelsDialog * channelDialog;
     QnplIPTVTunerDialog * iptvDialog;
     QnplAplicationDialog * aplication;
+
+    QProgressDialog *scanProgress;
 };
 
 #endif // QNPLMAINWINDOW_H

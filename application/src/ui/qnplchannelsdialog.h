@@ -18,33 +18,43 @@
 #include "ui_qnplchannelsform.h"
 #include "qnplsettings.h"
 
+class Channel {
+public:
+    QString frequency;
+    QString number;
+    QString name;
+};
+
 class QnplChannelsDialog : public QDialog
 {
     Q_OBJECT
 
  signals:
-    void Channelsimprimir(QString a,QString b,QString c);
-    void ChannelsimprimirNext(QString a, QString b,QString c);
+    void channelsimprimir(QString a,QString b,QString c);
+    void channelsimprimirNext(QString a, QString b,QString c);
+    void tunerChannelRequested (Channel);
+    void scanChannelsRequested ();
 
 public:
   QnplChannelsDialog(QWidget* parent = 0);
   ~QnplChannelsDialog();
-  void loadGingaChannels();
-  QStringList getnext();
+  void loadGingaChannels(QString channelsFile);
 
+  Channel nextChannel();
+  Channel previousChannel();
 
+  Channel channel ();
 
 public slots:
-   void destroiGingaChannels();
+   void scanChannels();
    void printrow(QItemSelection,QItemSelection);
+   void selectChannel (QModelIndex);
 
 private:
     QStringList listanext;
-    Ui::QnplChannelsForm formchannel;
-    int linhaselecionada;
-
-
-
+    Ui::QnplChannelsForm formChannel;
+    int selectedRow;
+    QVector <Channel> channels;
 
 };
 

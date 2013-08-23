@@ -1,4 +1,5 @@
 #include "qnplaboutdialog.h"
+#include "qnplutil.h"
 
 QnplAboutDialog::QnplAboutDialog(QWidget* parent)
   : QDialog(parent)
@@ -7,7 +8,7 @@ QnplAboutDialog::QnplAboutDialog(QWidget* parent)
 
   // setting
   form.setupUi(this);
-  form.lbTitle->setText("Ginga GUI v"+QString(VERSION));
+  form.lbTitle->setText("Ginga GUI v" + QString(QnplUtil::VERSION));
   form.label_2->setText("Date: "+QDateTime::currentDateTime().toString("dd/MM/yyyy."));
   form.lbTitle_1->setText("Ginga");
   form.label->setStyleSheet("color: red");
