@@ -1,6 +1,8 @@
 TARGET = \
     gingagui
 
+CONFIG += console
+
 QT += \
     widgets
 

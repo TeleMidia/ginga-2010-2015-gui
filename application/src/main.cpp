@@ -1,5 +1,6 @@
 #include <QApplication>
 #include <QTranslator>
+#include <QDebug>
 
 #include "qnplmainwindow.h"
 #include "qnplsettings.h"
@@ -7,6 +8,8 @@
 
 int main(int argc, char *argv[])
 {
+    qDebug() << argc << argv;
+
     QApplication application(argc, argv);
     application.setApplicationName("gingagui");
     application.setApplicationVersion(QnplUtil::VERSION);

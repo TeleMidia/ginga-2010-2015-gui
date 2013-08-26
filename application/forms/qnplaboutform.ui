@@ -67,7 +67,7 @@
         </spacer>
        </item>
        <item row="5" column="2">
-        <widget class="QPushButton" name="btMore_1">
+        <widget class="QPushButton" name="btMore_2">
          <property name="text">
           <string>More...</string>
          </property>

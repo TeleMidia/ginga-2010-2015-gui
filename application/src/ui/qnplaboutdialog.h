@@ -10,6 +10,7 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QDateTime>
+#include <QProcess>
 
 #include "ui_qnplaboutform.h"
 
@@ -23,9 +24,12 @@ public:
 
 public slots:
   void showMore();
+  void printGingaVersion ();
+  void printFailToStart(QProcess::ProcessError);
 
 private:
   Ui::QnplAboutForm form;
+  QProcess *process;
 };
 
 #endif // QNPLABOUTDIALOG_H

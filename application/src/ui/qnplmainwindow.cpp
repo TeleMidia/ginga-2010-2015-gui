@@ -167,7 +167,7 @@ void  QnplMainWindow::createMenus()
     fileMenu->addMenu(recentMenu);
     fileMenu->addSeparator();
     fileMenu->addAction(tuneBroadChannellAction);
-    fileMenu->addAction(tuneIPTVChannellAction);
+    //fileMenu->addAction(tuneIPTVChannellAction);
     fileMenu->addAction(tuneAppChannellAction);
     fileMenu->addSeparator();
     fileMenu->addAction(quitAction);
@@ -572,7 +572,8 @@ void QnplMainWindow::performIptv()
 
 void QnplMainWindow::performChannels()
 {
-    QString channelsFile(QString (getenv("HOME")) + "/AppData/Local/Temp/ginga/channels.txt");
+    QString channelsFile = QDir::temp().absolutePath() + "/ginga/channels.txt";
+
     if (!QFile::exists(channelsFile)){
         scan();
     }
@@ -592,7 +593,6 @@ void QnplMainWindow::playChannel(Channel channel)
         performStop();
 
         process = new QProcess (this);
-//        connect(process, SIGNAL(finished(int)), SLOT(performCloseWindow(int)), Qt::QueuedConnection);
 
         QStringList plist;
         QString WID = "";
@@ -635,7 +635,6 @@ void QnplMainWindow::playChannel(Channel channel)
 void QnplMainWindow::writeData()
 {
     QString p_stdout = process->readAllStandardOutput();
-
     qDebug() << p_stdout;
     if (p_stdout.contains("Done!"))
         scanProgress->accept();
@@ -911,11 +910,22 @@ void QnplMainWindow::scan()
     connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(writeData()));
     connect(process, SIGNAL(readyReadStandardError()), this, SLOT(writeData()));
 
-    process->start(settings->value("location").toString(), plist);
+    connect(process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(showErrorDialog(QProcess::ProcessError)));
+    connect(process, SIGNAL(started()), scanProgress, SLOT(exec()));
 
+    process->start(settings->value("location").toString(), plist);
     scanProgress->setLabel(new QLabel ("Scanning channels... Please wait"));
     scanProgress->setWindowModality(Qt::WindowModal);
-    scanProgress->exec();
+}
+
+void QnplMainWindow::showErrorDialog(QProcess::ProcessError error)
+{
+    QString errorMessage = "";
+    if (error == QProcess::FailedToStart)
+        errorMessage = "Error while opening Ginga. Check the binary path.";
+
+    QMessageBox::critical(this, "Error", errorMessage, QMessageBox::Ok);
+    performStop();
 }
 
 void QnplMainWindow::imprimirCanais(QString texto1,QString texto2,QString texto3)

@@ -41,7 +41,6 @@ void QnplChannelsDialog::  loadGingaChannels(QString channelsFile)
     channels.clear();
 
     if (QFile::exists(channelsFile)){
-
         QFile* file = new QFile(channelsFile);
         QTextStream in(file);
 
