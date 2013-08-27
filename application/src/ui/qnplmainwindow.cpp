@@ -28,7 +28,8 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
     scanProgress->setCancelButton(0);
     scanProgress->setWindowFlags(Qt::Dialog | Qt::Desktop);
 
-    connect (scanProgress, SIGNAL(canceled()), this, SLOT(performStop()));
+    connect(scanProgress, SIGNAL(rejected()), SLOT(showScanErrorDialog()));
+
 
     //  if (settings->value("run_as") == "base")
     //  {
@@ -496,6 +497,7 @@ void QnplMainWindow::performPlay()
             qDebug() << settings->value("location").toString() << parameters;
 
             process->start(settings->value("location").toString(), parameters);
+            view->setFocus();
         }
         // play as passive device
         else if (passiveAction->isChecked())
@@ -516,17 +518,17 @@ void QnplMainWindow::performPlay()
     }
 }
 
-void QnplMainWindow:: performStop()
+void QnplMainWindow::performStop()
 {
     view->releaseKeyboard();
 
     if (process != NULL){
+        disconnect(process);
+
         process->kill();
         process->close();
 
-        disconnect(process);
-
-        delete(process);
+        process->deleteLater();
 
         process = NULL;
     }
@@ -572,7 +574,8 @@ void QnplMainWindow::performIptv()
 
 void QnplMainWindow::performChannels()
 {
-    QString channelsFile = QDir::temp().absolutePath() + "/ginga/channels.txt";
+    QString channelsFile = QDir::tempPath() + "/ginga/channels.txt";
+    qDebug () << "Channels file: " + channelsFile;
 
     if (!QFile::exists(channelsFile)){
         scan();
@@ -896,12 +899,20 @@ void QnplMainWindow::playPreviousChannel()
     }
 }
 
+void QnplMainWindow::showScanErrorDialog()
+{
+    if (process)
+    {
+        QMessageBox::critical(this, "Error", "Channel scanning canceled by user.", QMessageBox::Ok);
+        process->kill();
+    }
+}
+
 void QnplMainWindow::scan()
 {
     performStop();
 
     process = new QProcess (this);
-    connect(process, SIGNAL(finished(int)), SLOT(performCloseWindow(int)), Qt::QueuedConnection);
 
     QStringList plist;
     plist << "--set-tuner" << "sbtvdt:scan";
@@ -924,7 +935,9 @@ void QnplMainWindow::showErrorDialog(QProcess::ProcessError error)
     if (error == QProcess::FailedToStart)
         errorMessage = "Error while opening Ginga. Check the binary path.";
 
-    QMessageBox::critical(this, "Error", errorMessage, QMessageBox::Ok);
+    if (errorMessage != "")
+        QMessageBox::critical(this, "Error", errorMessage, QMessageBox::Ok);
+
     performStop();
 }
 

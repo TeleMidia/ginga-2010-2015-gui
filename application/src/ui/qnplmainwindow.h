@@ -80,6 +80,8 @@ public slots:
     void scan ();
     void playChannel (Channel channel);
     void showErrorDialog (QProcess::ProcessError);
+    void showScanErrorDialog ();
+
 protected:
     void resizeEvent(QResizeEvent* event);
 

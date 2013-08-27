@@ -26,6 +26,7 @@ QnplAboutDialog::QnplAboutDialog(QWidget* parent)
   process->start(settings->value("location").toString(), plist);
 
   // connecting
+  connect(form.btMore, SIGNAL(pressed()), SLOT(showMore()));
   connect(form.btMore_2, SIGNAL(pressed()), SLOT(showMore()));
 }
 
