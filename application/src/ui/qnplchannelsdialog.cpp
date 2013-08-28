@@ -17,11 +17,17 @@ QnplChannelsDialog::QnplChannelsDialog(QWidget *parent)
     connect(formChannel.okButton, SIGNAL(clicked()), SLOT(accept()));
     connect(formChannel.cancelButton, SIGNAL(clicked()), SLOT(reject()));
     connect(formChannel.retuneButton, SIGNAL(clicked()), SLOT(scanChannels()));
+    connect(formChannel.frequencyCheckBox, SIGNAL(clicked()), SLOT (changeFrequencyVisibility()));
 }
 
 QnplChannelsDialog::~QnplChannelsDialog()
 {
 
+}
+
+void QnplChannelsDialog::changeFrequencyVisibility()
+{
+    formChannel.table->setColumnHidden(2, !formChannel.table->isColumnHidden(2));
 }
 
 Channel QnplChannelsDialog::nextChannel()
@@ -75,6 +81,8 @@ void QnplChannelsDialog::  loadGingaChannels(QString channelsFile)
             model->setHorizontalHeaderItem(1, new QStandardItem("Number"));
             model->setHorizontalHeaderItem(2, new QStandardItem("Frequency"));
 
+            qSort(channels);
+
             for(int i=0; i < channels.count();i++)
             {
                 QStandardItem* nitem = new QStandardItem(channels[i].name);
@@ -104,6 +112,8 @@ void QnplChannelsDialog::  loadGingaChannels(QString channelsFile)
                 formChannel.table->selectRow(0);
                 selectedRow = 0;
             }
+
+            formChannel.table->setColumnHidden(2, true);
         }
 
         delete file;

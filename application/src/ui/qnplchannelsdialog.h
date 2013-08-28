@@ -23,6 +23,10 @@ public:
     QString frequency;
     QString number;
     QString name;
+
+    inline bool operator <(const Channel c) const {
+        return this->number.toDouble() < c.number.toDouble();
+    }
 };
 
 class QnplChannelsDialog : public QDialog
@@ -49,6 +53,7 @@ public slots:
    void scanChannels();
    void printrow(QItemSelection,QItemSelection);
    void selectChannel (QModelIndex);
+   void changeFrequencyVisibility();
 
 private:
     QStringList listanext;

@@ -235,7 +235,7 @@ void QnplMainWindow::createWidgets()
 
     refreshButton = new QPushButton();
     refreshButton->setIcon(QIcon(":icon/refresh"));
-    refreshButton->setToolTip(tr("Retune Channel"));
+    refreshButton->setToolTip(tr("Scan"));
 
     connect(refreshButton, SIGNAL(clicked()), SLOT(scan()));
 
@@ -923,6 +923,7 @@ void QnplMainWindow::scan()
 
     connect(process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(showErrorDialog(QProcess::ProcessError)));
     connect(process, SIGNAL(started()), scanProgress, SLOT(exec()));
+    connect(process, SIGNAL(finished(int)), scanProgress, SLOT(close()));
 
     process->start(settings->value("location").toString(), plist);
     scanProgress->setLabel(new QLabel ("Scanning channels... Please wait"));
