@@ -1,6 +1,7 @@
 #include "qnplutil.h"
 
 QString QnplUtil::VERSION = "1.0.6";
+QString QnplUtil::CMD_PREFIX = "cmd::gingagui::";
 
 QStringList QnplUtil::split(QString parameters)
 {

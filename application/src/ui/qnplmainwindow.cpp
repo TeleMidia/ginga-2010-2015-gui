@@ -5,7 +5,6 @@
 #include <QDebug>
 #include <QProcessEnvironment>
 
-
 QnplMainWindow::QnplMainWindow(QWidget* parent)
     : QMainWindow(parent)
 {
@@ -24,7 +23,7 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
     location = "";
     process = NULL;
 
-    scanProgress = new QProgressDialog ("Scanning channels...", "", 0, 0, this);
+    scanProgress = new QProgressDialog ("Scanning channels...", "", 0, 100, this);
     scanProgress->setCancelButton(0);
     scanProgress->setWindowFlags(Qt::Dialog | Qt::Desktop);
 
@@ -578,6 +577,7 @@ void QnplMainWindow::performChannels()
     qDebug () << "Channels file: " + channelsFile;
 
     if (!QFile::exists(channelsFile)){
+        scanProgress->setValue(0);
         scan();
     }
 
@@ -637,13 +637,26 @@ void QnplMainWindow::playChannel(Channel channel)
 
 void QnplMainWindow::writeData()
 {
-    QString p_stdout = process->readAllStandardOutput();
+    QString p_stdout = process->readAllStandardError();
     qDebug() << p_stdout;
-    if (p_stdout.contains("Done!"))
+
+    if (! p_stdout.startsWith(QnplUtil::CMD_PREFIX)) return;
+
+    p_stdout = p_stdout.mid(QnplUtil::CMD_PREFIX.length());
+
+    if (p_stdout.contains("%")){
+        p_stdout.remove("%");
+
+        bool ok;
+        int value = p_stdout.toInt(&ok);
+        if (ok)
+            scanProgress->setValue(value);
+    }
+
+
+    if (p_stdout.contains("Done!")){
         scanProgress->accept();
-
-//    scanProgress->setLabel(new QLabel(p_stdout));
-
+    }
 }
 
 void QnplMainWindow::performPreferences()
@@ -917,6 +930,7 @@ void QnplMainWindow::scan()
     QStringList plist;
     plist << "--set-tuner" << "sbtvdt:scan";
     plist << "--wid" << hwndToString(view->winId());
+
 
     connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(writeData()));
     connect(process, SIGNAL(readyReadStandardError()), this, SLOT(writeData()));
