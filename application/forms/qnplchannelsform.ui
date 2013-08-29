@@ -42,10 +42,10 @@
    <item row="0" column="0" colspan="3">
     <widget class="QTableView" name="table"/>
    </item>
-   <item row="1" column="0">
+   <item row="1" column="0" colspan="2">
     <widget class="QCheckBox" name="frequencyCheckBox">
      <property name="text">
-      <string>Show frequency</string>
+      <string>Show frequency column</string>
      </property>
     </widget>
    </item>

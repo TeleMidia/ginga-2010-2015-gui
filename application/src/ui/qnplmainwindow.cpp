@@ -4,6 +4,7 @@
 #include <QDir>
 #include <QDebug>
 #include <QProcessEnvironment>
+#include <QMovie>
 
 QnplMainWindow::QnplMainWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -26,6 +27,10 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
     scanProgress = new QProgressDialog ("Scanning channels...", "", 0, 100, this);
     scanProgress->setCancelButton(0);
     scanProgress->setWindowFlags(Qt::Dialog | Qt::Desktop);
+    scanProgress->installEventFilter(new EventFilter(this));
+    scanProgress->setWindowTitle(windowTitle());
+    scanProgress->setWindowIcon(windowIcon());
+
 
     connect(scanProgress, SIGNAL(rejected()), SLOT(showScanErrorDialog()));
 
@@ -422,6 +427,7 @@ void QnplMainWindow::performPlay()
 {
     if (QFile::exists(location))
     {
+        lastChannel.setNull();
 
 #ifdef Q_OS_LINUX
         QProcessEnvironment enviroment = QProcessEnvironment::systemEnvironment();
@@ -511,6 +517,9 @@ void QnplMainWindow::performPlay()
             performRunAsActive();
         }
     }
+    else if (!lastChannel.isNull()){
+        playChannel(lastChannel);
+    }
     else
     {
         QMessageBox::information(this,tr("Information"), tr("Please, open NCL document to play."));
@@ -524,7 +533,7 @@ void QnplMainWindow::performStop()
     if (process != NULL){
         disconnect(process);
 
-        process->kill();
+        process->terminate();
         process->close();
 
         process->deleteLater();
@@ -597,6 +606,10 @@ void QnplMainWindow::playChannel(Channel channel)
 
         process = new QProcess (this);
 
+        connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(processOutput()));
+        connect(process, SIGNAL(readyReadStandardError()), this, SLOT(processOutput()));
+        connect(process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(showErrorDialog(QProcess::ProcessError)));
+
         QStringList plist;
         QString WID = "";
 
@@ -613,6 +626,8 @@ void QnplMainWindow::playChannel(Channel channel)
         plist << "--wid" << WID;
 
         qDebug () << plist;
+
+        openLine->setText(channel.number + " - " + channel.name);
 
         playButton->setEnabled(false);
         stopButton->setEnabled(true);
@@ -632,7 +647,32 @@ void QnplMainWindow::playChannel(Channel channel)
         activeAction->setEnabled(false);
 
         process->start(settings->value("location").toString(), plist);
+
+        QLabel *gif_anim = new QLabel();
+        QMovie *movie = new QMovie(":/background/anim-tuning");
+        gif_anim->setMovie(movie);
+        movie->start();
+        animTuning = view->getScene()->addWidget(gif_anim);
+
+        lastChannel = channel;
     }
+}
+
+void QnplMainWindow::processOutput()
+{
+    QString p_stdout = process->readAllStandardOutput();
+
+    qDebug() << p_stdout;
+    if (! p_stdout.startsWith(QnplUtil::CMD_PREFIX)) return;
+
+    p_stdout = p_stdout.mid(QnplUtil::CMD_PREFIX.length()).trimmed();
+
+    if (p_stdout == "0"){
+        animTuning->deleteLater();
+        animTuning = 0;
+    }
+
+    qDebug() << p_stdout;
 }
 
 void QnplMainWindow::writeData()
@@ -652,7 +692,6 @@ void QnplMainWindow::writeData()
         if (ok)
             scanProgress->setValue(value);
     }
-
 
     if (p_stdout.contains("Done!")){
         scanProgress->accept();
@@ -940,7 +979,6 @@ void QnplMainWindow::scan()
     connect(process, SIGNAL(finished(int)), scanProgress, SLOT(close()));
 
     process->start(settings->value("location").toString(), plist);
-    scanProgress->setLabel(new QLabel ("Scanning channels... Please wait"));
     scanProgress->setWindowModality(Qt::WindowModal);
 }
 

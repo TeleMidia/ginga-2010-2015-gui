@@ -20,7 +20,7 @@
 #include <QFileInfo>
 #include <QDesktopServices>
 #include <QProgressDialog>
-
+#include <QGraphicsProxyWidget>
 #include <QMacNativeWidget>
 
 #include "qnplview.h"
@@ -31,6 +31,27 @@
 #include "qnplchannelsdialog.h"
 #include "qnpliptvtunerdialog.h"
 #include "qnplaplicationdialog.h"
+
+
+class EventFilter: public QObject
+{
+public:
+    EventFilter(QObject *parent):QObject(parent) {}
+    ~EventFilter(){}
+
+    bool eventFilter(QObject* object, QEvent* event)
+    {
+        if(event->type() == QEvent::KeyPress && ((QKeyEvent *) event)->key() == Qt::Key_Escape)
+        {
+            qDebug() << "Filtered ESC Key ..." ;
+            return true;
+        }
+        else
+        {
+            return QObject::eventFilter(object,event);
+        }
+    }
+};
 
 
 class QnplMainWindow : public QMainWindow
@@ -81,6 +102,7 @@ public slots:
     void playChannel (Channel channel);
     void showErrorDialog (QProcess::ProcessError);
     void showScanErrorDialog ();
+    void processOutput ();
 
 protected:
     void resizeEvent(QResizeEvent* event);
@@ -136,7 +158,6 @@ private:
 
     bool passiveIsRunning;
 
-
     QnplView* view;
     QnplSettings* settings;
 
@@ -147,6 +168,9 @@ private:
     QnplAplicationDialog * aplication;
 
     QProgressDialog *scanProgress;
+
+    Channel lastChannel;
+    QGraphicsProxyWidget *animTuning;
 };
 
 #endif // QNPLMAINWINDOW_H

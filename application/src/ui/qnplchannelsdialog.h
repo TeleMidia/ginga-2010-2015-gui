@@ -27,6 +27,9 @@ public:
     inline bool operator <(const Channel c) const {
         return this->number.toDouble() < c.number.toDouble();
     }
+
+    inline bool isNull () { return frequency == ""; }
+    inline void setNull () { frequency = ""; number = ""; name = ""; }
 };
 
 class QnplChannelsDialog : public QDialog

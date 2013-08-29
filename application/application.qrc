@@ -42,5 +42,7 @@
         <file alias="gingagui">images/backgrounds/bg-gingagui.png</file>
         <file alias="gingagui3">images/backgrounds/bg-gingagui3.png</file>
         <file alias="gingagui4">images/backgrounds/bg-gingagui4.fw.png</file>
+        <file alias="tuning">images/backgrounds/bg-tuning.png</file>
+        <file alias="anim-tuning">images/backgrounds/bg-tuning.gif</file>
     </qresource>
 </RCC>
