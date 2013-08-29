@@ -103,6 +103,7 @@ public slots:
     void showErrorDialog (QProcess::ProcessError);
     void showScanErrorDialog ();
     void processOutput ();
+    void sendKillMessage ();
 
 protected:
     void resizeEvent(QResizeEvent* event);
@@ -115,6 +116,20 @@ private:
     void createDialogs();
     void createToolbars();
     void createConnections();
+
+    inline QString viewWID () {
+        QString WID = "";
+
+        foreach (QObject* ob, view->children()) {
+            QWidget* w = qobject_cast<QWidget*>(ob);
+
+            if (w)
+            {
+                WID =  hwndToString(w->winId());
+            }
+        }
+        return WID;
+    }
 
     QString hwndToString(WId winid);
 

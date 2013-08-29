@@ -27,12 +27,12 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
     scanProgress = new QProgressDialog ("Scanning channels...", "", 0, 100, this);
     scanProgress->setCancelButton(0);
     scanProgress->setWindowFlags(Qt::Dialog | Qt::Desktop);
-    scanProgress->installEventFilter(new EventFilter(this));
+//    scanProgress->installEventFilter(new EventFilter(this));
     scanProgress->setWindowTitle(windowTitle());
     scanProgress->setWindowIcon(windowIcon());
 
 
-    connect(scanProgress, SIGNAL(rejected()), SLOT(showScanErrorDialog()));
+//    connect(scanProgress, SIGNAL(rejected()), SLOT(showScanErrorDialog()));
 
 
     //  if (settings->value("run_as") == "base")
@@ -566,6 +566,12 @@ void QnplMainWindow::performStop()
     scanProgress->close();
 
     view->update();
+
+//    if (animTuning){
+//        animTuning->deleteLater();
+//        animTuning = 0;
+//    }
+
 }
 
 void QnplMainWindow::performaplication()
@@ -611,19 +617,10 @@ void QnplMainWindow::playChannel(Channel channel)
         connect(process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(showErrorDialog(QProcess::ProcessError)));
 
         QStringList plist;
-        QString WID = "";
-
-        foreach (QObject* ob, view->children()) {
-            QWidget* w = qobject_cast<QWidget*>(ob);
-            if (w)
-            {
-                WID =  hwndToString(w->winId());
-            }
-        };
 
         plist << "--set-tuner" << "sbtvdt:" + channel.frequency;
         plist << "--vmode" << settings->value("screensize").toString();
-        plist << "--wid" << WID;
+        plist << "--wid" << viewWID();
 
         qDebug () << plist;
 
@@ -651,6 +648,19 @@ void QnplMainWindow::playChannel(Channel channel)
         QLabel *gif_anim = new QLabel();
         QMovie *movie = new QMovie(":/background/anim-tuning");
         gif_anim->setMovie(movie);
+
+        QString screenSize = settings->value("screensize").toString();
+        QStringList sizes = screenSize.split("x");
+        if (sizes.count() == 2){
+            bool w_ok;
+            bool h_ok;
+            int w = sizes.at(0).toInt(&w_ok);
+            int h = sizes.at(1).toInt(&h_ok);
+
+            qDebug () << w + " " + h;
+            if (w_ok && h_ok)
+                    movie->setScaledSize(QSize(w, h));
+        }
         movie->start();
         animTuning = view->getScene()->addWidget(gif_anim);
 
@@ -660,7 +670,7 @@ void QnplMainWindow::playChannel(Channel channel)
 
 void QnplMainWindow::processOutput()
 {
-    QString p_stdout = process->readAllStandardOutput();
+    QString p_stdout = process->readAllStandardError();
 
     qDebug() << p_stdout;
     if (! p_stdout.startsWith(QnplUtil::CMD_PREFIX)) return;
@@ -753,7 +763,8 @@ void QnplMainWindow::performRunAsPassive()
         QString context_dir = QFileInfo(conf_location).absoluteDir().path();
 
         QStringList plist;
-        plist << "--wid" << hwndToString(view->winId());
+
+        plist << "--wid" << viewWID();
         plist << "--device-class" << "1";
         plist << "--vmode" << settings->value("screensize").toString();
         plist << "--context-dir" << context_dir;
@@ -814,7 +825,7 @@ void QnplMainWindow::performRunAsActive()
     }
 
     QStringList plist;
-    plist << "--wid" << hwndToString(view->winId());
+    plist << "--wid" << viewWID();
     plist << "--device-class" << "2";
     plist << "--device-srv-port" << QString::number(port);
     plist << "--vmode" << settings->value("screensize").toString();
@@ -968,18 +979,33 @@ void QnplMainWindow::scan()
 
     QStringList plist;
     plist << "--set-tuner" << "sbtvdt:scan";
-    plist << "--wid" << hwndToString(view->winId());
+    plist << "--wid" << viewWID();
+    plist << "--poll-stdin";
+
+    if (settings->value("enablelog").toBool()){
+        plist << "--enable-log" << "file";
+    }
 
 
     connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(writeData()));
     connect(process, SIGNAL(readyReadStandardError()), this, SLOT(writeData()));
 
-    connect(process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(showErrorDialog(QProcess::ProcessError)));
+//    connect(process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(showErrorDialog(QProcess::ProcessError)));
     connect(process, SIGNAL(started()), scanProgress, SLOT(exec()));
     connect(process, SIGNAL(finished(int)), scanProgress, SLOT(close()));
 
-    process->start(settings->value("location").toString(), plist);
+    connect(scanProgress, SIGNAL(rejected()), this, SLOT(sendKillMessage()));
+
+    process->start(settings->value("location").toString(), plist, QProcess::ReadWrite);
     scanProgress->setWindowModality(Qt::WindowModal);
+}
+
+void QnplMainWindow::sendKillMessage()
+{
+    if (process){
+        qint64 bytes = process->write(QString("SDLK_QUIT\n").toStdString().c_str());
+        qDebug () << bytes;
+    }
 }
 
 void QnplMainWindow::showErrorDialog(QProcess::ProcessError error)
