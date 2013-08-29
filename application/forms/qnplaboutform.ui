@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>421</width>
-    <height>255</height>
+    <width>565</width>
+    <height>266</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -36,7 +36,7 @@
       <enum>Qt::NoContextMenu</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -73,7 +73,7 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="0" rowspan="4">
+       <item row="0" column="0" rowspan="4" alignment="Qt::AlignTop">
         <widget class="QLabel" name="lbIcon">
          <property name="text">
           <string/>
@@ -126,7 +126,7 @@
        <string>Ginga GUI</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="0" column="0" rowspan="4">
+       <item row="0" column="0" rowspan="4" alignment="Qt::AlignTop">
         <widget class="QLabel" name="lbIcon_2">
          <property name="text">
           <string/>

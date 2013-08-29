@@ -55,7 +55,7 @@ QnplSettings::QnplSettings()
     }
 #endif
 
-   setValue("version", 106);
+   setValue("version", 107);
 }
 
 QnplSettings::~QnplSettings()

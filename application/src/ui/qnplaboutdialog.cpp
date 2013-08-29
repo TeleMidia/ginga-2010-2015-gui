@@ -12,7 +12,6 @@ QnplAboutDialog::QnplAboutDialog(QWidget* parent)
   form.lbTitle->setText("Ginga GUI v" + QString(QnplUtil::VERSION));
   form.label_2->setText("Date: "+QDateTime::currentDateTime().toString("dd/MM/yyyy."));
   form.lbTitle_1->setText("Ginga");
-
   process = new QProcess (this);
 
   QStringList plist;
@@ -41,6 +40,7 @@ void QnplAboutDialog::printFailToStart(QProcess::ProcessError error)
 void QnplAboutDialog::printGingaVersion()
 {
     form.label->setText(process->readAllStandardOutput());
+    process->close();
 }
 
 QnplAboutDialog::~QnplAboutDialog()
