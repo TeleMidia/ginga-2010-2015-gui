@@ -71,7 +71,6 @@ public slots:
     void performClose();
     void performQuit();
 
-    void imprimirCanais(QString texto1,QString texto2,QString texto3);
     void playNextChannel();
     void playPreviousChannel();
 
@@ -186,6 +185,8 @@ private:
 
     Channel lastChannel;
     QGraphicsProxyWidget *animTuning;
+    QMovie *movie;
+    QLabel *gif_anim;
 };
 
 #endif // QNPLMAINWINDOW_H

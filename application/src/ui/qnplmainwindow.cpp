@@ -6,6 +6,7 @@
 #include <QProcessEnvironment>
 #include <QMovie>
 
+
 QnplMainWindow::QnplMainWindow(QWidget* parent)
     : QMainWindow(parent)
 {
@@ -61,6 +62,17 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
     int h = sh.toInt();
 
     view->setSceneRect(0,0,w,h);
+
+    gif_anim = new QLabel();
+    movie = new QMovie(":/background/anim-tuning");
+    gif_anim->setMovie(movie);
+
+    movie->start();
+    animTuning = view->getScene()->addWidget(gif_anim);
+    animTuning->setVisible(false);
+
+    view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     resize(w+20, h+100);
 }
@@ -304,9 +316,7 @@ void  QnplMainWindow::createConnections()
     connect(clearAction, SIGNAL(triggered()),SLOT(performClear()));
     connect(quitAction, SIGNAL(triggered()), SLOT(performQuit()));
     connect(tuneIPTVChannellAction, SIGNAL(triggered()),SLOT(performIptv()));
-    connect(tuneAppChannellAction, SIGNAL(triggered()),SLOT(performaplication()));
-
-//    connect(channelDialog, SIGNAL(Channelsimprimir(QString,QString,QString)), SLOT(imprimirCanais(QString,QString,QString)));
+    connect(tuneAppChannellAction, SIGNAL(triggered()),SLOT(performAplication()));
 
     connect(baseAction, SIGNAL(triggered()), SLOT(performDevice()));
     connect(passiveAction, SIGNAL(triggered()), SLOT(performDevice()));
@@ -531,6 +541,8 @@ void QnplMainWindow::performStop()
     view->releaseKeyboard();
 
     if (process != NULL){
+        animTuning->setVisible(false);
+
         disconnect(process);
 
         process->terminate();
@@ -566,15 +578,9 @@ void QnplMainWindow::performStop()
     scanProgress->close();
 
     view->update();
-
-//    if (animTuning){
-//        animTuning->deleteLater();
-//        animTuning = 0;
-//    }
-
 }
 
-void QnplMainWindow::performaplication()
+void QnplMainWindow::performAplication()
 {
     aplication->exec();
 }
@@ -645,24 +651,7 @@ void QnplMainWindow::playChannel(Channel channel)
 
         process->start(settings->value("location").toString(), plist);
 
-        QLabel *gif_anim = new QLabel();
-        QMovie *movie = new QMovie(":/background/anim-tuning");
-        gif_anim->setMovie(movie);
-
-        QString screenSize = settings->value("screensize").toString();
-        QStringList sizes = screenSize.split("x");
-        if (sizes.count() == 2){
-            bool w_ok;
-            bool h_ok;
-            int w = sizes.at(0).toInt(&w_ok);
-            int h = sizes.at(1).toInt(&h_ok);
-
-            qDebug () << w + " " + h;
-            if (w_ok && h_ok)
-                    movie->setScaledSize(QSize(w, h));
-        }
-        movie->start();
-        animTuning = view->getScene()->addWidget(gif_anim);
+        animTuning->setVisible(true);
 
         lastChannel = channel;
     }
@@ -673,16 +662,10 @@ void QnplMainWindow::processOutput()
     QString p_stdout = process->readAllStandardError();
 
     qDebug() << p_stdout;
-    if (! p_stdout.startsWith(QnplUtil::CMD_PREFIX)) return;
 
-    p_stdout = p_stdout.mid(QnplUtil::CMD_PREFIX.length()).trimmed();
-
-    if (p_stdout == "0"){
-        animTuning->deleteLater();
-        animTuning = 0;
+    if (p_stdout.contains(QnplUtil::CMD_PREFIX +"0")){
+        animTuning->setVisible(false);
     }
-
-    qDebug() << p_stdout;
 }
 
 void QnplMainWindow::writeData()
@@ -936,12 +919,19 @@ void QnplMainWindow::resizeEvent(QResizeEvent* event)
 
     qDebug() << "resizing...";
 
-    qreal w = event->size().width()-20;
-    qreal h = event->size().height()-100;
+    int w_span = 20;
+    int h_span = 100;
 
-    settings->setValue("screensize",QString::number(w)+"x"+QString::number(h));
+    qreal w = event->size().width() - w_span ;
+    qreal h = event->size().height() - h_span;
 
-    view->setSceneRect(0,0,w,h);
+    settings->setValue("screensize", QString::number(w) + "x" + QString::number(h));
+
+    view->setSceneRect (0,0,w,h);
+
+    animTuning->setPos(0, -h_span);
+    movie->setScaledSize(QSize (w + w_span, h + h_span));
+    gif_anim->setFixedSize (w + w_span, h + h_span);
 }
 
 void QnplMainWindow::playNextChannel()
@@ -1018,11 +1008,4 @@ void QnplMainWindow::showErrorDialog(QProcess::ProcessError error)
         QMessageBox::critical(this, "Error", errorMessage, QMessageBox::Ok);
 
     performStop();
-}
-
-void QnplMainWindow::imprimirCanais(QString texto1,QString texto2,QString texto3)
-{
-    nextButton->setEnabled(true);
-
-    qDebug() << texto1 << texto2 << texto3;
 }
