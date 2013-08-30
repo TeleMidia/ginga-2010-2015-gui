@@ -1,7 +1,8 @@
 #include "qnplutil.h"
 
 QString QnplUtil::VERSION = "1.0.7";
-QString QnplUtil::CMD_PREFIX = "cmd::gingagui::";
+QString QnplUtil::CMD_PREFIX = "cmd::";
+QString QnplUtil::QUIT = "SDLK_QUIT\n";
 
 QStringList QnplUtil::split(QString parameters)
 {

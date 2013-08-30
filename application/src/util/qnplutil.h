@@ -9,6 +9,7 @@ class QnplUtil
 public:
     static QString VERSION;
     static QString CMD_PREFIX;
+    static QString QUIT;
     static QStringList split(QString parameters);
 };
 

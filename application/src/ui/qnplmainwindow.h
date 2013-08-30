@@ -32,28 +32,6 @@
 #include "qnpliptvtunerdialog.h"
 #include "qnplaplicationdialog.h"
 
-
-class EventFilter: public QObject
-{
-public:
-    EventFilter(QObject *parent):QObject(parent) {}
-    ~EventFilter(){}
-
-    bool eventFilter(QObject* object, QEvent* event)
-    {
-        if(event->type() == QEvent::KeyPress && ((QKeyEvent *) event)->key() == Qt::Key_Escape)
-        {
-            qDebug() << "Filtered ESC Key ..." ;
-            return true;
-        }
-        else
-        {
-            return QObject::eventFilter(object,event);
-        }
-    }
-};
-
-
 class QnplMainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -63,6 +41,9 @@ public:
     ~QnplMainWindow();
 
     void load(QString location);
+
+signals:
+    void scanFinished ();
 
 public slots:
     void performOpen();
@@ -79,7 +60,7 @@ public slots:
     void performPreferences();
     void performChannels();
     void performIptv();
-    void performaplication();
+    void performAplication();
 
     void performBug();
     void performAbout();
@@ -186,7 +167,7 @@ private:
     Channel lastChannel;
     QGraphicsProxyWidget *animTuning;
     QMovie *movie;
-    QLabel *gif_anim;
+    QLabel *gifLabel;
 };
 
 #endif // QNPLMAINWINDOW_H

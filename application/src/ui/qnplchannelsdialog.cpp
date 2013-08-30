@@ -7,6 +7,11 @@
 QnplChannelsDialog::QnplChannelsDialog(QWidget *parent)
     : QDialog(parent)
 {
+    QnplMainWindow *mainWindow = qobject_cast <QnplMainWindow *> (parent);
+    if (mainWindow){
+        connect (mainWindow, SIGNAL(scanFinished()), this, SLOT(loadGingaChannels()));
+    }
+
     setWindowTitle(tr("Listas de canais"));
 
     formChannel.setupUi(this);
@@ -42,11 +47,17 @@ Channel QnplChannelsDialog::previousChannel()
     return  channels.at(selectedRow);
 }
 
-void QnplChannelsDialog::  loadGingaChannels(QString channelsFile)
+void QnplChannelsDialog::loadGingaChannels()
 {
+    QString channelsFile = QDir::tempPath() + "/ginga/channels.txt";
+    qDebug () << "Channels file: " + channelsFile;
+
     channels.clear();
 
-    if (QFile::exists(channelsFile)){
+    if (!QFile::exists(channelsFile)){
+        emit scanChannelsRequested();
+    }
+    else{
         QFile* file = new QFile(channelsFile);
         QTextStream in(file);
 

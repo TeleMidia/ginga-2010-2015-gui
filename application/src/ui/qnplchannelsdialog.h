@@ -45,7 +45,6 @@ class QnplChannelsDialog : public QDialog
 public:
   QnplChannelsDialog(QWidget* parent = 0);
   ~QnplChannelsDialog();
-  void loadGingaChannels(QString channelsFile);
 
   Channel nextChannel();
   Channel previousChannel();
@@ -57,6 +56,7 @@ public slots:
    void printrow(QItemSelection,QItemSelection);
    void selectChannel (QModelIndex);
    void changeFrequencyVisibility();
+   void loadGingaChannels();
 
 private:
     QStringList listanext;

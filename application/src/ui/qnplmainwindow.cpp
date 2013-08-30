@@ -25,29 +25,12 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
     location = "";
     process = NULL;
 
-    scanProgress = new QProgressDialog ("Scanning channels...", "", 0, 100, this);
-    scanProgress->setCancelButton(0);
+    scanProgress = new QProgressDialog ("Scanning channels...", "Abort", 0, 100, this);
     scanProgress->setWindowFlags(Qt::Dialog | Qt::Desktop);
-//    scanProgress->installEventFilter(new EventFilter(this));
-    scanProgress->setWindowTitle(windowTitle());
+    scanProgress->setWindowTitle("Scanning");
     scanProgress->setWindowIcon(windowIcon());
 
-
-//    connect(scanProgress, SIGNAL(rejected()), SLOT(showScanErrorDialog()));
-
-
-    //  if (settings->value("run_as") == "base")
-    //  {
     baseAction->setChecked(true);
-    //  }
-    //  else if (settings->value("run_as") == "passive")
-    //  {
-    //    passiveAction->setChecked(true);
-    //  }
-    //  else if (settings->value("run_as") == "active")
-    //  {
-    //    activeAction->setChecked(true);
-    //  }
 
     passiveIsRunning = false;
 
@@ -63,12 +46,12 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
 
     view->setSceneRect(0,0,w,h);
 
-    gif_anim = new QLabel();
+    gifLabel = new QLabel();
     movie = new QMovie(":/background/anim-tuning");
-    gif_anim->setMovie(movie);
+    gifLabel->setMovie(movie);
 
     movie->start();
-    animTuning = view->getScene()->addWidget(gif_anim);
+    animTuning = view->getScene()->addWidget(gifLabel);
     animTuning->setVisible(false);
 
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -185,7 +168,7 @@ void  QnplMainWindow::createMenus()
     fileMenu->addSeparator();
     fileMenu->addAction(tuneBroadChannellAction);
     //fileMenu->addAction(tuneIPTVChannellAction);
-    fileMenu->addAction(tuneAppChannellAction);
+//    fileMenu->addAction(tuneAppChannellAction);
     fileMenu->addSeparator();
     fileMenu->addAction(quitAction);
 
@@ -594,15 +577,7 @@ void QnplMainWindow::performIptv()
 
 void QnplMainWindow::performChannels()
 {
-    QString channelsFile = QDir::tempPath() + "/ginga/channels.txt";
-    qDebug () << "Channels file: " + channelsFile;
-
-    if (!QFile::exists(channelsFile)){
-        scanProgress->setValue(0);
-        scan();
-    }
-
-    channelDialog->loadGingaChannels(channelsFile);
+    channelDialog->loadGingaChannels();
     if (channelDialog->exec() == QDialog::Accepted){
 
         Channel selectedChannel = channelDialog->channel();
@@ -659,37 +634,84 @@ void QnplMainWindow::playChannel(Channel channel)
 
 void QnplMainWindow::processOutput()
 {
-    QString p_stdout = process->readAllStandardError();
+    QString p_stdout = process->readAllStandardOutput();
+    QStringList lines = p_stdout.split("\n");
 
-    qDebug() << p_stdout;
+    for (int i = 0; i < lines.count(); i++){
+        QString line = lines.at(i).trimmed();
+        if (line.startsWith(QnplUtil::CMD_PREFIX)){
+            QStringList tokens = line.split("::");
+            if (tokens.count() == 4){
+                QString command = tokens.at(0);
+                QString status = tokens.at(1);
+                QString entity = tokens.at(2);
+                QString msg = tokens.at(3);
 
-    if (p_stdout.contains(QnplUtil::CMD_PREFIX +"0")){
-        animTuning->setVisible(false);
+                if (command == "cmd"){
+                    if (status == "0"){
+                        if (entity == "start" && msg == "?mAV?"){
+                            animTuning->setVisible(false);
+                        }
+                    }
+                    else if (status == "1"){
+                        QMessageBox::critical(this, "Warning", msg, QMessageBox::Ok);
+                        animTuning->setVisible(false);
+                        qint64 bytes = process->write(QnplUtil::QUIT.toStdString().c_str());
+                        qDebug () << bytes;
+                    }
+                }
+            }
+        }
     }
 }
 
 void QnplMainWindow::writeData()
 {
-    QString p_stdout = process->readAllStandardError();
+    QString p_stdout = process->readAllStandardOutput();
     qDebug() << p_stdout;
 
-    if (! p_stdout.startsWith(QnplUtil::CMD_PREFIX)) return;
+    QStringList lines = p_stdout.split("\n");
 
-    p_stdout = p_stdout.mid(QnplUtil::CMD_PREFIX.length());
+    for (int i = 0; i < lines.count(); i++){
+        QString line = lines.at(i).trimmed();
+        if (line.startsWith(QnplUtil::CMD_PREFIX)){
 
-    if (p_stdout.contains("%")){
-        p_stdout.remove("%");
+            QStringList tokens = line.split("::");
+            if (tokens.count() == 4){
+                QString command = tokens.at(0);
+                QString status = tokens.at(1);
+                QString entity = tokens.at(2);
+                QString msg = tokens.at(3);
 
-        bool ok;
-        int value = p_stdout.toInt(&ok);
-        if (ok)
-            scanProgress->setValue(value);
-    }
+                if (command == "cmd"){
+                    if (status == "0"){
+                        if (entity == "tunerscanprogress"){
+                            msg.remove("%");
+                            bool ok;
+                            int value = msg.toInt(&ok);
+                            if (ok){
+                                scanProgress->setValue(value);
+                                if (value == 100)
+                                    emit scanFinished();
+                            }
 
-    if (p_stdout.contains("Done!")){
-        scanProgress->accept();
+                        }
+                    }
+                    else if (status == "1"){
+                        if (entity == "tuner"){
+                            QMessageBox::warning(this, "Warning", msg, QMessageBox::Ok);
+                            scanProgress->close();
+
+                            qint64 bytes = process->write(QnplUtil::QUIT.toStdString().c_str());
+                            qDebug () << bytes;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
+
 
 void QnplMainWindow::performPreferences()
 {
@@ -931,7 +953,7 @@ void QnplMainWindow::resizeEvent(QResizeEvent* event)
 
     animTuning->setPos(0, -h_span);
     movie->setScaledSize(QSize (w + w_span, h + h_span));
-    gif_anim->setFixedSize (w + w_span, h + h_span);
+    gifLabel->setFixedSize (w + w_span, h + h_span);
 }
 
 void QnplMainWindow::playNextChannel()
@@ -956,7 +978,7 @@ void QnplMainWindow::showScanErrorDialog()
 {
     if (process)
     {
-        QMessageBox::critical(this, "Error", "Channel scanning canceled by user.", QMessageBox::Ok);
+        QMessageBox::warning(this, "Error", "Channel scanning canceled by user.", QMessageBox::Ok);
         process->kill();
     }
 }
@@ -976,26 +998,31 @@ void QnplMainWindow::scan()
         plist << "--enable-log" << "file";
     }
 
-
     connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(writeData()));
     connect(process, SIGNAL(readyReadStandardError()), this, SLOT(writeData()));
 
-//    connect(process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(showErrorDialog(QProcess::ProcessError)));
-    connect(process, SIGNAL(started()), scanProgress, SLOT(exec()));
-    connect(process, SIGNAL(finished(int)), scanProgress, SLOT(close()));
+    connect(process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(showErrorDialog(QProcess::ProcessError)));
+    connect(process, SIGNAL(finished(int)), scanProgress, SLOT(done(int)));
 
-    connect(scanProgress, SIGNAL(rejected()), this, SLOT(sendKillMessage()));
+    connect(scanProgress, SIGNAL(finished(int)), this, SIGNAL(scanFinished()));
+    connect(scanProgress, SIGNAL(canceled()), this, SLOT(sendKillMessage()));
 
+    scanProgress->setValue(0);
     process->start(settings->value("location").toString(), plist, QProcess::ReadWrite);
-    scanProgress->setWindowModality(Qt::WindowModal);
+    scanProgress->exec();
 }
+
 
 void QnplMainWindow::sendKillMessage()
 {
+    disconnect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(writeData()));
+    disconnect(process, SIGNAL(readyReadStandardError()), this, SLOT(writeData()));
+
     if (process){
-        qint64 bytes = process->write(QString("SDLK_QUIT\n").toStdString().c_str());
+        qint64 bytes = process->write(QnplUtil::QUIT.toStdString().c_str());
         qDebug () << bytes;
     }
+    emit scanFinished();
 }
 
 void QnplMainWindow::showErrorDialog(QProcess::ProcessError error)

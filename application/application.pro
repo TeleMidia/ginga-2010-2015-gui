@@ -3,6 +3,7 @@ TARGET = \
 
 CONFIG += console
 
+
 QT += \
     widgets
 
