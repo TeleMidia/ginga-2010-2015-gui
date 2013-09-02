@@ -24,6 +24,7 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
 
     location = "";
     process = NULL;
+    timer = NULL;
 
     scanProgress = new QProgressDialog ("Scanning channels...", "Abort", 0, 100, this);
     scanProgress->setWindowFlags(Qt::Dialog | Qt::Desktop);
@@ -525,6 +526,13 @@ void QnplMainWindow::performStop()
 {
     view->releaseKeyboard();
 
+    if (timer != NULL){
+        timer->stop();
+
+        delete timer;
+        timer = NULL;
+    }
+
     if (process != NULL){
         animTuning->setVisible(false);
 
@@ -604,7 +612,6 @@ void QnplMainWindow::playChannel(Channel channel)
         plist << "--set-tuner" << "sbtvdt:" + channel.frequency;
         plist << "--vmode" << settings->value("screensize").toString();
         plist << "--wid" << viewWID();
-        plist << "--enable-log" << "C:\\log.txt";
 
         qDebug () << plist;
 
@@ -628,11 +635,29 @@ void QnplMainWindow::playChannel(Channel channel)
         activeAction->setEnabled(false);
 
         process->start(settings->value("location").toString(), plist);
+        isPlayingChannel = false;
+
+        timer = new QTimer (this);
+        connect (timer, SIGNAL(timeout()), this, SLOT(stopTuning()));
+        timer->start(15000);
 
         animTuning->setVisible(true);
 
         lastChannel = channel;
         location = "";
+    }
+}
+
+void QnplMainWindow::stopTuning()
+{
+    if (!isPlayingChannel && process){
+        QMessageBox::StandardButton button =
+                QMessageBox::warning(this, "Warning", QString ("It seems Ginga is taking so long ") +
+                             QString ("to tuning this channel. The signal's strength may be weak.") +
+                             QString (" Would you like to wait?"), QMessageBox::Yes | QMessageBox::No);
+        if (button == QMessageBox::No){
+            performStop();
+        }
     }
 }
 
@@ -654,6 +679,7 @@ void QnplMainWindow::processOutput()
                 if (command == "cmd"){
                     if (status == "0"){
                         if (entity == "start" && msg == "?mAV?"){
+                            isPlayingChannel = true;
                             animTuning->setVisible(false);
                         }
                     }
@@ -662,6 +688,7 @@ void QnplMainWindow::processOutput()
                         animTuning->setVisible(false);
                         qint64 bytes = process->write(QnplUtil::QUIT.toStdString().c_str());
                         qDebug () << bytes;
+                        performStop();
                     }
                 }
             }
@@ -872,11 +899,8 @@ void QnplMainWindow::performRunAsActive()
     activeAction->setEnabled(false);
 }
 
-void QnplMainWindow::performCloseWindow(int, QProcess::ExitStatus exitStatus)
+void QnplMainWindow::performCloseWindow(int, QProcess::ExitStatus)
 {
-    if (exitStatus == QProcess::CrashExit){
-        QMessageBox::critical(this, "Error", "Ginga stop working. Please try again.", QMessageBox::Ok);
-    }
     performStop();
 }
 
@@ -998,7 +1022,7 @@ void QnplMainWindow::scan()
 
     QStringList plist;
     plist << "--set-tuner" << "sbtvdt:scan";
-    plist << "--wid" << viewWID();
+    plist << "--wid" << hwndToString(scanProgress->winId());
     plist << "--poll-stdin";
 
     if (settings->value("enablelog").toBool()){

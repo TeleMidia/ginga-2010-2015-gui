@@ -124,7 +124,8 @@ void QnplChannelsDialog::loadGingaChannels()
                 selectedRow = 0;
             }
 
-            formChannel.table->setColumnHidden(2, true);
+            formChannel.table->setColumnHidden(2, !formChannel.frequencyCheckBox->isChecked());
+            formChannel.table->resizeColumnsToContents();
         }
 
         delete file;

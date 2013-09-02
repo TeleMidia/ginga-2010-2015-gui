@@ -22,6 +22,7 @@
 #include <QProgressDialog>
 #include <QGraphicsProxyWidget>
 #include <QMacNativeWidget>
+#include <QTimer>
 
 #include "qnplview.h"
 #include "qnplsettings.h"
@@ -84,6 +85,7 @@ public slots:
     void showScanErrorDialog ();
     void processOutput ();
     void sendKillMessage ();
+    void stopTuning();
 
 protected:
     void resizeEvent(QResizeEvent* event);
@@ -168,6 +170,8 @@ private:
     QGraphicsProxyWidget *animTuning;
     QMovie *movie;
     QLabel *gifLabel;
+    bool isPlayingChannel;
+    QTimer *timer;
 };
 
 #endif // QNPLMAINWINDOW_H
