@@ -47,7 +47,7 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
     view->setSceneRect(0,0,w,h);
 
     gifLabel = new QLabel();
-    movie = new QMovie(":/background/anim-tuning");
+    movie = new QMovie("bg-tuning.gif");
     gifLabel->setMovie(movie);
 
     movie->start();
@@ -431,7 +431,8 @@ void QnplMainWindow::performPlay()
 
         process = new QProcess(this);
 
-        connect(process, SIGNAL(finished(int)), SLOT(performCloseWindow(int)), Qt::QueuedConnection);
+        connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(performCloseWindow(int, QProcess::ExitStatus)), Qt::QueuedConnection);
+        connect(process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(showErrorDialog(QProcess::ProcessError)));
 
         playButton->setEnabled(false);
         stopButton->setEnabled(true);
@@ -440,6 +441,7 @@ void QnplMainWindow::performPlay()
         openAction->setEnabled(false);
 
         openLine->setEnabled(false);
+        openLine->setText(location);
 
         recentMenu->setEnabled(false);
 
@@ -602,6 +604,7 @@ void QnplMainWindow::playChannel(Channel channel)
         plist << "--set-tuner" << "sbtvdt:" + channel.frequency;
         plist << "--vmode" << settings->value("screensize").toString();
         plist << "--wid" << viewWID();
+        plist << "--enable-log" << "C:\\log.txt";
 
         qDebug () << plist;
 
@@ -629,6 +632,7 @@ void QnplMainWindow::playChannel(Channel channel)
         animTuning->setVisible(true);
 
         lastChannel = channel;
+        location = "";
     }
 }
 
@@ -654,7 +658,7 @@ void QnplMainWindow::processOutput()
                         }
                     }
                     else if (status == "1"){
-                        QMessageBox::critical(this, "Warning", msg, QMessageBox::Ok);
+                        QMessageBox::warning(this, "Warning", msg, QMessageBox::Ok);
                         animTuning->setVisible(false);
                         qint64 bytes = process->write(QnplUtil::QUIT.toStdString().c_str());
                         qDebug () << bytes;
@@ -780,13 +784,13 @@ void QnplMainWindow::performRunAsPassive()
         }
 
         process = new QProcess(this);
-        connect(process, SIGNAL(finished(int)), SLOT(performCloseWindow(int)), Qt::QueuedConnection);
+        connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(performCloseWindow(int, QProcess::ExitStatus)), Qt::QueuedConnection);
 
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
         env.insert("LD_LIBRARY_PATH", "/usr/local/lib/lua/5.1/socket:/usr/local/lib/ginga:/usr/local/lib/ginga/adapters:/usr/local/lib/ginga/cm:/usr/local/lib/ginga/mb:/usr/local/lib/ginga/mb/dec:/usr/local/lib/ginga/converters:/usr/local/lib/ginga/dp:/usr/local/lib/ginga/ic:/usr/local/lib/ginga/iocontents:/usr/local/lib/ginga/players:/usr/local/lib:");
         process->setProcessEnvironment(env);
 
-        connect(process, SIGNAL(finished(int)), SLOT(performCloseWindow(int)), Qt::QueuedConnection);
+        connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(performCloseWindow(int, QProcess::ExitStatus)), Qt::QueuedConnection);
 
         qDebug() << settings->value("location").toString() << plist;
 
@@ -841,13 +845,13 @@ void QnplMainWindow::performRunAsActive()
     }
 
     process = new QProcess(this);
-    connect(process, SIGNAL(finished(int)), SLOT(performCloseWindow(int)), Qt::QueuedConnection);
+    connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(performCloseWindow(int, QProcess::ExitStatus)), Qt::QueuedConnection);
 
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     env.insert("LD_LIBRARY_PATH", "/usr/local/lib/lua/5.1/socket:/usr/local/lib/ginga:/usr/local/lib/ginga/adapters:/usr/local/lib/ginga/cm:/usr/local/lib/ginga/mb:/usr/local/lib/ginga/mb/dec:/usr/local/lib/ginga/converters:/usr/local/lib/ginga/dp:/usr/local/lib/ginga/ic:/usr/local/lib/ginga/iocontents:/usr/local/lib/ginga/players:/usr/local/lib:");
     process->setProcessEnvironment(env);
 
-    connect(process, SIGNAL(finished(int)), SLOT(performCloseWindow(int)), Qt::QueuedConnection);
+    connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(performCloseWindow(int, QProcess::ExitStatus)), Qt::QueuedConnection);
 
     qDebug() << settings->value("location").toString() << plist;
 
@@ -868,8 +872,11 @@ void QnplMainWindow::performRunAsActive()
     activeAction->setEnabled(false);
 }
 
-void QnplMainWindow::performCloseWindow(int)
+void QnplMainWindow::performCloseWindow(int, QProcess::ExitStatus exitStatus)
 {
+    if (exitStatus == QProcess::CrashExit){
+        QMessageBox::critical(this, "Error", "Ginga stop working. Please try again.", QMessageBox::Ok);
+    }
     performStop();
 }
 
@@ -1002,9 +1009,9 @@ void QnplMainWindow::scan()
     connect(process, SIGNAL(readyReadStandardError()), this, SLOT(writeData()));
 
     connect(process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(showErrorDialog(QProcess::ProcessError)));
-    connect(process, SIGNAL(finished(int)), scanProgress, SLOT(done(int)));
+    connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), scanProgress, SLOT(done(int)));
 
-    connect(scanProgress, SIGNAL(finished(int)), this, SIGNAL(scanFinished()));
+    connect(scanProgress, SIGNAL(finished(int, QProcess::ExitStatus)), this, SIGNAL(scanFinished()));
     connect(scanProgress, SIGNAL(canceled()), this, SLOT(sendKillMessage()));
 
     scanProgress->setValue(0);

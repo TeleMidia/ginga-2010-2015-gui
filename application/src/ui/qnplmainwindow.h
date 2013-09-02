@@ -72,7 +72,7 @@ public slots:
     void performRunAsPassive();
     void performRunAsActive();
 
-    void performCloseWindow(int);
+    void performCloseWindow(int, QProcess::ExitStatus);
 
     void notifyKey(QString key);
 
