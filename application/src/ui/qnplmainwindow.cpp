@@ -48,12 +48,18 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
     view->setSceneRect(0,0,w,h);
 
     gifLabel = new QLabel();
-    movie = new QMovie("bg-tuning.gif");
+    movie = new QMovie(":background/anim-tuning");
+
+    if (!movie->isValid()){
+        qDebug () << "Cannot find tunning gif";
+    }
+
     gifLabel->setMovie(movie);
 
     movie->start();
     animTuning = view->getScene()->addWidget(gifLabel);
     animTuning->setVisible(false);
+    gifLabel->setVisible(false);
 
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -535,6 +541,7 @@ void QnplMainWindow::performStop()
 
     if (process != NULL){
         animTuning->setVisible(false);
+//        gifLabel->setVisible(false);
 
         disconnect(process);
 
@@ -605,12 +612,17 @@ void QnplMainWindow::playChannel(Channel channel)
 
         connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(processOutput()));
         connect(process, SIGNAL(readyReadStandardError()), this, SLOT(processOutput()));
-        connect(process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(showErrorDialog(QProcess::ProcessError)));
+        connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(performCloseWindow(int,QProcess::ExitStatus)));
+
 
         QStringList plist;
 
         plist << "--set-tuner" << "sbtvdt:" + channel.frequency;
         plist << "--vmode" << settings->value("screensize").toString();
+        if (settings->value("enablelog").toBool()){
+            plist << "--enable-log" << "file";
+        }
+
         plist << "--wid" << viewWID();
 
         qDebug () << plist;
@@ -642,6 +654,7 @@ void QnplMainWindow::playChannel(Channel channel)
         timer->start(15000);
 
         animTuning->setVisible(true);
+//        gifLabel->setVisible(true);
 
         lastChannel = channel;
         location = "";
@@ -681,11 +694,13 @@ void QnplMainWindow::processOutput()
                         if (entity == "start" && msg == "?mAV?"){
                             isPlayingChannel = true;
                             animTuning->setVisible(false);
+//                            gifLabel->setVisible(false);
                         }
                     }
                     else if (status == "1"){
                         QMessageBox::warning(this, "Warning", msg, QMessageBox::Ok);
                         animTuning->setVisible(false);
+//                        gifLabel->setVisible(false);
                         qint64 bytes = process->write(QnplUtil::QUIT.toStdString().c_str());
                         qDebug () << bytes;
                         performStop();
@@ -901,6 +916,11 @@ void QnplMainWindow::performRunAsActive()
 
 void QnplMainWindow::performCloseWindow(int, QProcess::ExitStatus)
 {
+    if (animTuning->isVisible()){
+        timer->stop();
+        QMessageBox::warning(this, "Warning", QString ("The signal's strength is too weak to tune this channel. ") +
+                             QString ("Please, check your antenna and try again."), QMessageBox::Ok);
+    }
     performStop();
 }
 
@@ -983,6 +1003,7 @@ void QnplMainWindow::resizeEvent(QResizeEvent* event)
     view->setSceneRect (0,0,w,h);
 
     animTuning->setPos(0, -h_span);
+
     movie->setScaledSize(QSize (w + w_span, h + h_span));
     gifLabel->setFixedSize (w + w_span, h + h_span);
 }
@@ -1061,9 +1082,6 @@ void QnplMainWindow::showErrorDialog(QProcess::ProcessError error)
     QString errorMessage = "";
     if (error == QProcess::FailedToStart)
         errorMessage = "Error while opening Ginga. Check the binary path.";
-
-    if (errorMessage != "")
-        QMessageBox::critical(this, "Error", errorMessage, QMessageBox::Ok);
 
     performStop();
 }
