@@ -11,6 +11,7 @@ int main(int argc, char *argv[])
     qDebug() << argc << argv;
 
     QApplication application(argc, argv);
+    application.addLibraryPath(QDir::currentPath());
     application.setApplicationName("gingagui");
     application.setApplicationVersion(QString(QnplUtil::VERSION));
     application.setOrganizationName("telemidia");

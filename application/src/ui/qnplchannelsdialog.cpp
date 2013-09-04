@@ -54,10 +54,7 @@ void QnplChannelsDialog::loadGingaChannels()
 
     channels.clear();
 
-    if (!QFile::exists(channelsFile)){
-        emit scanChannelsRequested();
-    }
-    else{
+    if (QFile::exists(channelsFile)){
         QFile* file = new QFile(channelsFile);
         QTextStream in(file);
 
@@ -126,10 +123,13 @@ void QnplChannelsDialog::loadGingaChannels()
 
             formChannel.table->setColumnHidden(2, !formChannel.frequencyCheckBox->isChecked());
             formChannel.table->resizeColumnsToContents();
+
         }
 
         delete file;
     }
+
+    formChannel.okButton->setEnabled(channels.count() > 0);
 }
 
 void QnplChannelsDialog::selectChannel(QModelIndex selectedRow)

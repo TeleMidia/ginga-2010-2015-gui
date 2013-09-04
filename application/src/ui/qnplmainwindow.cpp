@@ -591,8 +591,8 @@ void QnplMainWindow::performChannels()
     if (channelDialog->exec() == QDialog::Accepted){
 
         Channel selectedChannel = channelDialog->channel();
-
-        playChannel (selectedChannel);
+        if (!selectedChannel.isNull())
+            playChannel (selectedChannel);
     }
 }
 
