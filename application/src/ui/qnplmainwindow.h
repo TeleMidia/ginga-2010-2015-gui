@@ -77,15 +77,15 @@ public slots:
 
     void notifyKey(QString key);
 
-    void writeData ();
+    void writeScanOutput ();
 
     void scan ();
     void playChannel (Channel channel);
-    void showErrorDialog (QProcess::ProcessError);
-    void showScanErrorDialog ();
-    void processOutput ();
+    void showErrorDialog(QProcess::ProcessError);
+    void writeTunerOutput ();
     void sendKillMessage ();
     void stopTuning();
+    void removeCarouselData();
 
 protected:
     void resizeEvent(QResizeEvent* event);
@@ -98,6 +98,8 @@ private:
     void createDialogs();
     void createToolbars();
     void createConnections();
+    void removePath (QString);
+    void setUpProcessConnections (QProcess *);
 
     inline QString viewWID () {
         QString WID = "";
@@ -172,6 +174,8 @@ private:
     QLabel *gifLabel;
     bool isPlayingChannel;
     QTimer *timer;
+
+//    QMessageBox *messageBoxManager;
 };
 
 #endif // QNPLMAINWINDOW_H

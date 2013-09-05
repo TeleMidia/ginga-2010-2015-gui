@@ -175,7 +175,7 @@ void  QnplMainWindow::createMenus()
     fileMenu->addSeparator();
     fileMenu->addAction(tuneBroadChannellAction);
     //fileMenu->addAction(tuneIPTVChannellAction);
-//    fileMenu->addAction(tuneAppChannellAction);
+    //    fileMenu->addAction(tuneAppChannellAction);
     fileMenu->addSeparator();
     fileMenu->addAction(quitAction);
 
@@ -437,9 +437,7 @@ void QnplMainWindow::performPlay()
         QStringList parameters;
 
         process = new QProcess(this);
-
-        connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(performCloseWindow(int, QProcess::ExitStatus)), Qt::QueuedConnection);
-        connect(process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(showErrorDialog(QProcess::ProcessError)));
+        setUpProcessConnections(process);
 
         playButton->setEnabled(false);
         stopButton->setEnabled(true);
@@ -503,6 +501,7 @@ void QnplMainWindow::performPlay()
 
             qDebug() << settings->value("location").toString() << parameters;
 
+            connect (process, SIGNAL(started()), this, SLOT(removeCarouselData()));
             process->start(settings->value("location").toString(), parameters);
             view->setFocus();
         }
@@ -524,14 +523,13 @@ void QnplMainWindow::performPlay()
     }
     else
     {
-        QMessageBox::information(this,tr("Information"), tr("Please, open NCL document to play."));
+        QMessageBox::information(this, tr ("Information"), tr("Please, open NCL document to play."), QMessageBox::Ok);
     }
 }
 
 void QnplMainWindow::performStop()
 {
     view->releaseKeyboard();
-
     if (timer != NULL){
         timer->stop();
 
@@ -541,7 +539,6 @@ void QnplMainWindow::performStop()
 
     if (process != NULL){
         animTuning->setVisible(false);
-//        gifLabel->setVisible(false);
 
         disconnect(process);
 
@@ -578,6 +575,8 @@ void QnplMainWindow::performStop()
     scanProgress->close();
 
     view->update();
+
+    removeCarouselData();
 }
 
 void QnplMainWindow::performAplication()
@@ -609,11 +608,10 @@ void QnplMainWindow::playChannel(Channel channel)
         performStop();
 
         process = new QProcess (this);
+        setUpProcessConnections(process);
 
-        connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(processOutput()));
-        connect(process, SIGNAL(readyReadStandardError()), this, SLOT(processOutput()));
-        connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(performCloseWindow(int,QProcess::ExitStatus)));
-
+        connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(writeTunerOutput()));
+        connect(process, SIGNAL(readyReadStandardError()), this, SLOT(writeTunerOutput()));
 
         QStringList plist;
 
@@ -654,7 +652,6 @@ void QnplMainWindow::playChannel(Channel channel)
         timer->start(15000);
 
         animTuning->setVisible(true);
-//        gifLabel->setVisible(true);
 
         lastChannel = channel;
         location = "";
@@ -664,17 +661,18 @@ void QnplMainWindow::playChannel(Channel channel)
 void QnplMainWindow::stopTuning()
 {
     if (!isPlayingChannel && process){
-        QMessageBox::StandardButton button =
-                QMessageBox::warning(this, "Warning", QString ("It seems Ginga is taking so long ") +
+
+        QMessageBox::StandardButton button = QMessageBox::warning(this, "Warning", QString ("It seems Ginga is taking so long ") +
                              QString ("to tuning this channel. The signal's strength may be weak.") +
                              QString (" Would you like to wait?"), QMessageBox::Yes | QMessageBox::No);
+
         if (button == QMessageBox::No){
             performStop();
         }
     }
 }
 
-void QnplMainWindow::processOutput()
+void QnplMainWindow::writeTunerOutput()
 {
     QString p_stdout = process->readAllStandardOutput();
     QStringList lines = p_stdout.split("\n");
@@ -694,13 +692,15 @@ void QnplMainWindow::processOutput()
                         if (entity == "start" && msg == "?mAV?"){
                             isPlayingChannel = true;
                             animTuning->setVisible(false);
-//                            gifLabel->setVisible(false);
                         }
                     }
                     else if (status == "1"){
-                        QMessageBox::warning(this, "Warning", msg, QMessageBox::Ok);
+                        timer->stop();    
+
+                        if (msg != "")
+                            QMessageBox::warning(this, "Warning", msg, QMessageBox::Ok);
+
                         animTuning->setVisible(false);
-//                        gifLabel->setVisible(false);
                         qint64 bytes = process->write(QnplUtil::QUIT.toStdString().c_str());
                         qDebug () << bytes;
                         performStop();
@@ -711,7 +711,7 @@ void QnplMainWindow::processOutput()
     }
 }
 
-void QnplMainWindow::writeData()
+void QnplMainWindow::writeScanOutput()
 {
     QString p_stdout = process->readAllStandardOutput();
     qDebug() << p_stdout;
@@ -740,14 +740,17 @@ void QnplMainWindow::writeData()
                                 if (value == 100)
                                     emit scanFinished();
                             }
-
+                        }
+                        else if (entity == "channelfound"){
+                            scanProgress->setLabelText("Channel found: \'" + msg + "\'.");
                         }
                     }
                     else if (status == "1"){
                         if (entity == "tuner"){
-                            QMessageBox::warning(this, "Warning", msg, QMessageBox::Ok);
-                            scanProgress->close();
+                            if (msg != "")
+                                QMessageBox::warning(this, "Warning", msg, QMessageBox::Ok);
 
+                            scanProgress->close();
                             qint64 bytes = process->write(QnplUtil::QUIT.toStdString().c_str());
                             qDebug () << bytes;
                         }
@@ -826,13 +829,11 @@ void QnplMainWindow::performRunAsPassive()
         }
 
         process = new QProcess(this);
-        connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(performCloseWindow(int, QProcess::ExitStatus)), Qt::QueuedConnection);
+        setUpProcessConnections(process);
 
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
         env.insert("LD_LIBRARY_PATH", "/usr/local/lib/lua/5.1/socket:/usr/local/lib/ginga:/usr/local/lib/ginga/adapters:/usr/local/lib/ginga/cm:/usr/local/lib/ginga/mb:/usr/local/lib/ginga/mb/dec:/usr/local/lib/ginga/converters:/usr/local/lib/ginga/dp:/usr/local/lib/ginga/ic:/usr/local/lib/ginga/iocontents:/usr/local/lib/ginga/players:/usr/local/lib:");
         process->setProcessEnvironment(env);
-
-        connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(performCloseWindow(int, QProcess::ExitStatus)), Qt::QueuedConnection);
 
         qDebug() << settings->value("location").toString() << plist;
 
@@ -857,7 +858,7 @@ void QnplMainWindow::performRunAsPassive()
     }
     else
     {
-        QMessageBox::information(this,tr("Information"), tr("Only one passive device client is allowed per host."));
+        QMessageBox::information(this, "Information", tr("Only one passive device client is allowed per host."), QMessageBox::Ok);
     }
 }
 
@@ -887,13 +888,11 @@ void QnplMainWindow::performRunAsActive()
     }
 
     process = new QProcess(this);
-    connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(performCloseWindow(int, QProcess::ExitStatus)), Qt::QueuedConnection);
+    setUpProcessConnections(process);
 
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     env.insert("LD_LIBRARY_PATH", "/usr/local/lib/lua/5.1/socket:/usr/local/lib/ginga:/usr/local/lib/ginga/adapters:/usr/local/lib/ginga/cm:/usr/local/lib/ginga/mb:/usr/local/lib/ginga/mb/dec:/usr/local/lib/ginga/converters:/usr/local/lib/ginga/dp:/usr/local/lib/ginga/ic:/usr/local/lib/ginga/iocontents:/usr/local/lib/ginga/players:/usr/local/lib:");
     process->setProcessEnvironment(env);
-
-    connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(performCloseWindow(int, QProcess::ExitStatus)), Qt::QueuedConnection);
 
     qDebug() << settings->value("location").toString() << plist;
 
@@ -918,8 +917,14 @@ void QnplMainWindow::performCloseWindow(int, QProcess::ExitStatus)
 {
     if (animTuning->isVisible()){
         timer->stop();
+        QList <QMessageBox *>list = findChildren <QMessageBox *> ();
+        foreach (QMessageBox *msgBox, list){
+            msgBox->close();
+        }
+
         QMessageBox::warning(this, "Warning", QString ("The signal's strength is too weak to tune this channel. ") +
                              QString ("Please, check your antenna and try again."), QMessageBox::Ok);
+
     }
     performStop();
 }
@@ -1026,20 +1031,21 @@ void QnplMainWindow::playPreviousChannel()
     }
 }
 
-void QnplMainWindow::showScanErrorDialog()
-{
-    if (process)
-    {
-        QMessageBox::warning(this, "Error", "Channel scanning canceled by user.", QMessageBox::Ok);
-        process->kill();
-    }
-}
 
 void QnplMainWindow::scan()
 {
     performStop();
 
     process = new QProcess (this);
+    setUpProcessConnections(process);
+
+    connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(writeScanOutput()));
+    connect(process, SIGNAL(readyReadStandardError()), this, SLOT(writeScanOutput()));
+
+    connect(process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SIGNAL(scanFinished()));
+    connect(process, SIGNAL(finished(int, QProcess::ExitStatus)), scanProgress, SLOT(done(int)));
+    connect(process, SIGNAL(started()), scanProgress, SLOT(exec()));
+    connect(scanProgress, SIGNAL(canceled()), this, SLOT(sendKillMessage()));
 
     QStringList plist;
     plist << "--set-tuner" << "sbtvdt:scan";
@@ -1050,25 +1056,15 @@ void QnplMainWindow::scan()
         plist << "--enable-log" << "file";
     }
 
-    connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(writeData()));
-    connect(process, SIGNAL(readyReadStandardError()), this, SLOT(writeData()));
-
-    connect(process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(showErrorDialog(QProcess::ProcessError)));
-    connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), scanProgress, SLOT(done(int)));
-
-    connect(scanProgress, SIGNAL(finished(int, QProcess::ExitStatus)), this, SIGNAL(scanFinished()));
-    connect(scanProgress, SIGNAL(canceled()), this, SLOT(sendKillMessage()));
-
     scanProgress->setValue(0);
     process->start(settings->value("location").toString(), plist, QProcess::ReadWrite);
-    scanProgress->exec();
 }
 
 
 void QnplMainWindow::sendKillMessage()
 {
-    disconnect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(writeData()));
-    disconnect(process, SIGNAL(readyReadStandardError()), this, SLOT(writeData()));
+    disconnect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(writeScanOutput()));
+    disconnect(process, SIGNAL(readyReadStandardError()), this, SLOT(writeScanOutput()));
 
     if (process){
         qint64 bytes = process->write(QnplUtil::QUIT.toStdString().c_str());
@@ -1080,8 +1076,47 @@ void QnplMainWindow::sendKillMessage()
 void QnplMainWindow::showErrorDialog(QProcess::ProcessError error)
 {
     QString errorMessage = "";
-    if (error == QProcess::FailedToStart)
+    if (error == QProcess::FailedToStart){
         errorMessage = "Error while opening Ginga. Check the binary path.";
+    }
+
+    if (errorMessage != ""){
+        QMessageBox::warning(this, "Warning", errorMessage, QMessageBox::Ok);
+    }
 
     performStop();
+}
+
+void QnplMainWindow::removeCarouselData()
+{
+    QString carouselPath = QDir::tempPath() + "/ginga/carousel";
+    if (QFile::exists(carouselPath))
+        removePath(carouselPath);
+}
+
+void QnplMainWindow::removePath(QString path)
+{
+    QFileInfo fileInfo(path);
+    if(fileInfo.isDir()){
+        QDir dir(path);
+        QStringList fileList = dir.entryList();
+        for(int i = 0; i < fileList.count(); ++i){
+            QString entry = fileList.at(i);
+            if (entry != "." && entry != "..")
+                removePath(path + "/" + entry);
+        }
+        dir.rmdir(path);
+    }
+    else{
+        QFile::remove(path);
+    }
+}
+
+void QnplMainWindow::setUpProcessConnections(QProcess *process)
+{
+    if (process){
+        connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(performCloseWindow(int, QProcess::ExitStatus)));
+        connect(process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(showErrorDialog(QProcess::ProcessError)));
+        connect(process, SIGNAL(started()), this, SLOT(removeCarouselData()));
+    }
 }
