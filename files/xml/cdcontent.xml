@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+     version="2.0">
+  <channel>
+    <title>NCL content in this CD:</title>
+    <link>/usr/local/lib/ginga/gui/files/xml/cdcontent.xml</link>
+    <description>Ginga Live CD contains demo applications to introduce some NCL features even if you are not online at the moment. These applications were developed by the TeleMidia Lab and can also be found in The NCL Club.</description>
+    <language>en</language>
+    <item>
+      <title>Primeiro Joao</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This series of interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/usr/local/lib/ginga/gui/files/xml/primeirojoaogroup.xml</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>Hard Race</title>
+      <description>"Hard Race" is a gambling game, where the viewer is called to choose his/her favorite horse and then look forward to see his/her horse as the winner. It was developed to demonstrate how the combination of the best features from NCL and Lua languages can result in a simple code with lightweight processing. </description>
+      <link>/misc/ncl30/PareoDuro/main.ncl</link>
+      <enclosure url="/misc/ncl30/PareoDuro/preview.png" type="image/png"/>
+    </item>
+  </channel>
+</rss>
+
+

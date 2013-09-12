@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ version="2.0">
+        <channel>
+            <title>Manually Enter IP Information</title>
+            <link>/usr/local/lib/ginga/gui/files/xml/newether.xml</link>
+            <description>This form allows you to manually enter all your IP configuration. A valid IP address is required if you want to access the NCL Club repository or start a SSH server.</description>
+            <language>en</language>
+            <item>
+                <title>IP Address</title>
+                <description>Host IP Address. Use the following format: 999.999.999.999</description>
+                <link>input:///text/?ip.address=</link>
+                <enclosure url="/usr/local/lib/ginga/gui/files/img/netmgmt.png" type="image/png" />
+            </item>
+            <item>
+                <title>Network Mask</title>
+                <description>Network Mask. Use the following format: 999.999.999.999</description>
+                <link>input:///text/?ip.netmask=</link>
+                <enclosure url="/usr/local/lib/ginga/gui/files/img/netmgmt.png" type="image/png" />
+            </item>
+            <item>
+                <title>Gateway</title>
+                <description>Default Gateway. Use the following format: 999.999.999.999</description>
+                <link>input:///text/?ip.gateway=</link>
+                <enclosure url="/usr/local/lib/ginga/gui/files/img/netmgmt.png" type="image/png" />
+            </item>
+            <item>
+                <title>DNS Server</title>
+                <description>DNS Server. Use the following format: 999.999.999.999</description>
+                <link>input:///text/?ip.dns=</link>
+                <enclosure url="/usr/local/lib/ginga/gui/files/img/netmgmt.png" type="image/png" />
+            </item>
+            <item>
+                <title>> Apply changes</title>
+                <description>Press [Enter] to apply your IP changes.</description>
+                <link>input:///submit/?action=exec:///system/newether/</link>
+                <enclosure url="/usr/local/lib/ginga/gui/files/img/netmgmt.png" type="image/png" />
+            </item>
+        </channel>
+</rss>

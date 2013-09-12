@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/backgrounds">
+        <file alias="bg_gui">files/img/bg_gui.png</file>
+        <file alias="default">files/img/gingancl.png</file>
+    </qresource>
+    <qresource prefix="/pages">
+        <file alias="main">files/xml/main.xml</file>
+    </qresource>
+</RCC>
