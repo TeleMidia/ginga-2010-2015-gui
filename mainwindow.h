@@ -20,14 +20,18 @@ public slots:
     void changePage (MenuItem *);
     void changePage (Page *);
     void showGingaView ();
+    void hideGingaView ();
 
 private:
     void parsePage (QString);
 
     unsigned long int _viewWID;
-    QStackedLayout *stackedLayout;
+    QStackedLayout *_stackedLayout;
+
     QMap <QString, Page*> _pages;
-    Page *_lastPage;
+
+    QWidget *_lastPage;
+
     QGraphicsView *_gingaView;
 };
 

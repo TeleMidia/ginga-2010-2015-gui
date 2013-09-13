@@ -9,7 +9,7 @@ PageXmlParser::PageXmlParser(QString path)
     QString errorMsg;
     int errorLine, errorColumn;
     if ( ! doc.setContent( &fXml, &errorMsg, &errorLine, &errorColumn ) ) {
-        qDebug () << "Line " << errorLine << ": " << errorMsg;
+        qDebug () << "File: " << path << "; Line " << errorLine << ": " << errorMsg;
         _error = true;
         return;
     }

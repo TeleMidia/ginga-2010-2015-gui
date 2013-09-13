@@ -8,11 +8,17 @@ GingaProxy* GingaProxy::_instance = 0;
 GingaProxy::GingaProxy(QString binaryPath, QObject *parent) :
     QObject(parent)
 {
+    _process = 0;
     setBinaryPath(binaryPath);
 }
 
-void GingaProxy::run(QString nclFile, unsigned long int wid)
+bool GingaProxy::run(QString nclFile, unsigned long int wid)
 {
+
+    if (_process){
+        qDebug () << "Ginga is already running.";
+        return false;
+    }
 
     _process = new QProcess(this);
 
@@ -27,7 +33,10 @@ void GingaProxy::run(QString nclFile, unsigned long int wid)
 
     _process->start(_binaryPath, _args);
 
+    connect (_process, SIGNAL(started()), this, SIGNAL(gingaStarted()));
     connect (_process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(finished(int,QProcess::ExitStatus)));
+
+    return true;
 }
 
 void GingaProxy::finished(int code, QProcess::ExitStatus status)
@@ -38,4 +47,6 @@ void GingaProxy::finished(int code, QProcess::ExitStatus status)
         _process->deleteLater();
         _process = 0;
     }
+
+    emit gingaFinished(code, status);
 }

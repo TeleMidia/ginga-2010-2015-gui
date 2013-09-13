@@ -24,6 +24,11 @@ Page::Page(unsigned long viewWID, Page *parentPage, QString title, QString descr
     QHBoxLayout *centerLayout = new QHBoxLayout;
     QVBoxLayout *descriptionLayout = new QVBoxLayout;
     QVBoxLayout *itemsLayout = new QVBoxLayout;
+    QVBoxLayout *labelsLayout = new QVBoxLayout;
+
+    _itemsScrollArea = new QScrollArea;
+    _itemsScrollArea->setFocusPolicy(Qt::NoFocus);
+    _itemsScrollArea->installEventFilter(this);
 
     _imageLabel = new QLabel;
     _descriptionLabel = new QLabel;
@@ -35,11 +40,6 @@ Page::Page(unsigned long viewWID, Page *parentPage, QString title, QString descr
 
     _descriptionLabel->setFixedWidth(SCREEN_WIDTH * 0.4);
     _descriptionLabel->setWordWrap(true);
-
-    centerLayout->addSpacing(20);
-    centerLayout->addLayout(descriptionLayout);
-    centerLayout->addSpacing(50);
-    centerLayout->addLayout(itemsLayout);
 
     mainLayout->addLayout(centerLayout);
 
@@ -54,9 +54,15 @@ Page::Page(unsigned long viewWID, Page *parentPage, QString title, QString descr
     titleLabel->setFont(labelFont);
     titleLabel->setText(fontTemplate.arg(title));
 
-    labelFont.setPointSize(SCREEN_HEIGHT * 0.02);
+    labelsLayout->addWidget(titleLabel);
+    labelsLayout->addWidget(_itemsScrollArea);
 
-    itemsLayout->addWidget(titleLabel);
+    centerLayout->addSpacing(20);
+    centerLayout->addLayout(descriptionLayout);
+    centerLayout->addSpacing(50);
+    centerLayout->addLayout(labelsLayout);
+
+    labelFont.setPointSize(SCREEN_HEIGHT * 0.02);
 
     for (int i = 0; i < _items.size(); i++){
         MenuItem * item = items.at(i);
@@ -72,6 +78,12 @@ Page::Page(unsigned long viewWID, Page *parentPage, QString title, QString descr
         connect (item, SIGNAL(selected(MenuItem*)), this, SIGNAL(menuItemSelected(MenuItem*)));
         connect (item, SIGNAL(gingaRequested(QString)), this, SLOT(runGinga(QString)));
     }
+
+    _items.at(0)->setFocus();
+
+    QWidget *itemsWidget = new QWidget;
+    itemsWidget->setLayout(itemsLayout);
+    _itemsScrollArea->setWidget(itemsWidget);
 
     labelFont.setPointSize(SCREEN_HEIGHT * 0.02);
     _descriptionLabel->setFont(labelFont);
@@ -99,23 +111,33 @@ void Page::updateDescription(MenuItem *item)
 
 void Page::runGinga(QString filename)
 {
-    emit configurePlay();
-
     GingaProxy *gingaProxy = GingaProxy::getInstance(GINGA_PATH, parent());
 
     qDebug () << filename;
-
     gingaProxy->run(filename);
 }
 
-void Page::keyPressEvent(QKeyEvent *keyEvent)
-{
-    if (keyEvent->key() == Qt::Key_Down)
-        focusNextChild();
-    else if (keyEvent->key() == Qt::Key_Up)
-        focusPreviousChild();
-    else if (keyEvent->key() == Qt::Key_Left)
-        emit parentPageRequested (_parentPage);
 
-    QWidget::keyPressEvent(keyEvent);
+bool Page::eventFilter(QObject *obj, QEvent *event)
+{
+    if (obj == _itemsScrollArea && event->type() == QEvent::KeyPress){
+        QKeyEvent *keyEvent = static_cast <QKeyEvent*>(event);
+
+        if (keyEvent->key() == Qt::Key_Up){
+            focusPreviousChild();
+        }
+        else if (keyEvent->key() == Qt::Key_Down){
+            focusNextChild();
+        }
+        else if (keyEvent->key() == Qt::Key_Left)
+            emit parentPageRequested (_parentPage);
+
+        _itemsScrollArea->ensureWidgetVisible(focusWidget());
+
+        event->accept();
+        return true;
+    }
+    else{
+        return QWidget::eventFilter(obj, event);
+    }
 }

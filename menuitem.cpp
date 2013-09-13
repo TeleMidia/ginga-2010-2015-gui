@@ -15,7 +15,7 @@ MenuItem::MenuItem(QString text, QString description, QString link, QPair<QStrin
     _enclosure = enclosure;
 
     _textLabel = new QLabel (text);
-    _textLabel->setWordWrap(true);
+    _textLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
     QHBoxLayout *mainLayout = new QHBoxLayout;
     mainLayout->addSpacing(20);
@@ -24,12 +24,15 @@ MenuItem::MenuItem(QString text, QString description, QString link, QPair<QStrin
     setLayout(mainLayout);
 
     installEventFilter(this);
+
+    setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 }
 
 bool MenuItem::eventFilter(QObject *obj, QEvent *event)
 {
     if (event->type() == QEvent::FocusIn)
         emit focusIn(this);
+
     else if (event->type() == QEvent::KeyPress)
         if( ((QKeyEvent *)event)->key() == Qt::Key_Enter || ((QKeyEvent *)event)->key() == Qt::Key_Return
                 || ((QKeyEvent *)event)->key() == Qt::Key_Right){
@@ -56,7 +59,7 @@ void MenuItem::paintEvent(QPaintEvent *event)
         painter.setBrush(brush);
 
 
-        painter.drawRoundedRect(rect(), 10, 10);
+        painter.drawRoundedRect(rect(), 15, 15);
         painter.restore();
     }
 
