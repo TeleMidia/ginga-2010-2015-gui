@@ -6,6 +6,36 @@
 
 #include "pagexmlparser.h"
 
+void f (WId winid){
+    void* vhwnd = (void*) winid;
+    unsigned long int value = (unsigned long int) vhwnd;
+
+    char dst[32];
+    char digits[32];
+    unsigned long int i = 0, j = 0, n = 0;
+
+    do {
+        n = value % 10;
+        digits[i++] = (n < 10 ? (char)n+'0' : (char)n-10+'a');
+        value /= 10;
+
+        if (i > 31) {
+            break;
+        }
+
+    } while (value != 0);
+
+    n = i;
+    i--;
+
+    while (i >= 0 && j < 32) {
+        dst[j] = digits[i];
+        i--;
+        j++;
+    }
+    qDebug () << "f(): " << QString(dst);
+}
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
@@ -24,6 +54,12 @@ MainWindow::MainWindow(QWidget *parent) :
     _stackedLayout->addWidget(_gingaView);
 
     _viewWID = (unsigned long int) _gingaView->winId();
+
+
+    qDebug () << "effectiveWinId(): " << _gingaView->effectiveWinId();
+    qDebug () << "winId(): " << _gingaView->winId();
+    qDebug () << "_viewWID: " << _viewWID;
+    f(_gingaView->winId());
 
     parsePage(":/pages/main");
 }
@@ -73,12 +109,15 @@ void MainWindow::changePage(MenuItem *item)
 
 void MainWindow::showGingaView()
 {
+    qDebug () << "gingaStarted";
+
     _lastPage = _stackedLayout->currentWidget();
     _stackedLayout->setCurrentWidget(_gingaView);
 }
 
 void MainWindow::hideGingaView()
 {
+    qDebug () << "gingaFinished";
     if (_lastPage){
         _stackedLayout->setCurrentWidget(_lastPage);
         _lastPage = 0;
@@ -91,6 +130,7 @@ void MainWindow::changePage(Page *page)
         _stackedLayout->setCurrentWidget(page);
     }
 }
+
 
 MainWindow::~MainWindow()
 {

@@ -2,10 +2,12 @@
 #include <QVBoxLayout>
 
 #include <QLabel>
+#include <QPixmap>
 #include <QDebug>
 #include <QKeyEvent>
 #include <QPropertyAnimation>
 #include <QApplication>
+#include <QGraphicsOpacityEffect>
 
 Page::Page(unsigned long viewWID, Page *parentPage, QString title, QString description, QString language, QList<MenuItem *> items, QWidget *parent) :
     QWidget(parent)
@@ -29,6 +31,7 @@ Page::Page(unsigned long viewWID, Page *parentPage, QString title, QString descr
     _itemsScrollArea = new QScrollArea;
     _itemsScrollArea->setFocusPolicy(Qt::NoFocus);
     _itemsScrollArea->installEventFilter(this);
+    _itemsScrollArea->setFrameShape(QFrame::NoFrame);
 
     _imageLabel = new QLabel;
     _descriptionLabel = new QLabel;
@@ -101,11 +104,37 @@ void Page::updateDescription(MenuItem *item)
         QString description = item->description();
 
         QPixmap p(imagePath);
+
         if (p.isNull())
             p.load(":/backgrounds/default");
 
-        _imageLabel->setPixmap(p);
-        _descriptionLabel->setText(description);
+        const QPixmap *currentPixmap = _imageLabel->pixmap();
+
+        if (currentPixmap->pixmapData() != p.pixmapData()){
+
+            QGraphicsOpacityEffect* opacityEffect = new QGraphicsOpacityEffect(this);
+            opacityEffect->setOpacity(1.0);
+            _imageLabel->setGraphicsEffect(opacityEffect);
+
+            QPropertyAnimation* anim = new QPropertyAnimation(this);
+            anim->setTargetObject(opacityEffect);
+            anim->setPropertyName("opacity");
+            anim->setDuration(250);
+            anim->setStartValue(opacityEffect->opacity());
+            anim->setEndValue(0);
+            anim->setEasingCurve(QEasingCurve::OutQuad);
+            anim->start(QAbstractAnimation::DeleteWhenStopped);
+
+            QEventLoop loop;
+            QObject::connect(anim, SIGNAL(finished()), &loop, SLOT(quit()));
+            loop.exec();
+
+            _imageLabel->setGraphicsEffect(0);
+
+            _imageLabel->setPixmap(p);
+        }
+
+        _descriptionLabel->setText(QString("<font color='white'>%1</font>").arg(description));
     }
 }
 
@@ -114,7 +143,7 @@ void Page::runGinga(QString filename)
     GingaProxy *gingaProxy = GingaProxy::getInstance(GINGA_PATH, parent());
 
     qDebug () << filename;
-    gingaProxy->run(filename);
+    gingaProxy->run(filename, _viewWID);
 }
 
 
