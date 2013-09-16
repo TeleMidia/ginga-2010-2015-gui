@@ -9,7 +9,7 @@ class GingaProxy : public QObject
 {
     Q_OBJECT
 public:
-    inline static GingaProxy * getInstance (QString binaryPath, QObject *parent = 0)
+    inline static GingaProxy * getInstance (QString binaryPath, QWidget *parent = 0)
     {
         if (!_instance)
             _instance = new GingaProxy (binaryPath, parent);
@@ -23,16 +23,19 @@ public:
     inline QString binaryPath () const
     { return _binaryPath; }
 
+    bool eventFilter(QObject *, QEvent *);
+
 signals:
     void gingaStarted ();
     void gingaFinished(int, QProcess::ExitStatus);
     
 public slots:
-    bool run (QString, unsigned long wid = -1);
+    bool run (QString);
     void finished (int, QProcess::ExitStatus);
+    int sendCommand (QString);
 
 private:
-    explicit GingaProxy(QString binaryPath, QObject *parent = 0);
+    explicit GingaProxy(QString binaryPath, QWidget *parent = 0);
 
     static GingaProxy *_instance;
 

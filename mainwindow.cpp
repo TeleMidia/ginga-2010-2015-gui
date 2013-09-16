@@ -3,38 +3,37 @@
 
 #include <QDebug>
 
-
 #include "pagexmlparser.h"
 
-void f (WId winid){
-    void* vhwnd = (void*) winid;
-    unsigned long int value = (unsigned long int) vhwnd;
+//void f (WId winid){
+//    void* vhwnd = (void*) winid;
+//    unsigned long int value = (unsigned long int) vhwnd;
 
-    char dst[32];
-    char digits[32];
-    unsigned long int i = 0, j = 0, n = 0;
+//    char dst[32];
+//    char digits[32];
+//    unsigned long int i = 0, j = 0, n = 0;
 
-    do {
-        n = value % 10;
-        digits[i++] = (n < 10 ? (char)n+'0' : (char)n-10+'a');
-        value /= 10;
+//    do {
+//        n = value % 10;
+//        digits[i++] = (n < 10 ? (char)n+'0' : (char)n-10+'a');
+//        value /= 10;
 
-        if (i > 31) {
-            break;
-        }
+//        if (i > 31) {
+//            break;
+//        }
 
-    } while (value != 0);
+//    } while (value != 0);
 
-    n = i;
-    i--;
+//    n = i;
+//    i--;
 
-    while (i >= 0 && j < 32) {
-        dst[j] = digits[i];
-        i--;
-        j++;
-    }
-    qDebug () << "f(): " << QString(dst);
-}
+//    while (i >= 0 && j < 32) {
+//        dst[j] = digits[i];
+//        i--;
+//        j++;
+//    }
+//    qDebug () << "f(): " << QString(dst);
+//}
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -47,21 +46,21 @@ MainWindow::MainWindow(QWidget *parent) :
     setStyleSheet("QMainWindow { border-image: url(:/backgrounds/bg_gui); }");
     showFullScreen();
 
-    connect (GingaProxy::getInstance(GINGA_PATH, this), SIGNAL(gingaStarted()), this, SLOT(showGingaView()));
-    connect (GingaProxy::getInstance(GINGA_PATH), SIGNAL(gingaFinished(int,QProcess::ExitStatus)), this, SLOT(hideGingaView()));
+    _gingaProxy = GingaProxy::getInstance(GINGA_PATH, this);
 
-    _gingaView = new QGraphicsView;
-    _stackedLayout->addWidget(_gingaView);
-
-    _viewWID = (unsigned long int) _gingaView->winId();
-
-
-    qDebug () << "effectiveWinId(): " << _gingaView->effectiveWinId();
-    qDebug () << "winId(): " << _gingaView->winId();
-    qDebug () << "_viewWID: " << _viewWID;
-    f(_gingaView->winId());
+    connect (_gingaProxy, SIGNAL(gingaStarted()), this, SLOT(showGingaView()));
+    connect (_gingaProxy, SIGNAL(gingaFinished(int,QProcess::ExitStatus)), this, SLOT(hideGingaView()));
+    connect (this, SIGNAL(keyPressed(QString)), _gingaProxy, SLOT(sendCommand(QString)));
 
     parsePage(":/pages/main");
+}
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::KeyPress){
+    }
+
+    return QMainWindow::eventFilter(obj, event);
 }
 
 void MainWindow::parsePage(QString pagePath)
@@ -69,7 +68,7 @@ void MainWindow::parsePage(QString pagePath)
     PageXmlParser *pageParser = new PageXmlParser(pagePath);
 
     if (!pageParser->hasError()){
-        Page *currentPage = new Page (_viewWID, 0, pageParser->title(), pageParser->description(), pageParser->languague(), pageParser->items());
+        Page *currentPage = new Page (0, pageParser->title(), pageParser->description(), pageParser->languague(), pageParser->items());
 
         connect (currentPage, SIGNAL(menuItemSelected(MenuItem*)), this, SLOT(changePage(MenuItem*)));
         connect (currentPage, SIGNAL(configurePlay()), this, SLOT(showGingaView()));
@@ -91,13 +90,12 @@ void MainWindow::changePage(MenuItem *item)
         else{
             PageXmlParser *pageParser = new PageXmlParser(path);
             if (!pageParser->hasError()){
-                Page *newPage = new Page (_viewWID, (Page *)_stackedLayout->currentWidget(), pageParser->title(),
+                Page *newPage = new Page ((Page *)_stackedLayout->currentWidget(), pageParser->title(),
                                           pageParser->description(), pageParser->languague(), pageParser->items());
 
                 connect (newPage, SIGNAL(configurePlay()), this, SLOT(showGingaView()));
                 connect (newPage, SIGNAL(menuItemSelected(MenuItem*)), this, SLOT(changePage(MenuItem*)));
                 connect (newPage, SIGNAL(parentPageRequested(Page*)), this, SLOT(changePage(Page*)));
-
 
                 _pages.insert(path, newPage);
                 _stackedLayout->addWidget(newPage);
@@ -107,21 +105,81 @@ void MainWindow::changePage(MenuItem *item)
     }
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *keyEvent)
+{
+    if (keyEvent->key() - Qt::Key_0 >= 0 && keyEvent->key() - Qt::Key_0 <= 9)
+    {
+        emit keyPressed("SDLK_" + QString::number(keyEvent->key() - Qt::Key_0));
+    }
+    else if (keyEvent->key() - Qt::Key_A >= 0 && keyEvent->key() - Qt::Key_A <= 26)
+    {
+        if (keyEvent->modifiers() == Qt::ShiftModifier)
+            emit keyPressed("SDLK_"+QString(('A'+(keyEvent->key() - Qt::Key_A))));
+        else
+            emit keyPressed("SDLK_"+QString(('a'+(keyEvent->key() - Qt::Key_A))));
+    }
+    else if (keyEvent->key() == Qt::Key_PageDown)
+    {
+        emit keyPressed("SDLK_PAGEDOWN");
+    }
+    else if (keyEvent->key() == Qt::Key_PageUp)
+    {
+        emit keyPressed("SDLK_PAGEUP");
+    }
+    else if (keyEvent->key() - Qt::Key_F1 >= 0 && keyEvent->key() - Qt::Key_F1 <= 11)
+    {
+        emit keyPressed("SDLK_F"+QString::number(keyEvent->key() - Qt::Key_F1 + 1));
+    }
+    else if (keyEvent->key() == Qt::Key_Down)
+    {
+        emit keyPressed("SDLK_DOWN");
+    }
+    else if (keyEvent->key() == Qt::Key_Left)
+    {
+        emit keyPressed("SDLK_LEFT");
+    }
+    else if (keyEvent->key() == Qt::Key_Right)
+    {
+        emit keyPressed("SDLK_RIGHT");
+    }
+    else if (keyEvent->key() == Qt::Key_Up)
+    {
+        emit keyPressed("SDLK_UP");
+    }
+    else if (keyEvent->key() == Qt::Key_Tab)
+    {
+        emit keyPressed("SDLK_TAB");
+    }
+    else if (keyEvent->key() == Qt::Key_Space)
+    {
+        emit keyPressed("SDLK_SPACE");
+    }
+    else if (keyEvent->key() == Qt::Key_Backspace)
+    {
+        emit keyPressed("SDLK_BACKSPACE");
+    }
+    else if (keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Return)
+    {
+        emit keyPressed("SDLK_RETURN");
+    }
+    else if (keyEvent->key() == Qt::Key_Escape)
+    {
+        emit keyPressed("SDLK_QUIT");
+    }
+
+    QMainWindow::keyPressEvent(keyEvent);
+}
+
 void MainWindow::showGingaView()
 {
-    qDebug () << "gingaStarted";
-
-    _lastPage = _stackedLayout->currentWidget();
-    _stackedLayout->setCurrentWidget(_gingaView);
+    qDebug () << "gui::gingaStarted";
+    grabKeyboard();
 }
 
 void MainWindow::hideGingaView()
 {
-    qDebug () << "gingaFinished";
-    if (_lastPage){
-        _stackedLayout->setCurrentWidget(_lastPage);
-        _lastPage = 0;
-    }
+    qDebug () << "gui::gingaFinished";
+    releaseKeyboard();
 }
 
 void MainWindow::changePage(Page *page)
@@ -131,9 +189,6 @@ void MainWindow::changePage(Page *page)
     }
 }
 
-
 MainWindow::~MainWindow()
 {
 }
-
-

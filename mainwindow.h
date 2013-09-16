@@ -5,6 +5,7 @@
 #include <QStackedLayout>
 #include <QMap>
 #include <QGraphicsView>
+#include <QKeyEvent>
 
 #include "page.h"
 
@@ -16,6 +17,14 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+public:
+    void keyPressEvent(QKeyEvent *);
+
+    bool eventFilter(QObject *, QEvent *);
+
+signals:
+    void keyPressed (QString);
+
 public slots:
     void changePage (MenuItem *);
     void changePage (Page *);
@@ -25,14 +34,13 @@ public slots:
 private:
     void parsePage (QString);
 
-    unsigned long int _viewWID;
     QStackedLayout *_stackedLayout;
 
     QMap <QString, Page*> _pages;
 
     QWidget *_lastPage;
 
-    QGraphicsView *_gingaView;
+    GingaProxy * _gingaProxy;
 };
 
 #endif // MAINWINDOW_H

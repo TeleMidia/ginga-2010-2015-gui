@@ -9,11 +9,9 @@
 #include <QApplication>
 #include <QGraphicsOpacityEffect>
 
-Page::Page(unsigned long viewWID, Page *parentPage, QString title, QString description, QString language, QList<MenuItem *> items, QWidget *parent) :
+Page::Page(Page *parentPage, QString title, QString description, QString language, QList<MenuItem *> items, QWidget *parent) :
     QWidget(parent)
 {
-    _viewWID = viewWID;
-
     _parentPage = parentPage;
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -140,33 +138,31 @@ void Page::updateDescription(MenuItem *item)
 
 void Page::runGinga(QString filename)
 {
-    GingaProxy *gingaProxy = GingaProxy::getInstance(GINGA_PATH, parent());
+    GingaProxy *gingaProxy = GingaProxy::getInstance(GINGA_PATH);
 
-    qDebug () << filename;
-    gingaProxy->run(filename, _viewWID);
+    gingaProxy->run(filename);
 }
-
 
 bool Page::eventFilter(QObject *obj, QEvent *event)
 {
-    if (obj == _itemsScrollArea && event->type() == QEvent::KeyPress){
-        QKeyEvent *keyEvent = static_cast <QKeyEvent*>(event);
+    if (event->type() == QEvent::KeyPress){
+        if (obj == _itemsScrollArea ){
+            QKeyEvent *keyEvent = static_cast <QKeyEvent*>(event);
 
-        if (keyEvent->key() == Qt::Key_Up){
-            focusPreviousChild();
+            if (keyEvent->key() == Qt::Key_Up){
+                focusPreviousChild();
+            }
+            else if (keyEvent->key() == Qt::Key_Down){
+                focusNextChild();
+            }
+            else if (keyEvent->key() == Qt::Key_Left)
+                emit parentPageRequested (_parentPage);
+
+            _itemsScrollArea->ensureWidgetVisible(focusWidget());
+
+            event->accept();
+            return true;
         }
-        else if (keyEvent->key() == Qt::Key_Down){
-            focusNextChild();
-        }
-        else if (keyEvent->key() == Qt::Key_Left)
-            emit parentPageRequested (_parentPage);
-
-        _itemsScrollArea->ensureWidgetVisible(focusWidget());
-
-        event->accept();
-        return true;
     }
-    else{
-        return QWidget::eventFilter(obj, event);
-    }
+    return QWidget::eventFilter(obj, event);
 }

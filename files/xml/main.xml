@@ -24,13 +24,13 @@
                 <link>/usr/local/lib/ginga/gui/files/xml/dyncontent.xml#mnt-usb</link>
                 <enclosure url="/usr/local/lib/ginga/gui/files/img/usbstorage.png" type="image/png" />
             </item>
-            <item>
+<!--            <item>
                 <title>A Multi-Device Domain</title>
                 <description>Play an NCL application acting as an exhibition device associated to another Base Device. Your machine will be registered in a Multi-Device domain as a Class 1 (passive) device. This feature is in Beta stage, so unexpected results may arise.</description>
                 <link>exec:///system/mdpassive</link>
                 <enclosure url="/usr/local/lib/ginga/gui/files/img/multidev.png" type="image/png" />
             </item>
-<!--            <item>
+            <item>
                 <title>A UDP Media Server</title>
                 <description>Play an NCL application made available in an MPEG-2 Transport Stream from a UDP Media Server. This feature is in Beta stage, so unexpected results may arise.</description>
                 <link>/usr/local/lib/ginga/gui/files/xml/udpcontent.xml</link>
