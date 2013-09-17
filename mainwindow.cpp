@@ -5,36 +5,6 @@
 
 #include "pagexmlparser.h"
 
-//void f (WId winid){
-//    void* vhwnd = (void*) winid;
-//    unsigned long int value = (unsigned long int) vhwnd;
-
-//    char dst[32];
-//    char digits[32];
-//    unsigned long int i = 0, j = 0, n = 0;
-
-//    do {
-//        n = value % 10;
-//        digits[i++] = (n < 10 ? (char)n+'0' : (char)n-10+'a');
-//        value /= 10;
-
-//        if (i > 31) {
-//            break;
-//        }
-
-//    } while (value != 0);
-
-//    n = i;
-//    i--;
-
-//    while (i >= 0 && j < 32) {
-//        dst[j] = digits[i];
-//        i--;
-//        j++;
-//    }
-//    qDebug () << "f(): " << QString(dst);
-//}
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
@@ -47,6 +17,9 @@ MainWindow::MainWindow(QWidget *parent) :
     showFullScreen();
 
     _gingaProxy = GingaProxy::getInstance(GINGA_PATH, this);
+    _gingaPage = new GingaPage;
+
+    _stackedLayout->addWidget(_gingaPage);
 
     connect (_gingaProxy, SIGNAL(gingaStarted()), this, SLOT(showGingaView()));
     connect (_gingaProxy, SIGNAL(gingaFinished(int,QProcess::ExitStatus)), this, SLOT(hideGingaView()));
@@ -102,6 +75,26 @@ void MainWindow::changePage(MenuItem *item)
                 _stackedLayout->setCurrentWidget(newPage);
             }
         }
+    }
+}
+
+void MainWindow::showGingaView()
+{
+    qDebug () << "gui::gingaStarted";
+    _stackedLayout->setCurrentWidget(_gingaPage);
+    grabKeyboard();
+}
+
+void MainWindow::hideGingaView()
+{
+    qDebug () << "gui::gingaFinished";
+    releaseKeyboard();
+}
+
+void MainWindow::changePage(Page *page)
+{
+    if (page){
+        _stackedLayout->setCurrentWidget(page);
     }
 }
 
@@ -167,26 +160,14 @@ void MainWindow::keyPressEvent(QKeyEvent *keyEvent)
         emit keyPressed("SDLK_QUIT");
     }
 
+    QLabel *l = new QLabel(this);
+    l->setText("oisdnwdionfc");
+    l->setWindowFlags(Qt::WindowStaysOnTopHint);
+
+    _stackedLayout->addWidget(l);
+    _stackedLayout->setCurrentWidget(l);
+
     QMainWindow::keyPressEvent(keyEvent);
-}
-
-void MainWindow::showGingaView()
-{
-    qDebug () << "gui::gingaStarted";
-    grabKeyboard();
-}
-
-void MainWindow::hideGingaView()
-{
-    qDebug () << "gui::gingaFinished";
-    releaseKeyboard();
-}
-
-void MainWindow::changePage(Page *page)
-{
-    if (page){
-        _stackedLayout->setCurrentWidget(page);
-    }
 }
 
 MainWindow::~MainWindow()

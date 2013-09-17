@@ -41,6 +41,8 @@ public:
 
     bool eventFilter(QObject *, QEvent *);
 
+    void mouseMoveEvent(QMouseEvent *);
+
 //    void keyPressEvent(QKeyEvent *);
 
 protected:
@@ -67,6 +69,10 @@ private:
     Page * _parentPage;
 
     QScrollArea *_itemsScrollArea;
+
+    GingaProxy *_gingaProxy;
+
+
 };
 
 #endif // PAGE_H

@@ -9,7 +9,7 @@
             <item>
                 <title>Local Storage</title>
                 <description>Play NCL aplications included in this Ginga Live CD. This content were jointly created by TeleMidia Lab Team and many partners.</description>
-                <link>/usr/local/lib/ginga/gui/files/xml/cdcontent.xml</link>
+                <link>/usr/local/lib/ginga/gui/files/xml/localapps.xml</link>
                 <enclosure url="/usr/local/lib/ginga/gui/files/img/livecd.png" type="image/png" />
             </item>
 <!--            <item>

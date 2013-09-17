@@ -7,6 +7,7 @@
 #include <QGraphicsView>
 #include <QKeyEvent>
 
+#include "gingapage.h"
 #include "page.h"
 
 class MainWindow : public QMainWindow
@@ -19,7 +20,6 @@ public:
 
 public:
     void keyPressEvent(QKeyEvent *);
-
     bool eventFilter(QObject *, QEvent *);
 
 signals:
@@ -41,6 +41,8 @@ private:
     QWidget *_lastPage;
 
     GingaProxy * _gingaProxy;
+
+    GingaPage *_gingaPage;
 };
 
 #endif // MAINWINDOW_H

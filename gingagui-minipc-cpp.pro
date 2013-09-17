@@ -17,14 +17,16 @@ SOURCES += main.cpp\
     page.cpp \
     pagexmlparser.cpp \
     menuitem.cpp \
-    gingaproxy.cpp
+    gingaproxy.cpp \
+    gingapage.cpp
 
 HEADERS  += mainwindow.h \
     page.h \
     util.h \
     pagexmlparser.h \
     menuitem.h \
-    gingaproxy.h
+    gingaproxy.h \
+    gingapage.h
 
 FORMS    += mainwindow.ui
 

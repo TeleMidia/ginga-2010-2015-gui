@@ -16,7 +16,7 @@ GingaProxy::GingaProxy(QString binaryPath, QWidget *parent) :
     installEventFilter(this);
 }
 
-bool GingaProxy::run(QString nclFile)
+bool GingaProxy::run(QString nclFile, WId wid)
 {
     if (_process)
     {
@@ -33,10 +33,6 @@ bool GingaProxy::run(QString nclFile)
     _process = new QProcess(this);
 
     _args << "--ncl" << nclFile;
-
-    QWidget *parentWidget = static_cast<QWidget*> (parent());
-
-    WId wid = parentWidget->winId();
 
     if (wid != -1){
         _args << "--parent" << ":0.0," + QString::number(wid) + ",0,0," + QString::number(SCREEN_WIDTH) + "," + QString::number(SCREEN_HEIGHT);

@@ -14,6 +14,8 @@ Page::Page(Page *parentPage, QString title, QString description, QString languag
 {
     _parentPage = parentPage;
 
+    _gingaProxy = GingaProxy::getInstance(GINGA_PATH);
+
     QVBoxLayout *mainLayout = new QVBoxLayout;
     setLayout(mainLayout);
 
@@ -93,7 +95,10 @@ Page::Page(Page *parentPage, QString title, QString description, QString languag
     QString imagePath = items.at(0)->enclosure().first;
     _imageLabel->setPixmap(QPixmap(imagePath));
     _imageLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+    setMouseTracking(true);
 }
+
 
 void Page::updateDescription(MenuItem *item)
 {
@@ -138,9 +143,7 @@ void Page::updateDescription(MenuItem *item)
 
 void Page::runGinga(QString filename)
 {
-    GingaProxy *gingaProxy = GingaProxy::getInstance(GINGA_PATH);
-
-    gingaProxy->run(filename);
+    _gingaProxy->run(filename, _itemsScrollArea->winId());
 }
 
 bool Page::eventFilter(QObject *obj, QEvent *event)
@@ -165,4 +168,13 @@ bool Page::eventFilter(QObject *obj, QEvent *event)
         }
     }
     return QWidget::eventFilter(obj, event);
+}
+
+void Page::mouseMoveEvent(QMouseEvent *event)
+{
+    if (_gingaProxy->state() == QProcess::Running){
+        qDebug() << "running";
+    }
+
+    QWidget::mouseMoveEvent(event);
 }

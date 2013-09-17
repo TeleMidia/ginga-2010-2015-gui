@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QProcess>
 #include <QStringList>
+#include <qwindowdefs.h>
 
 class GingaProxy : public QObject
 {
@@ -25,12 +26,20 @@ public:
 
     bool eventFilter(QObject *, QEvent *);
 
+    inline QProcess::ProcessState state () const
+    {
+        if (_process)
+            return _process->state();
+        else
+            return QProcess::NotRunning;
+    }
+
 signals:
     void gingaStarted ();
     void gingaFinished(int, QProcess::ExitStatus);
     
 public slots:
-    bool run (QString);
+    bool run (QString, WId wid);
     void finished (int, QProcess::ExitStatus);
     int sendCommand (QString);
 
