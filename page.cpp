@@ -1,6 +1,7 @@
 #include "page.h"
 #include <QVBoxLayout>
 
+#include <QStyle>
 #include <QLabel>
 #include <QPixmap>
 #include <QDebug>
@@ -9,9 +10,12 @@
 #include <QApplication>
 #include <QGraphicsOpacityEffect>
 
-Page::Page(Page *parentPage, QString title, QString description, QString language, QList<MenuItem *> items, QWidget *parent) :
+#include "mainwindow.h"
+
+Page::Page(Page *parentPage, GingaPage *gingaPage, QString title, QString description, QString language, QList<MenuItem *> items, QWidget *parent) :
     QWidget(parent)
 {
+    _gingaPage = gingaPage;
     _parentPage = parentPage;
 
     _gingaProxy = GingaProxy::getInstance(GINGA_PATH);
@@ -32,6 +36,11 @@ Page::Page(Page *parentPage, QString title, QString description, QString languag
     _itemsScrollArea->setFocusPolicy(Qt::NoFocus);
     _itemsScrollArea->installEventFilter(this);
     _itemsScrollArea->setFrameShape(QFrame::NoFrame);
+
+    QPalette palette = this->palette();
+    palette.setColor(QPalette::Window, QColor::fromRgb(0,0,0,0));
+    _itemsScrollArea->setPalette(palette);
+    _itemsScrollArea->setBackgroundRole(QPalette::Window);
 
     _imageLabel = new QLabel;
     _descriptionLabel = new QLabel;
@@ -70,6 +79,7 @@ Page::Page(Page *parentPage, QString title, QString description, QString languag
     for (int i = 0; i < _items.size(); i++){
         MenuItem * item = items.at(i);
         item->setFont(labelFont);
+        item->setFocus();
 
         if ( item->text().trimmed() != ""){
             item->setText(fontTemplate.arg(item->text()));
@@ -82,10 +92,10 @@ Page::Page(Page *parentPage, QString title, QString description, QString languag
         connect (item, SIGNAL(gingaRequested(QString)), this, SLOT(runGinga(QString)));
     }
 
-    _items.at(0)->setFocus();
-
     QWidget *itemsWidget = new QWidget;
     itemsWidget->setLayout(itemsLayout);
+    itemsWidget->setPalette(palette);
+    itemsWidget->setBackgroundRole(QPalette::Window);
     _itemsScrollArea->setWidget(itemsWidget);
 
     labelFont.setPointSize(SCREEN_HEIGHT * 0.02);
@@ -143,7 +153,9 @@ void Page::updateDescription(MenuItem *item)
 
 void Page::runGinga(QString filename)
 {
-    _gingaProxy->run(filename, _itemsScrollArea->winId());
+    WId wid = _gingaPage->viewWId();
+//    _gingaPage->setInputInfo(filename);
+    _gingaProxy->run(filename, wid);
 }
 
 bool Page::eventFilter(QObject *obj, QEvent *event)

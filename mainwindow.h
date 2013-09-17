@@ -9,6 +9,7 @@
 
 #include "gingapage.h"
 #include "page.h"
+#include "infobar.h"
 
 class MainWindow : public QMainWindow
 {
@@ -16,11 +17,13 @@ class MainWindow : public QMainWindow
     
 public:
     explicit MainWindow(QWidget *parent = 0);
+    inline WId gingaViewWId () const
+    { return _gingaPage->viewWId(); }
+
     ~MainWindow();
 
 public:
     void keyPressEvent(QKeyEvent *);
-    bool eventFilter(QObject *, QEvent *);
 
 signals:
     void keyPressed (QString);
@@ -43,6 +46,7 @@ private:
     GingaProxy * _gingaProxy;
 
     GingaPage *_gingaPage;
+    InfoBar *_infoBar;
 };
 
 #endif // MAINWINDOW_H

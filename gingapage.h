@@ -3,7 +3,8 @@
 
 #include <QWidget>
 #include <QGraphicsView>
-#include <QPushButton>
+
+#include "infobar.h"
 
 class GingaPage : public QWidget
 {
@@ -14,13 +15,22 @@ public:
     inline WId viewWId () const
     { return _view->winId(); }
 
+//    inline void setBarVisible (bool visible)
+//    { _infoBar->setVisible(visible); }
+
+//    inline bool isBarVisible () const
+//    { return _infoBar->isVisible(); }
+
+//    inline void setInputInfo (QString info)
+//    { _infoBar->setInputInfo(info); }
+
 signals:
     
 public slots:
     
 private:
     QGraphicsView *_view;
-    QPushButton *_test;
+//    InfoBar *_infoBar;
 };
 
 #endif // GINGAPAGE_H

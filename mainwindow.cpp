@@ -13,6 +13,10 @@ MainWindow::MainWindow(QWidget *parent) :
     mainWidget->setLayout(_stackedLayout);
     setCentralWidget(mainWidget);
 
+    _infoBar = new InfoBar(this);
+    _infoBar->setVisible(false);
+    addDockWidget(Qt::BottomDockWidgetArea, _infoBar, Qt::Vertical);
+
     setStyleSheet("QMainWindow { border-image: url(:/backgrounds/bg_gui); }");
     showFullScreen();
 
@@ -26,22 +30,19 @@ MainWindow::MainWindow(QWidget *parent) :
     connect (this, SIGNAL(keyPressed(QString)), _gingaProxy, SLOT(sendCommand(QString)));
 
     parsePage(":/pages/main");
+
+    qDebug () << winId();
+    qDebug () << _gingaPage->winId();
 }
 
-bool MainWindow::eventFilter(QObject *obj, QEvent *event)
-{
-    if (event->type() == QEvent::KeyPress){
-    }
-
-    return QMainWindow::eventFilter(obj, event);
-}
 
 void MainWindow::parsePage(QString pagePath)
 {
     PageXmlParser *pageParser = new PageXmlParser(pagePath);
 
     if (!pageParser->hasError()){
-        Page *currentPage = new Page (0, pageParser->title(), pageParser->description(), pageParser->languague(), pageParser->items());
+        Page *currentPage = new Page (0, _gingaPage, pageParser->title(), pageParser->description(),
+                                      pageParser->languague(), pageParser->items());
 
         connect (currentPage, SIGNAL(menuItemSelected(MenuItem*)), this, SLOT(changePage(MenuItem*)));
         connect (currentPage, SIGNAL(configurePlay()), this, SLOT(showGingaView()));
@@ -63,7 +64,7 @@ void MainWindow::changePage(MenuItem *item)
         else{
             PageXmlParser *pageParser = new PageXmlParser(path);
             if (!pageParser->hasError()){
-                Page *newPage = new Page ((Page *)_stackedLayout->currentWidget(), pageParser->title(),
+                Page *newPage = new Page ((Page *)_stackedLayout->currentWidget(), _gingaPage, pageParser->title(),
                                           pageParser->description(), pageParser->languague(), pageParser->items());
 
                 connect (newPage, SIGNAL(configurePlay()), this, SLOT(showGingaView()));
@@ -160,12 +161,8 @@ void MainWindow::keyPressEvent(QKeyEvent *keyEvent)
         emit keyPressed("SDLK_QUIT");
     }
 
-    QLabel *l = new QLabel(this);
-    l->setText("oisdnwdionfc");
-    l->setWindowFlags(Qt::WindowStaysOnTopHint);
-
-    _stackedLayout->addWidget(l);
-    _stackedLayout->setCurrentWidget(l);
+    _infoBar->setVisible(!_infoBar->isVisible());
+//    _gingaPage->setBarVisible(!_gingaPage->isBarVisible());
 
     QMainWindow::keyPressEvent(keyEvent);
 }

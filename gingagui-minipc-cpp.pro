@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     pagexmlparser.cpp \
     menuitem.cpp \
     gingaproxy.cpp \
-    gingapage.cpp
+    gingapage.cpp \
+    infobar.cpp
 
 HEADERS  += mainwindow.h \
     page.h \
@@ -26,7 +27,8 @@ HEADERS  += mainwindow.h \
     pagexmlparser.h \
     menuitem.h \
     gingaproxy.h \
-    gingapage.h
+    gingapage.h \
+    infobar.h
 
 FORMS    += mainwindow.ui
 

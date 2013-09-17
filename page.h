@@ -7,12 +7,13 @@
 #include "util.h"
 #include "menuitem.h"
 #include "gingaproxy.h"
+#include "gingapage.h"
 
 class Page : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Page(Page * parentPage, QString title = "", QString description = "", QString language = "en",
+    explicit Page(Page * parentPage, GingaPage *gingaPage, QString title = "", QString description = "", QString language = "en",
                   QList <MenuItem *> items = QList <MenuItem *>(), QWidget *parent = 0);
     
     inline void setTitle (QString title)
@@ -71,7 +72,7 @@ private:
     QScrollArea *_itemsScrollArea;
 
     GingaProxy *_gingaProxy;
-
+    GingaPage *_gingaPage;
 
 };
 

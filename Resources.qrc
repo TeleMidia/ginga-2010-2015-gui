@@ -6,4 +6,7 @@
     <qresource prefix="/pages">
         <file alias="main">files/xml/main.xml</file>
     </qresource>
+    <qresource prefix="/icons">
+        <file alias="stop">files/img/stop.png</file>
+    </qresource>
 </RCC>
