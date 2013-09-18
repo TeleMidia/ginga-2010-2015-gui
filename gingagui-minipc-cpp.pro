@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     menuitem.cpp \
     gingaproxy.cpp \
     gingapage.cpp \
-    infobar.cpp
+    infobar.cpp \
+    useraccountpage.cpp
 
 HEADERS  += mainwindow.h \
     page.h \
@@ -28,7 +29,8 @@ HEADERS  += mainwindow.h \
     menuitem.h \
     gingaproxy.h \
     gingapage.h \
-    infobar.h
+    infobar.h \
+    useraccountpage.h
 
 FORMS    += mainwindow.ui
 

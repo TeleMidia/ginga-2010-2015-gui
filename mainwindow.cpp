@@ -26,9 +26,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect (this, SIGNAL(keyPressed(QString)), _gingaProxy, SLOT(sendCommand(QString)));
 
     parsePage(":/pages/main");
-
-    qDebug () << winId();
-    qDebug () << _gingaPage->winId();
 }
 
 
@@ -71,6 +68,20 @@ void MainWindow::changePage(MenuItem *item)
                 _stackedLayout->addWidget(newPage);
                 _stackedLayout->setCurrentWidget(newPage);
             }
+            else {
+                QStringList tokens = path.split("/");
+                if (tokens.size() > 0){
+                    QString lastToken = tokens.last();
+                    tokens = lastToken.split("#");
+
+                    if (tokens.size() > 1 && tokens.at(0) == "dyncontent.xml"){
+                        QString pageRequired = tokens.at(1);
+                        if (pageRequired == "usr-acct"){ // User account management
+
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -78,13 +89,18 @@ void MainWindow::changePage(MenuItem *item)
 void MainWindow::showGingaView()
 {
     qDebug () << "gui::gingaStarted";
-    _stackedLayout->setCurrentWidget(_gingaPage);
+//    _lastPage = _stackedLayout->currentWidget();
+//    _stackedLayout->setCurrentWidget(_gingaPage);
     grabKeyboard();
 }
 
 void MainWindow::hideGingaView()
 {
     qDebug () << "gui::gingaFinished";
+//    if (_lastPage){
+//        _stackedLayout->setCurrentWidget(_lastPage);
+//        _lastPage = 0;
+//    }
     releaseKeyboard();
 }
 
@@ -157,8 +173,7 @@ void MainWindow::keyPressEvent(QKeyEvent *keyEvent)
         emit keyPressed("SDLK_QUIT");
     }
 
-
-    _gingaPage->setBarVisible(!_gingaPage->isBarActive());
+//    _gingaPage->setBarVisible(!_gingaPage->isBarActive());
 
     QMainWindow::keyPressEvent(keyEvent);
 }

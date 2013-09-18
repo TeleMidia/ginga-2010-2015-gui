@@ -101,13 +101,34 @@ Page::Page(Page *parentPage, GingaPage *gingaPage, QString title, QString descri
 
     labelFont.setPointSize(SCREEN_HEIGHT * 0.02);
     _descriptionLabel->setFont(labelFont);
-    _descriptionLabel->setText(fontTemplate.arg(items.at(0)->description()));
 
-    QString imagePath = items.at(0)->enclosure().first;
+    QString initDescription = "";
+    QString imagePath = "";
+
+    if (_items.size() > 0){
+        initDescription = items.at(0)->description();
+        imagePath = items.at(0)->enclosure().first;
+    }
+    else{
+        initDescription = description;
+        imagePath = ":/backgrounds/default";
+    }
+
+    _descriptionLabel->setText(fontTemplate.arg(initDescription));
+
     _imageLabel->setPixmap(QPixmap(imagePath));
     _imageLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-
     setMouseTracking(true);
+}
+
+Page::Page (Page *parentPage, QString title, QString description, QString language, QWidget *parent)
+    : QWidget (parent)
+{
+    _parentPage = parentPage;
+    _title = title;
+    _description = description;
+    _language = language;
+
 }
 
 
@@ -125,7 +146,6 @@ void Page::updateDescription(MenuItem *item)
         const QPixmap *currentPixmap = _imageLabel->pixmap();
 
         if (currentPixmap->pixmapData() != p.pixmapData()){
-
             QGraphicsOpacityEffect* opacityEffect = new QGraphicsOpacityEffect(this);
             opacityEffect->setOpacity(1.0);
             _imageLabel->setGraphicsEffect(opacityEffect);
@@ -154,9 +174,8 @@ void Page::updateDescription(MenuItem *item)
 
 void Page::runGinga(QString filename)
 {
-    WId wid = _gingaPage->viewWId();
-
-    _gingaPage->setInputInfo(QFileInfo (filename).fileName());
+    WId wid = /*_gingaPage->viewWId();*/ QApplication::activeWindow()->winId();
+//    _gingaPage->setInputInfo(QFileInfo (filename).fileName());
     _gingaProxy->run(filename, wid);
 }
 

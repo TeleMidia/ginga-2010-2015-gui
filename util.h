@@ -5,6 +5,6 @@
 extern int SCREEN_HEIGHT;
 extern int SCREEN_WIDTH;
 
-const QString GINGA_PATH = "C:/Users/telemidia/Desktop/workspace/ginga-vs2010-solution/Ginga/ginga.exe";
+const QString GINGA_PATH = "/usr/bin/ginga";
 
 #endif // UTIL_H

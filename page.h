@@ -16,6 +16,8 @@ public:
     explicit Page(Page * parentPage, GingaPage *gingaPage, QString title = "", QString description = "", QString language = "en",
                   QList <MenuItem *> items = QList <MenuItem *>(), QWidget *parent = 0);
     
+    explicit Page (Page * parentPage, QString title = "", QString description = "", QString language = "en", QWidget *parent = 0);
+
     inline void setTitle (QString title)
     { this->_title = title; }
 
@@ -44,7 +46,6 @@ public:
 
     void mouseMoveEvent(QMouseEvent *);
 
-//    void keyPressEvent(QKeyEvent *);
 
 protected:
 
@@ -57,7 +58,7 @@ public slots:
     void updateDescription (MenuItem *);
     void runGinga (QString);
 
-private:    
+protected:
     QString _title;
     QString _description;
     QString _language;

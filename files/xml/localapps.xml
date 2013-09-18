@@ -7,76 +7,34 @@
     <description>Ginga Live CD contains demo applications to introduce some NCL features even if you are not online at the moment. These applications were developed by the TeleMidia Lab and can also be found in The NCL Club.</description>
     <language>en</language>
     <item>
-      <title>A Onda</title>
+      <title>Africa's World Cup 2010</title>
       <description></description>
-      <link>/misc/ncl30/a-onda/A_Onda.ncl</link>
-      <enclosure url="/misc/ncl30/a-onda/a_onda.png" type="image/png"/>
+      <link>/misc/ncl30/africa2010/africa2010.ncl</link>
+      <enclosure url="/misc/ncl30/africa2010/preview.png" type="image/png"/>
     </item>
     <item>
-      <title>Entrevista de João</title>
+      <title>Brasil 4K</title>
       <description></description>
-      <link>/misc/ncl30/entrevista-joao/entrevista-joao.ncl</link>
-      <enclosure url="/misc/ncl30/entrevista-joao/preview.png" type="image/png"/>
+      <link>/misc/ncl30/africa2010/africa2010.ncl</link>
+      <enclosure url="/misc/ncl30/africa2010/preview.png" type="image/png"/>
     </item>
     <item>
-      <title>Fórmula 1</title>
-      <description></description>
-      <link>/misc/ncl30/formula1/formula1.ncl</link>
-      <enclosure url="/misc/ncl30/formula1/preview.png" type="image/png"/>
-    </item>
-    <item>
-      <title>Hackerteen</title>
-      <description></description>
-      <link>/misc/ncl30/hackerteen/hackerteen.ncl</link>
-      <enclosure url="/misc/ncl30/hackerteen/preview.png" type="image/png"/>
-    </item>
-    <item>
-      <title>Hard Race</title>
-      <description>"Hard Race" is a gambling game, where the viewer is called to choose his/her favorite horse and then look forward to see his/her horse as the winner. It was developed to demonstrate how the combination of the best features from NCL and Lua languages can result in a simple code with lightweight processing. </description>
-      <link>/misc/ncl30/hrace/hrace.ncl</link>
-      <enclosure url="/misc/ncl30/hrace/preview.png" type="image/png"/>
-    </item>
-    <item>
-      <title>Lua Rocks</title>
-      <description></description>
-      <link>/misc/ncl30/luarocks/luarocks.ncl</link>
-      <enclosure url="/misc/ncl30/luarocks/preview.png" type="image/png"/>
-    </item>
-    <item>
-      <title>Pixelation</title>
-      <description></description>
-      <link>/misc/ncl30/pixelation/pixelation.ncl</link>
-      <enclosure url="/misc/ncl30/pixelation/preview.png" type="image/png"/>
-    </item>
-    <item>
-      <title>Primeiro Joao</title>
-      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This series of interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
-      <link>/usr/local/lib/ginga/gui/files/xml/primeirojoaogroup.xml</link>
+      <title>Garrincha and the First "João"</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes.</description>
+      <link>/misc/ncl30/primeirojoao/11nclua.ncl</link>
       <enclosure url="/misc/ncl30/primeirojoao/preview.png" type="image/png"/>
     </item>
     <item>
-      <title>Proderj</title>
-      <description></description>
-      <link>/misc/ncl30/proderj/proderj.ncl</link>
-      <enclosure url="/misc/ncl30/proderj/preview.png" type="image/png"/>
+      <title>Ginga Hero</title>
+      <description>Ginga Hero is a musical game based on commercial greatest success games like GuitarHero and RockBand.</description>
+      <link>/misc/ncl30/gingahero-final/main.ncl</link>
+      <enclosure url="/misc/ncl30/gingahero-final/preview.png" type="image/png"/>
     </item>
     <item>
-      <title>Rio</title>
-      <description></description>
-      <link>/misc/ncl30/rio/rio.ncl</link>
-      <enclosure url="/misc/ncl30/rio/preview.png" type="image/png"/>
-    </item>
-    <item>
-      <title>Viva Mais Peso</title>
-      <description></description>
-      <link>/misc/ncl30/peso/peso.ncl</link>
-      <enclosure url="/misc/ncl30/peso/preview.png" type="image/png"/> 
-    </item>
-    <item>
-      <title>Viva Mais Pratos</title>
-      <description></description>
-      <link>/misc/ncl30/vivamais/vivamais.ncl</link>
-      <enclosure url="/misc/ncl30/vivamais/preview.png" type="image/png"/>
+      <title>Proview Advertisements</title>
+      <description>"Proview Advertisements" is the first advertisement series created by Proview Produções to illustrate their vision about the interactive space that advertisers and companies can explore with Ginga-NCL.</description>
+      <link>/misc/ncl30/ComerciaisProview/ComerciaisProview.ncl</link>
+      <enclosure url="/misc/ncl30/ComerciaisProview/preview.png" type="image/png"/>
     </item>
   </channel>
 </rss>
