@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ version="2.0">
+        <channel>
+            <title>No content server found</title>
+            <link>/usr/local/lib/ginga/gui/files/xml/appsoptions.xml</link>
+            <description>There is no content server in the network. Press LEFT to go back.</description>
+            <language>en</language>
+        </channel>
+</rss>
