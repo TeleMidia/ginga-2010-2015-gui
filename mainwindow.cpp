@@ -13,10 +13,6 @@ MainWindow::MainWindow(QWidget *parent) :
     mainWidget->setLayout(_stackedLayout);
     setCentralWidget(mainWidget);
 
-    _infoBar = new InfoBar(this);
-    _infoBar->setVisible(false);
-    addDockWidget(Qt::BottomDockWidgetArea, _infoBar, Qt::Vertical);
-
     setStyleSheet("QMainWindow { border-image: url(:/backgrounds/bg_gui); }");
     showFullScreen();
 
@@ -161,8 +157,8 @@ void MainWindow::keyPressEvent(QKeyEvent *keyEvent)
         emit keyPressed("SDLK_QUIT");
     }
 
-    _infoBar->setVisible(!_infoBar->isVisible());
-//    _gingaPage->setBarVisible(!_gingaPage->isBarVisible());
+
+    _gingaPage->setBarVisible(!_gingaPage->isBarActive());
 
     QMainWindow::keyPressEvent(keyEvent);
 }

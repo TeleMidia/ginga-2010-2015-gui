@@ -2,6 +2,7 @@
 #include <QVBoxLayout>
 
 #include <QStyle>
+#include <QFileInfo>
 #include <QLabel>
 #include <QPixmap>
 #include <QDebug>
@@ -154,7 +155,8 @@ void Page::updateDescription(MenuItem *item)
 void Page::runGinga(QString filename)
 {
     WId wid = _gingaPage->viewWId();
-//    _gingaPage->setInputInfo(filename);
+
+    _gingaPage->setInputInfo(QFileInfo (filename).fileName());
     _gingaProxy->run(filename, wid);
 }
 

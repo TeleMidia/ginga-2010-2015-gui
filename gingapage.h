@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QGraphicsView>
+#include <QLabel>
 
 #include "infobar.h"
 
@@ -15,14 +16,13 @@ public:
     inline WId viewWId () const
     { return _view->winId(); }
 
-//    inline void setBarVisible (bool visible)
-//    { _infoBar->setVisible(visible); }
+    void setBarVisible (bool visible);
 
-//    inline bool isBarVisible () const
-//    { return _infoBar->isVisible(); }
+    inline bool isBarActive () const
+    { return _infoBar->isActive(); }
 
-//    inline void setInputInfo (QString info)
-//    { _infoBar->setInputInfo(info); }
+    inline void setInputInfo (QString info)
+    { _infoBar->setInputInfo(info); }
 
 signals:
     
@@ -30,7 +30,7 @@ public slots:
     
 private:
     QGraphicsView *_view;
-//    InfoBar *_infoBar;
+    InfoBar *_infoBar;
 };
 
 #endif // GINGAPAGE_H

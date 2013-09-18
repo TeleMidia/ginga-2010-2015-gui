@@ -46,7 +46,6 @@ private:
     GingaProxy * _gingaProxy;
 
     GingaPage *_gingaPage;
-    InfoBar *_infoBar;
 };
 
 #endif // MAINWINDOW_H
