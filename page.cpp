@@ -16,66 +16,13 @@
 Page::Page(Page *parentPage, GingaPage *gingaPage, QString title, QString description, QString language, QList<MenuItem *> items, QWidget *parent) :
     QWidget(parent)
 {
-    _gingaPage = gingaPage;
-    _parentPage = parentPage;
-
-    _gingaProxy = GingaProxy::getInstance(GINGA_PATH);
-
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    setLayout(mainLayout);
-
-    mainLayout->addSpacing(SCREEN_HEIGHT * 0.2);
-
-    QFont labelFont ("Tiresias", SCREEN_HEIGHT * 0.03, QFont::Bold);
-
-    QHBoxLayout *centerLayout = new QHBoxLayout;
-    QVBoxLayout *descriptionLayout = new QVBoxLayout;
-    QVBoxLayout *itemsLayout = new QVBoxLayout;
-    QVBoxLayout *labelsLayout = new QVBoxLayout;
-
-    _itemsScrollArea = new QScrollArea;
-    _itemsScrollArea->setFocusPolicy(Qt::NoFocus);
-    _itemsScrollArea->installEventFilter(this);
-    _itemsScrollArea->setFrameShape(QFrame::NoFrame);
-
-    QPalette palette = this->palette();
-    palette.setColor(QPalette::Window, QColor::fromRgb(0,0,0,0));
-    _itemsScrollArea->setPalette(palette);
-    _itemsScrollArea->setBackgroundRole(QPalette::Window);
-
-    _imageLabel = new QLabel;
-    _descriptionLabel = new QLabel;
-
-    descriptionLayout->addWidget(_imageLabel);
-    descriptionLayout->addWidget(_descriptionLabel);
-
-    _imageLabel->setFixedWidth(SCREEN_WIDTH * 0.4);
-
-    _descriptionLabel->setFixedWidth(SCREEN_WIDTH * 0.4);
-    _descriptionLabel->setWordWrap(true);
-
-    mainLayout->addLayout(centerLayout);
-
-    _title = title;
-    _description = description;
-    _language = language;
     _items = items;
+    _itemsLayout = new QVBoxLayout;
 
+    setupLayout(parentPage, gingaPage, title, description, language);
+
+    QFont labelFont ("Tiresias", SCREEN_HEIGHT * 0.02, QFont::Bold);
     QString fontTemplate = tr("<font color='white'>%1</font>");
-
-    QLabel *titleLabel = new QLabel;
-    titleLabel->setFont(labelFont);
-    titleLabel->setText(fontTemplate.arg(title));
-
-    labelsLayout->addWidget(titleLabel);
-    labelsLayout->addWidget(_itemsScrollArea);
-
-    centerLayout->addSpacing(20);
-    centerLayout->addLayout(descriptionLayout);
-    centerLayout->addSpacing(50);
-    centerLayout->addLayout(labelsLayout);
-
-    labelFont.setPointSize(SCREEN_HEIGHT * 0.02);
 
     for (int i = 0; i < _items.size(); i++){
         MenuItem * item = items.at(i);
@@ -87,14 +34,17 @@ Page::Page(Page *parentPage, GingaPage *gingaPage, QString title, QString descri
             item->setFocusPolicy(Qt::StrongFocus);
         }
 
-        itemsLayout->addWidget(item);
+        _itemsLayout->addWidget(item);
         connect (item, SIGNAL(focusIn(MenuItem*)), this, SLOT(updateDescription(MenuItem*)));
         connect (item, SIGNAL(selected(MenuItem*)), this, SIGNAL(menuItemSelected(MenuItem*)));
         connect (item, SIGNAL(gingaRequested(QString)), this, SLOT(runGinga(QString)));
     }
 
+    QPalette palette = this->palette();
+    palette.setColor(QPalette::Window, QColor::fromRgb(0,0,0,0));
+
     QWidget *itemsWidget = new QWidget;
-    itemsWidget->setLayout(itemsLayout);
+    itemsWidget->setLayout(_itemsLayout);
     itemsWidget->setPalette(palette);
     itemsWidget->setBackgroundRole(QPalette::Window);
     _itemsScrollArea->setWidget(itemsWidget);
@@ -117,8 +67,6 @@ Page::Page(Page *parentPage, GingaPage *gingaPage, QString title, QString descri
     _descriptionLabel->setText(fontTemplate.arg(initDescription));
 
     _imageLabel->setPixmap(QPixmap(imagePath));
-    _imageLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    setMouseTracking(true);
 }
 
 Page::Page (Page *parentPage, QString title, QString description, QString language, QWidget *parent)
@@ -129,8 +77,72 @@ Page::Page (Page *parentPage, QString title, QString description, QString langua
     _description = description;
     _language = language;
 
+    setupLayout(parentPage, 0, title, description, language);
+
 }
 
+void Page::setupLayout(Page *parentPage, GingaPage *gingaPage, QString title, QString description, QString language)
+{
+    _gingaPage = gingaPage;
+    _parentPage = parentPage;
+
+    _gingaProxy = GingaProxy::getInstance(GINGA_PATH);
+
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    setLayout(mainLayout);
+
+    mainLayout->addSpacing(SCREEN_HEIGHT * 0.2);
+
+    QFont labelFont ("Tiresias", SCREEN_HEIGHT * 0.03, QFont::Bold);
+
+    QHBoxLayout *centerLayout = new QHBoxLayout;
+    QVBoxLayout *descriptionLayout = new QVBoxLayout;
+    QVBoxLayout *labelsLayout = new QVBoxLayout;
+
+    _itemsScrollArea = new QScrollArea;
+    _itemsScrollArea->setFocusPolicy(Qt::NoFocus);
+    _itemsScrollArea->installEventFilter(this);
+    _itemsScrollArea->setFrameShape(QFrame::NoFrame);
+
+    QPalette palette = this->palette();
+    palette.setColor(QPalette::Window, QColor::fromRgb(255,255,255,0));
+    _itemsScrollArea->setPalette(palette);
+    _itemsScrollArea->setBackgroundRole(QPalette::Window);
+
+    _imageLabel = new QLabel;
+    _descriptionLabel = new QLabel;
+
+    descriptionLayout->addWidget(_imageLabel);
+    descriptionLayout->addWidget(_descriptionLabel);
+
+    _imageLabel->setFixedWidth(SCREEN_WIDTH * 0.4);
+    _imageLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+    _descriptionLabel->setFixedWidth(SCREEN_WIDTH * 0.4);
+    _descriptionLabel->setWordWrap(true);
+
+    mainLayout->addLayout(centerLayout);
+
+    _title = title;
+    _description = description;
+    _language = language;
+
+    QString fontTemplate = tr("<font color='white'>%1</font>");
+
+    QLabel *titleLabel = new QLabel;
+    titleLabel->setFont(labelFont);
+    titleLabel->setText(fontTemplate.arg(title));
+
+    labelsLayout->addWidget(titleLabel);
+    labelsLayout->addWidget(_itemsScrollArea);
+
+    centerLayout->addSpacing(20);
+    centerLayout->addLayout(descriptionLayout);
+    centerLayout->addSpacing(50);
+    centerLayout->addLayout(labelsLayout);
+
+    setMouseTracking(true);
+}
 
 void Page::updateDescription(MenuItem *item)
 {
@@ -191,7 +203,7 @@ bool Page::eventFilter(QObject *obj, QEvent *event)
             else if (keyEvent->key() == Qt::Key_Down){
                 focusNextChild();
             }
-            else if (keyEvent->key() == Qt::Key_Left)
+            else if (keyEvent->key() == Qt::Key_Left || keyEvent->key() == Qt::Key_Backspace)
                 emit parentPageRequested (_parentPage);
 
             _itemsScrollArea->ensureWidgetVisible(focusWidget());

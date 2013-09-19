@@ -20,7 +20,9 @@ SOURCES += main.cpp\
     gingaproxy.cpp \
     gingapage.cpp \
     infobar.cpp \
-    useraccountpage.cpp
+    useraccountpage.cpp \
+    defaultrichmenuitem.cpp \
+    comborichmenuitem.cpp
 
 HEADERS  += mainwindow.h \
     page.h \
@@ -30,7 +32,10 @@ HEADERS  += mainwindow.h \
     gingaproxy.h \
     gingapage.h \
     infobar.h \
-    useraccountpage.h
+    useraccountpage.h \
+    richmenuitem.h \
+    defaultrichmenuitem.h \
+    comborichmenuitem.h
 
 FORMS    += mainwindow.ui
 

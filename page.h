@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QScrollArea>
+#include <QVBoxLayout>
 
 #include "util.h"
 #include "menuitem.h"
@@ -58,6 +59,10 @@ public slots:
     void updateDescription (MenuItem *);
     void runGinga (QString);
 
+private:
+    void setupLayout (Page *parentPage, GingaPage *gingaPage, QString title, QString description, QString language);
+
+    QVBoxLayout *_itemsLayout;
 protected:
     QString _title;
     QString _description;
@@ -74,7 +79,6 @@ protected:
 
     GingaProxy *_gingaProxy;
     GingaPage *_gingaPage;
-
 };
 
 #endif // PAGE_H

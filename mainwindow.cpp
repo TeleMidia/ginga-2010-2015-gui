@@ -4,6 +4,7 @@
 #include <QDebug>
 
 #include "pagexmlparser.h"
+#include "useraccountpage.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -55,18 +56,12 @@ void MainWindow::changePage(MenuItem *item)
         if (_pages.contains(path))
             _stackedLayout->setCurrentWidget(_pages.value(path));
         else{
+            Page *newPage = 0;
+
             PageXmlParser *pageParser = new PageXmlParser(path);
             if (!pageParser->hasError()){
-                Page *newPage = new Page ((Page *)_stackedLayout->currentWidget(), _gingaPage, pageParser->title(),
+                newPage = new Page ((Page *)_stackedLayout->currentWidget(), _gingaPage, pageParser->title(),
                                           pageParser->description(), pageParser->languague(), pageParser->items());
-
-                connect (newPage, SIGNAL(configurePlay()), this, SLOT(showGingaView()));
-                connect (newPage, SIGNAL(menuItemSelected(MenuItem*)), this, SLOT(changePage(MenuItem*)));
-                connect (newPage, SIGNAL(parentPageRequested(Page*)), this, SLOT(changePage(Page*)));
-
-                _pages.insert(path, newPage);
-                _stackedLayout->addWidget(newPage);
-                _stackedLayout->setCurrentWidget(newPage);
             }
             else {
                 QStringList tokens = path.split("/");
@@ -77,10 +72,20 @@ void MainWindow::changePage(MenuItem *item)
                     if (tokens.size() > 1 && tokens.at(0) == "dyncontent.xml"){
                         QString pageRequired = tokens.at(1);
                         if (pageRequired == "usr-acct"){ // User account management
-
+                            newPage = new UserAccountPage ((Page*) _stackedLayout->currentWidget());
+                            ((UserAccountPage *) newPage)->updateValues();
                         }
                     }
                 }
+            }
+            if (newPage){
+                connect (newPage, SIGNAL(configurePlay()), this, SLOT(showGingaView()));
+                connect (newPage, SIGNAL(menuItemSelected(MenuItem*)), this, SLOT(changePage(MenuItem*)));
+                connect (newPage, SIGNAL(parentPageRequested(Page*)), this, SLOT(changePage(Page*)));
+
+                _pages.insert(path, newPage);
+                _stackedLayout->addWidget(newPage);
+                _stackedLayout->setCurrentWidget(newPage);
             }
         }
     }
