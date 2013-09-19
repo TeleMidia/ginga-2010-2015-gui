@@ -5,6 +5,7 @@
 
 #include "pagexmlparser.h"
 #include "useraccountpage.h"
+#include "userpreferences.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -74,6 +75,9 @@ void MainWindow::changePage(MenuItem *item)
                         if (pageRequired == "usr-acct"){ // User account management
                             newPage = new UserAccountPage ((Page*) _stackedLayout->currentWidget());
                             ((UserAccountPage *) newPage)->updateValues();
+                        }
+                        else if (pageRequired == "usr-prefs"){
+                            newPage = new UserPreferences ((Page *) _stackedLayout->currentWidget());
                         }
                     }
                 }

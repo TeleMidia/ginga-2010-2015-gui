@@ -49,9 +49,6 @@ Page::Page(Page *parentPage, GingaPage *gingaPage, QString title, QString descri
     itemsWidget->setBackgroundRole(QPalette::Window);
     _itemsScrollArea->setWidget(itemsWidget);
 
-    labelFont.setPointSize(SCREEN_HEIGHT * 0.02);
-    _descriptionLabel->setFont(labelFont);
-
     QString initDescription = "";
     QString imagePath = "";
 
@@ -78,7 +75,6 @@ Page::Page (Page *parentPage, QString title, QString description, QString langua
     _language = language;
 
     setupLayout(parentPage, 0, title, description, language);
-
 }
 
 void Page::setupLayout(Page *parentPage, GingaPage *gingaPage, QString title, QString description, QString language)
@@ -140,6 +136,10 @@ void Page::setupLayout(Page *parentPage, GingaPage *gingaPage, QString title, QS
     centerLayout->addLayout(descriptionLayout);
     centerLayout->addSpacing(50);
     centerLayout->addLayout(labelsLayout);
+
+    labelFont.setPointSize(SCREEN_HEIGHT * 0.02);
+    _descriptionLabel->setFont(labelFont);
+    _descriptionLabel->setText(fontTemplate.arg(_description));
 
     setMouseTracking(true);
 }

@@ -9,4 +9,7 @@
     <qresource prefix="/icons">
         <file alias="stop">files/img/stop.png</file>
     </qresource>
+    <qresource prefix="/settings">
+        <file alias="values">files/contextsAllowedValues.ini</file>
+    </qresource>
 </RCC>
