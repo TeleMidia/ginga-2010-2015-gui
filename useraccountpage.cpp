@@ -97,4 +97,6 @@ void UserAccountPage::persistValues()
         userAccountFile.write(" || = 0 " + _nameItem->value().toAscii() + " 12345 " + _ageItem->value().toAscii() + " "
                               + _locationItem->value().toAscii() + " " + _genreItem->value().toAscii() + "\n");
     }
+
+    userAccountFile.close();
 }

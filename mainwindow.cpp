@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include <QDebug>
+#include <QDir>
 
 #include "pagexmlparser.h"
 #include "useraccountpage.h"
@@ -10,6 +11,9 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+    _lockCreated = false;
+    _usbPage = 0;
+
     _stackedLayout = new QStackedLayout;
     QWidget *mainWidget = new QWidget;
     mainWidget->setLayout(_stackedLayout);
@@ -26,6 +30,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect (_gingaProxy, SIGNAL(gingaStarted()), this, SLOT(showGingaView()));
     connect (_gingaProxy, SIGNAL(gingaFinished(int,QProcess::ExitStatus)), this, SLOT(hideGingaView()));
     connect (this, SIGNAL(keyPressed(QString)), _gingaProxy, SLOT(sendCommand(QString)));
+
+    _usbPathWatcher = new QFileSystemWatcher(this);
+    _usbPathWatcher->addPath(USB_XML_PARENT_DIR);
+
+    connect (_usbPathWatcher, SIGNAL(directoryChanged(QString)), this, SLOT(analyzeDir(QString)));
 
     parsePage(":/pages/main");
 }
@@ -54,8 +63,11 @@ void MainWindow::changePage(MenuItem *item)
     if (item){
         QString path = item->link();
 
-        if (_pages.contains(path))
-            _stackedLayout->setCurrentWidget(_pages.value(path));
+        Page *requestedPage = _pages.value(path);
+        if (requestedPage){
+            _stackedLayout->setCurrentWidget(requestedPage);
+            requestedPage->updateValues();
+        }
         else{
             Page *newPage = 0;
 
@@ -74,10 +86,16 @@ void MainWindow::changePage(MenuItem *item)
                         QString pageRequired = tokens.at(1);
                         if (pageRequired == "usr-acct"){ // User account management
                             newPage = new UserAccountPage ((Page*) _stackedLayout->currentWidget());
-                            ((UserAccountPage *) newPage)->updateValues();
                         }
                         else if (pageRequired == "usr-prefs"){
                             newPage = new UserPreferences ((Page *) _stackedLayout->currentWidget());
+                        }
+                        else if (pageRequired == "mnt-usb"){
+                            delete pageParser;
+                            pageParser = new PageXmlParser (USB_XML_FILE);
+                            newPage = new Page ((Page *)_stackedLayout->currentWidget(), _gingaPage, pageParser->title(),
+                                                pageParser->description(), pageParser->languague(), pageParser->items());
+                            _usbPage = newPage;
                         }
                     }
                 }
@@ -91,6 +109,8 @@ void MainWindow::changePage(MenuItem *item)
                 _stackedLayout->addWidget(newPage);
                 _stackedLayout->setCurrentWidget(newPage);
             }
+
+            delete pageParser;
         }
     }
 }
@@ -185,6 +205,23 @@ void MainWindow::keyPressEvent(QKeyEvent *keyEvent)
 //    _gingaPage->setBarVisible(!_gingaPage->isBarActive());
 
     QMainWindow::keyPressEvent(keyEvent);
+}
+
+void MainWindow::analyzeDir(QString dir)
+{
+    QDir directory (dir);
+    if (directory.exists("usb.xml.lock")){
+        _lockCreated = true;
+        connect (_usbPathWatcher, SIGNAL(fileChanged(QString)), this, SLOT(analyzeDir(QString)));
+    }
+    else if (_lockCreated) {
+             _lockCreated = false;
+             if (_usbPage){
+                 PageXmlParser *parser = new PageXmlParser (USB_XML_FILE);
+                 _usbPage->setupItems(parser->items());
+                 delete parser;
+             }
+    }
 }
 
 MainWindow::~MainWindow()

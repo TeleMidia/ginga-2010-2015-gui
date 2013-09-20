@@ -12,13 +12,15 @@ SOURCE="$1"
 DEST="$2"
 mkdir -p `dirname "$DEST"`
 
+touch "$DEST.lock"
+
 # header
 
 cat >$DEST <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <rss xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0">
 <channel>
-<title>USB Storage</title>
+<title>USB Storage:</title>
 <description>USB Storage</description>
 EOF
 
@@ -31,6 +33,7 @@ do
  <item>
   <title>$name</title>
   <description>$path</description>
+  <link>$path</link>
  </item>
 EOF
 done
@@ -41,6 +44,8 @@ cat >>$DEST <<EOF
 </channel>
 </rss>
 EOF
+
+rm -f "$DEST.lock"
 
 # local variables:
 # eval: (add-hook 'write-file-hooks 'time-stamp)

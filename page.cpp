@@ -16,43 +16,17 @@
 Page::Page(Page *parentPage, GingaPage *gingaPage, QString title, QString description, QString language, QList<MenuItem *> items, QWidget *parent) :
     QWidget(parent)
 {
-    _items = items;
     _itemsLayout = new QVBoxLayout;
 
     setupLayout(parentPage, gingaPage, title, description, language);
+    setupItems(items);
 
-    QFont labelFont ("Tiresias", SCREEN_HEIGHT * 0.02, QFont::Bold);
     QString fontTemplate = tr("<font color='white'>%1</font>");
-
-    for (int i = 0; i < _items.size(); i++){
-        MenuItem * item = items.at(i);
-        item->setFont(labelFont);
-        item->setFocus();
-
-        if ( item->text().trimmed() != ""){
-            item->setText(fontTemplate.arg(item->text()));
-            item->setFocusPolicy(Qt::StrongFocus);
-        }
-
-        _itemsLayout->addWidget(item);
-        connect (item, SIGNAL(focusIn(MenuItem*)), this, SLOT(updateDescription(MenuItem*)));
-        connect (item, SIGNAL(selected(MenuItem*)), this, SIGNAL(menuItemSelected(MenuItem*)));
-        connect (item, SIGNAL(gingaRequested(QString)), this, SLOT(runGinga(QString)));
-    }
-
-    QPalette palette = this->palette();
-    palette.setColor(QPalette::Window, QColor::fromRgb(0,0,0,0));
-
-    QWidget *itemsWidget = new QWidget;
-    itemsWidget->setLayout(_itemsLayout);
-    itemsWidget->setPalette(palette);
-    itemsWidget->setBackgroundRole(QPalette::Window);
-    _itemsScrollArea->setWidget(itemsWidget);
 
     QString initDescription = "";
     QString imagePath = "";
 
-    if (_items.size() > 0){
+    if (items.size() > 0){
         initDescription = items.at(0)->description();
         imagePath = items.at(0)->enclosure().first;
     }
@@ -75,6 +49,47 @@ Page::Page (Page *parentPage, QString title, QString description, QString langua
     _language = language;
 
     setupLayout(parentPage, 0, title, description, language);
+}
+
+void Page::setupItems(QList<MenuItem *> items)
+{
+    QLayoutItem *child;
+    while ((child = _itemsLayout->takeAt(0)) != 0) {
+        delete child->widget();
+        delete child;
+    }
+
+    QFont labelFont ("Tiresias", SCREEN_HEIGHT * 0.02, QFont::Bold);
+    QString fontTemplate = tr("<font color='white'>%1</font>");
+
+    for (int i = 0; i < items.size(); i++){
+        MenuItem * item = items.at(i);
+        item->setFont(labelFont);
+        item->setFocus();
+
+        if ( item->text().trimmed() != ""){
+            item->setText(fontTemplate.arg(item->text()));
+            item->setFocusPolicy(Qt::StrongFocus);
+        }
+
+        _itemsLayout->addWidget(item);
+        connect (item, SIGNAL(focusIn(MenuItem*)), this, SLOT(updateDescription(MenuItem*)));
+        connect (item, SIGNAL(selected(MenuItem*)), this, SIGNAL(menuItemSelected(MenuItem*)));
+        connect (item, SIGNAL(gingaRequested(QString)), this, SLOT(runGinga(QString)));
+    }
+
+    if (items.size())
+        items.at(0)->setFocus();
+
+    QPalette palette = this->palette();
+    palette.setColor(QPalette::Window, QColor::fromRgb(0,0,0,0));
+
+    QWidget *itemsWidget = new QWidget;
+    itemsWidget->setLayout(_itemsLayout);
+    itemsWidget->setPalette(palette);
+    itemsWidget->setBackgroundRole(QPalette::Window);
+    _itemsScrollArea->setWidget(itemsWidget);
+
 }
 
 void Page::setupLayout(Page *parentPage, GingaPage *gingaPage, QString title, QString description, QString language)
@@ -213,6 +228,14 @@ bool Page::eventFilter(QObject *obj, QEvent *event)
         }
     }
     return QWidget::eventFilter(obj, event);
+}
+
+void Page::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Left || event->key() == Qt::Key_Return)
+        emit parentPageRequested(_parentPage);
+
+    QWidget::keyPressEvent(event);
 }
 
 void Page::mouseMoveEvent(QMouseEvent *event)

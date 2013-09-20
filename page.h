@@ -52,9 +52,6 @@ public:
     inline void setLanguage (QString language)
     { this->_language = language; }
 
-    inline void addItem (MenuItem * item)
-    { _items.append(item); }
-
     inline QString title () const
     { return _title; }
 
@@ -64,13 +61,15 @@ public:
     inline QString language () const
     { return _language; }
 
-    inline QList <MenuItem *> items () const
-    { return _items; }
+    virtual inline void updateValues ()
+    { }
 
     bool eventFilter(QObject *, QEvent *);
 
-    void mouseMoveEvent(QMouseEvent *);
+    void setupItems (QList <MenuItem *> items);
 
+    void mouseMoveEvent(QMouseEvent *);
+    void keyPressEvent(QKeyEvent *);
 
 protected:
 
@@ -94,8 +93,6 @@ protected:
 
     QLabel * _imageLabel;
     QLabel * _descriptionLabel;
-
-    QList <MenuItem *> _items;
 
     Page * _parentPage;
 

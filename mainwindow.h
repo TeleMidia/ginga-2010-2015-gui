@@ -6,6 +6,7 @@
 #include <QMap>
 #include <QGraphicsView>
 #include <QKeyEvent>
+#include <QFileSystemWatcher>
 
 #include "gingapage.h"
 #include "page.h"
@@ -33,6 +34,7 @@ public slots:
     void changePage (Page *);
     void showGingaView ();
     void hideGingaView ();
+    void analyzeDir (QString);
 
 private:
     void parsePage (QString);
@@ -43,9 +45,16 @@ private:
 
     QWidget *_lastPage;
 
+    Page * _usbPage;
+
     GingaProxy * _gingaProxy;
 
     GingaPage *_gingaPage;
+
+
+    QFileSystemWatcher *_usbPathWatcher;
+
+    bool _lockCreated;
 };
 
 #endif // MAINWINDOW_H

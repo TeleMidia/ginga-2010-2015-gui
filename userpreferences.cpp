@@ -5,6 +5,7 @@
 #include <QSettings>
 #include <QDebug>
 
+#include "util.h"
 #include "comborichmenuitem.h"
 #include "defaultrichmenuitem.h"
 
@@ -16,8 +17,7 @@ UserPreferences::UserPreferences(Page * parentPage, QString language, QWidget *p
     QSettings settings ( ":/settings/values", QSettings::IniFormat, this);
     QStringList keys = settings.allKeys();
     keys.sort();
-    for (int i = 0; i < keys.size(); i++){
-        QString key = keys.at(i);
+    foreach (QString key, keys){
         QString value = settings.value(key).toString();
 
         RichMenuItem *menuItem = 0;
@@ -58,8 +58,22 @@ UserPreferences::UserPreferences(Page * parentPage, QString language, QWidget *p
         else
             menuItem = new DefaultRichMenuItem (key, DefaultRichMenuItem::DEFAULT);
 
+        key.remove(":");
+        _variables.insert(key, menuItem);
+
         mainLayout->addWidget(menuItem);
     }
+
+    updateValues();
+
+    QFont labelFont ("Tiresias", SCREEN_HEIGHT * 0.025, QFont::Bold);
+
+    _changeValues = new FocusableLabel(QString ("<font color='white'>%1</font>").arg("> ChangeValues"));
+    _changeValues->installEventFilter(this);
+    _changeValues->setFont(labelFont);
+
+    mainLayout->addSpacing(50);
+    mainLayout->addWidget(_changeValues);
 
 
     QWidget *scrollWidget = new QWidget;
@@ -71,4 +85,45 @@ UserPreferences::UserPreferences(Page * parentPage, QString language, QWidget *p
 
 
     _imageLabel->setPixmap(QPixmap("/usr/local/lib/ginga/gui/files/img/usermgmt.png"));
+}
+
+void UserPreferences::updateValues()
+{
+    QSettings gingaPreferences (USER_PREFERENCES_PATH, QSettings::IniFormat, this);
+    QStringList keys = gingaPreferences.allKeys();
+    foreach (QString key, keys){
+        RichMenuItem *menuItem = _variables.value(key);
+        if (menuItem)
+            menuItem->setValue(gingaPreferences.value(key).toString());
+    }
+}
+
+bool UserPreferences::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::KeyPress){
+        QKeyEvent *keyEvent = (QKeyEvent *) event;
+        if (obj == _changeValues && (keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Return)){
+            persistValues ();
+            emit parentPageRequested(_parentPage);
+            return true;
+        }
+    }
+
+    return Page::eventFilter(obj, event);
+}
+
+void UserPreferences::persistValues()
+{
+    QFile preferencesFile (USER_PREFERENCES_PATH);
+
+    if (preferencesFile.open(QIODevice::WriteOnly | QIODevice::Text)){
+        preferencesFile.write("::\t\t\t\t = 0\n");
+        preferencesFile.write("||\t\t\t\t = 0\n");
+
+        for (QMap <QString, RichMenuItem *>::iterator it = _variables.begin(); it != _variables.end(); it++){
+            preferencesFile.write(QString(it.key() + "\t = " + it.value()->value() + "\n").toStdString().c_str());
+        }
+    }
+
+    preferencesFile.close();
 }
