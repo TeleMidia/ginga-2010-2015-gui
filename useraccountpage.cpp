@@ -18,7 +18,7 @@ UserAccountPage::UserAccountPage(Page *parentPage, QString language, QWidget *pa
     genres << "m" << "f";
 
     _nameItem = new DefaultRichMenuItem ("Name:", DefaultRichMenuItem::NAME);
-    _ageItem = new DefaultRichMenuItem ("Age:", DefaultRichMenuItem::AGE);
+    _ageItem = new DefaultRichMenuItem ("Age:", DefaultRichMenuItem::NUMBER);
     _locationItem = new DefaultRichMenuItem ("Location (Zip):", DefaultRichMenuItem::LOCATION);
     _genreItem = new ComboRichMenuItem ("Genre:", genres);
 

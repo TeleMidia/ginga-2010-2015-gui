@@ -9,10 +9,17 @@ ComboRichMenuItem::ComboRichMenuItem(QString label, QStringList values, QWidget 
     _comboBox = new QComboBox;
     _comboBox->addItems(values);
     _comboBox->setFont(_defaultFont);
-    _comboBox->setStyleSheet("background-color: transparent;"
+    _comboBox->setStyleSheet("QComboBox {"
+                             "background-color: transparent;"
                              "color: white;"
                              "border-radius: 10px;"
                              "border: 2px solid rgb(173, 216, 230);"
+                             "}"
+
+                             "QComboBox:editable {"
+                             "background: white;"
+                             "border-radius: 10px;"
+                             "}"
                              );
 
     _comboBox->setFocusPolicy(Qt::NoFocus);
@@ -31,5 +38,6 @@ void ComboRichMenuItem::keyPressEvent(QKeyEvent *event)
         _comboBox->showPopup();
     }
 
-    RichMenuItem::keyPressEvent(event);
+    if (event->key() != Qt::Key_Left)
+        RichMenuItem::keyPressEvent(event);
 }

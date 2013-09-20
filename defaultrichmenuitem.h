@@ -12,9 +12,10 @@ class DefaultRichMenuItem : public RichMenuItem
 public:
     enum ItemType {
         NAME,
-        AGE,
+        NUMBER,
         LOCATION,
-        GENRE
+        GENRE,
+        DEFAULT
     };
 
     explicit DefaultRichMenuItem(QString label, ItemType type, QWidget *parent = 0);

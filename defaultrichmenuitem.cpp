@@ -62,9 +62,10 @@ void DefaultRichMenuItem::keyPressEvent(QKeyEvent *event)
 
         return;
     }
+
     else{
         switch (_type){
-        case AGE:
+        case NUMBER:
         case LOCATION:
             bool ok;
             number = QString (_lineEdit->text() + key).toInt(&ok);
