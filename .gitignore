@@ -1,4 +1,5 @@
 /Makefile
+/gingagui-minipc-cpp
 
 # In repository we don't need to have:
 # Compiled object files
