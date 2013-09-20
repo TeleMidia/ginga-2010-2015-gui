@@ -1,0 +1,9 @@
+#!/bin/sh -
+
+DEV="/dev/$1"
+MNT="/mnt/$1"
+
+umount $DEV && rmdir $MNT
+
+# Rebuild usbcache.
+/usr/bin/gingagui-minipc-walk /mnt /var/run/gingagui/usb.xml
