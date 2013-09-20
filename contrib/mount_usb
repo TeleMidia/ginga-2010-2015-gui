@@ -9,5 +9,5 @@ test "`mount | grep $MNT`"x = x || exit 0
 mkdir -p $MNT
 mount -o ro $DEV $MNT
 
-# Rebuild usbcache.
-/usr/bin/gingagui-minipc-walk /mnt /var/run/gingagui/usb.xml
+# Rebuild usb.xml.
+gingagui-minipc-walk "`dirname "$MNT"`" /var/run/gingagui/usb.xml

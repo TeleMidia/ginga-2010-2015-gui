@@ -5,5 +5,5 @@ MNT="/mnt/$1"
 
 umount $DEV && rmdir $MNT
 
-# Rebuild usbcache.
-/usr/bin/gingagui-minipc-walk /mnt /var/run/gingagui/usb.xml
+# Rebuild usb.xml.
+gingagui-minipc-walk "`dirname "$MNT"`" /var/run/gingagui/usb.xml
