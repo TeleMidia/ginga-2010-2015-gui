@@ -1,3 +1,5 @@
+/Makefile
+
 # In repository we don't need to have:
 # Compiled object files
 *.o
