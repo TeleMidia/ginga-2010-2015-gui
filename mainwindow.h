@@ -47,10 +47,13 @@ private:
 
     Page * _usbPage;
 
+    Page * _ipPage;
+
     GingaProxy * _gingaProxy;
 
     GingaPage *_gingaPage;
 
+    QWidget *_loadingPage;
 
     QFileSystemWatcher *_usbPathWatcher;
 

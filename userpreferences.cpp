@@ -82,9 +82,6 @@ UserPreferences::UserPreferences(Page * parentPage, QString language, QWidget *p
     _itemsScrollArea->setWidget(scrollWidget);
 
     _imageLabel->setPixmap(QPixmap("/usr/local/lib/ginga/gui/files/img/usermgmt.png"));
-
-
-    _imageLabel->setPixmap(QPixmap("/usr/local/lib/ginga/gui/files/img/usermgmt.png"));
 }
 
 void UserPreferences::updateValues()

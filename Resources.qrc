@@ -2,6 +2,7 @@
     <qresource prefix="/backgrounds">
         <file alias="bg_gui">files/img/bg_gui.png</file>
         <file alias="default">files/img/gingancl.png</file>
+        <file alias="loading">files/img/loading.gif</file>
     </qresource>
     <qresource prefix="/pages">
         <file alias="main">files/xml/main.xml</file>
@@ -11,5 +12,9 @@
     </qresource>
     <qresource prefix="/settings">
         <file alias="values">files/contextsAllowedValues.ini</file>
+        <file alias="init">files/settings.ini</file>
+    </qresource>
+    <qresource prefix="/scripts">
+        <file alias="walk">contrib/gingagui-minipc-walk</file>
     </qresource>
 </RCC>

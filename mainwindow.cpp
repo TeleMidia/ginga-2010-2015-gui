@@ -2,7 +2,10 @@
 #include "ui_mainwindow.h"
 
 #include <QDebug>
+#include <QFile>
 #include <QDir>
+#include <QProcess>
+#include <QMovie>
 
 #include "pagexmlparser.h"
 #include "useraccountpage.h"
@@ -37,6 +40,25 @@ MainWindow::MainWindow(QWidget *parent) :
     connect (_usbPathWatcher, SIGNAL(directoryChanged(QString)), this, SLOT(analyzeDir(QString)));
 
     parsePage(":/pages/main");
+
+    if (!QFile::exists(USB_XML_FILE)){ //create USB_XML_FILE
+        system (QString ("gingagui-minipc-walk /mnt " + USB_XML_FILE).toStdString().c_str());
+    }
+
+    _loadingPage = new QWidget (this);
+    QMovie *movie = new QMovie(":/backgrounds/loading");
+    QLabel *loadingLabel = new QLabel(this);
+    loadingLabel->setMovie(movie);
+    movie->setScaledSize(QSize (SCREEN_WIDTH, SCREEN_HEIGHT));
+    movie->start();
+
+    QHBoxLayout *loadingLayout = new QHBoxLayout();
+    loadingLayout->addWidget(loadingLabel);
+    loadingLayout->setAlignment(loadingLabel, Qt::AlignHCenter | Qt::AlignVCenter);
+
+    _loadingPage->setLayout(loadingLayout);
+
+    _stackedLayout->addWidget(_loadingPage);
 }
 
 
@@ -77,25 +99,47 @@ void MainWindow::changePage(MenuItem *item)
                                           pageParser->description(), pageParser->languague(), pageParser->items());
             }
             else {
-                QStringList tokens = path.split("/");
-                if (tokens.size() > 0){
-                    QString lastToken = tokens.last();
-                    tokens = lastToken.split("#");
+                QStringList tokens = path.split("/", QString::SkipEmptyParts);
+                QString lastToken = tokens.last();
+                if (path.startsWith("exec:")){
+                    if (lastToken == "trydhcp"){
+                        QProcess *process = new QProcess (this);
 
-                    if (tokens.size() > 1 && tokens.at(0) == "dyncontent.xml"){
-                        QString pageRequired = tokens.at(1);
-                        if (pageRequired == "usr-acct"){ // User account management
-                            newPage = new UserAccountPage ((Page*) _stackedLayout->currentWidget());
-                        }
-                        else if (pageRequired == "usr-prefs"){
-                            newPage = new UserPreferences ((Page *) _stackedLayout->currentWidget());
-                        }
-                        else if (pageRequired == "mnt-usb"){
-                            delete pageParser;
-                            pageParser = new PageXmlParser (USB_XML_FILE);
-                            newPage = new Page ((Page *)_stackedLayout->currentWidget(), _gingaPage, pageParser->title(),
-                                                pageParser->description(), pageParser->languague(), pageParser->items());
-                            _usbPage = newPage;
+                        _lastPage = _stackedLayout->currentWidget();
+                        _stackedLayout->setCurrentWidget(_loadingPage);
+
+                        process->start(lastToken);
+
+                        QEventLoop loop (this);
+                        connect (process, SIGNAL(finished(int)), &loop, SLOT(quit()));
+                        loop.exec();
+
+                        delete process;
+
+                        _stackedLayout->setCurrentWidget(_lastPage);
+                        _lastPage = 0;
+                    }
+                }
+                else{
+                    if (tokens.size() > 0){
+                        tokens = lastToken.split("#");
+
+                        if (tokens.size() > 1 && tokens.at(0) == "dyncontent.xml"){
+                            QString pageRequired = tokens.at(1);
+                            if (pageRequired == "usr-acct"){ // User account management
+                                newPage = new UserAccountPage ((Page*) _stackedLayout->currentWidget());
+                            }
+                            else if (pageRequired == "usr-prefs"){
+                                newPage = new UserPreferences ((Page *) _stackedLayout->currentWidget());
+                            }
+                            else if (pageRequired == "mnt-usb"){
+                                delete pageParser;
+                                pageParser = new PageXmlParser (USB_XML_FILE);
+
+                                newPage = new Page ((Page *)_stackedLayout->currentWidget(), _gingaPage, pageParser->title(),
+                                                    pageParser->description(), pageParser->languague(), pageParser->items());
+                                _usbPage = newPage;
+                            }
                         }
                     }
                 }
@@ -118,18 +162,18 @@ void MainWindow::changePage(MenuItem *item)
 void MainWindow::showGingaView()
 {
     qDebug () << "gui::gingaStarted";
-//    _lastPage = _stackedLayout->currentWidget();
-//    _stackedLayout->setCurrentWidget(_gingaPage);
+    _lastPage = _stackedLayout->currentWidget();
+    _stackedLayout->setCurrentWidget(_gingaPage);
     grabKeyboard();
 }
 
 void MainWindow::hideGingaView()
 {
     qDebug () << "gui::gingaFinished";
-//    if (_lastPage){
-//        _stackedLayout->setCurrentWidget(_lastPage);
-//        _lastPage = 0;
-//    }
+    if (_lastPage){
+        _stackedLayout->setCurrentWidget(_lastPage);
+        _lastPage = 0;
+    }
     releaseKeyboard();
 }
 
@@ -199,10 +243,8 @@ void MainWindow::keyPressEvent(QKeyEvent *keyEvent)
     }
     else if (keyEvent->key() == Qt::Key_Escape)
     {
-        emit keyPressed("SDLK_QUIT");
+        _gingaProxy->killProcess();
     }
-
-//    _gingaPage->setBarVisible(!_gingaPage->isBarActive());
 
     QMainWindow::keyPressEvent(keyEvent);
 }

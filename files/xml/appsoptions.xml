@@ -7,7 +7,7 @@
             <description>Choose the application source.</description>
             <language>en</language>
             <item>
-                <title>Frequency channel</title>
+                <title>TV channel</title>
 		<description>Play aplications from a broadcast frequency channel.</description>
                 <link></link>
                 <enclosure url="/usr/local/lib/ginga/gui/files/img/antenna.png" type="image/png" />
@@ -25,7 +25,7 @@
                 <enclosure url="/usr/local/lib/ginga/gui/files/img/usbstorage.png" type="image/png" />
             </item>
 	    <item>
-                <title>Network</title>
+                <title>IP Network</title>
                 <description>Play applications included in a content server located in network.</description>
                 <link>/usr/local/lib/ginga/gui/files/xml/nocontentserver.xml</link>
                 <enclosure url="/usr/local/lib/ginga/gui/files/img/network.png" type="image/png" />

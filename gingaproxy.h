@@ -34,6 +34,12 @@ public:
             return QProcess::NotRunning;
     }
 
+    inline void killProcess ()
+    {
+        if (_process && _process->state() == QProcess::Running)
+            _process->kill();
+    }
+
 signals:
     void gingaStarted ();
     void gingaFinished(int, QProcess::ExitStatus);

@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QtNetwork/QNetworkInterface>
 
 #include "util.h"
 

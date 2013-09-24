@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QApplication>
 #include <QWidget>
+#include <QSettings>
 
 GingaProxy* GingaProxy::_instance = 0;
 
@@ -56,6 +57,9 @@ void GingaProxy::finished(int code, QProcess::ExitStatus status)
     _args.clear();
 
     if (_process){
+
+        qDebug () << _process->state();
+
         _process->deleteLater();
         _process = 0;
     }
