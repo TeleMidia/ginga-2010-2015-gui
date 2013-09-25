@@ -9,8 +9,11 @@ class MenuItem : public QWidget
     Q_OBJECT
 public:
     explicit MenuItem(QString title = "", QString description = "", QString link = "",
-                      QPair <QString, QString> _enclosure = QPair <QString, QString> (), QWidget *parent = 0);
+                      QPair <QString, QString> _enclosure = QPair <QString, QString> (), bool isActive = true, QWidget *parent = 0);
     
+    inline bool isActive () const
+    { return _isEnabled; }
+
     inline QString description () const
     { return _description; }
 
@@ -24,7 +27,10 @@ public:
     { return _enclosure; }
 
     inline void setText (QString text)
-    { _textLabel->setText(text); }
+    {
+        _textLabel->setText(text);
+        if (text == "") setFocusPolicy(Qt::NoFocus);
+    }
 
     inline void setDescription (QString description)
     { _description = description; }
@@ -35,8 +41,14 @@ public:
     inline void setEnclosure (QPair<QString,QString> enclosure)
     { this->_enclosure = enclosure; }
 
-//    inline QSize sizeHint() const
-//    { return QSize (parentWidget()->width(), height()); }
+    inline void setEnable (bool isEnabled)
+    {
+        this->_isEnabled = isEnabled;
+        if (_isEnabled)
+            setFocusPolicy(Qt::StrongFocus);
+        else
+            setFocusPolicy(Qt::NoFocus);
+    }
 
     bool eventFilter(QObject *, QEvent *);
 
@@ -55,6 +67,7 @@ private:
     QString _link;
     QPair <QString, QString> _enclosure; // <url, type>
     QLabel * _textLabel;
+    bool _isEnabled;
 };
 
 #endif // MENUITEM_H

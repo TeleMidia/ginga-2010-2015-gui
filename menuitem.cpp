@@ -7,7 +7,7 @@
 #include <QFileInfo>
 #include <QDebug>
 
-MenuItem::MenuItem(QString text, QString description, QString link, QPair<QString, QString> enclosure, QWidget *parent) :
+MenuItem::MenuItem(QString text, QString description, QString link, QPair<QString, QString> enclosure, bool isActive, QWidget *parent) :
     QWidget(parent)
 {
     _description = description;
@@ -26,6 +26,13 @@ MenuItem::MenuItem(QString text, QString description, QString link, QPair<QStrin
     installEventFilter(this);
 
     setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+
+    _isEnabled = isActive;
+
+    if (isActive)
+        setFocusPolicy(Qt::StrongFocus);
+    else
+        setFocusPolicy(Qt::NoFocus);
 }
 
 bool MenuItem::eventFilter(QObject *obj, QEvent *event)

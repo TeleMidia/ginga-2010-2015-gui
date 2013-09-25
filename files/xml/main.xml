@@ -6,7 +6,7 @@
             <link>/usr/local/lib/ginga/gui/files/xml/main.xml</link>
             <description>Ginga Box is a self-contained Linux distribution built to offer a testing environment for declarative applications written in NCL or NCLua. You can run NCL applications found in this CD, published in the NCL Club or stored in your own USB mass storage device.</description>
             <language>en</language>
-            <item>
+            <item enable="false">
                 <title>Watch TV</title>
                 <description>Play NCL aplications included in this Ginga Live CD. This content were jointly created by TeleMidia Lab Team and many partners.</description>
                 <link>/usr/local/lib/ginga/gui/files/xml/dyncontent.xml#list-channels</link>

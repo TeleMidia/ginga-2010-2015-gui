@@ -6,7 +6,7 @@
             <link>/usr/local/lib/ginga/gui/files/xml/appsoptions.xml</link>
             <description>Choose the application source.</description>
             <language>en</language>
-            <item>
+            <item enable="false">
                 <title>TV channel</title>
 		<description>Play aplications from a broadcast frequency channel.</description>
                 <link></link>

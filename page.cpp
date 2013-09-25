@@ -19,7 +19,7 @@ Page::Page(Page *parentPage, GingaPage *gingaPage, QString title, QString descri
     _itemsLayout = new QVBoxLayout;
 
     setupLayout(parentPage, gingaPage, title, description, language);
-    setupItems(items);
+    setUpItems(items);
 
     QString fontTemplate = tr("<font color='white'>%1</font>");
 
@@ -51,7 +51,7 @@ Page::Page (Page *parentPage, QString title, QString description, QString langua
     setupLayout(parentPage, 0, title, description, language);
 }
 
-void Page::setupItems(QList<MenuItem *> items)
+void Page::setUpItems(QList<MenuItem *> items)
 {
     QLayoutItem *child;
     while ((child = _itemsLayout->takeAt(0)) != 0) {
@@ -60,7 +60,7 @@ void Page::setupItems(QList<MenuItem *> items)
     }
 
     QFont labelFont ("Tiresias", SCREEN_HEIGHT * 0.02, QFont::Bold);
-    QString fontTemplate = tr("<font color='white'>%1</font>");
+    QString fontTemplate = tr("<font color='%1'>%2</font>");
 
     for (int i = 0; i < items.size(); i++){
         MenuItem * item = items.at(i);
@@ -68,8 +68,8 @@ void Page::setupItems(QList<MenuItem *> items)
         item->setFocus();
 
         if ( item->text().trimmed() != ""){
-            item->setText(fontTemplate.arg(item->text()));
-            item->setFocusPolicy(Qt::StrongFocus);
+            QString color = item->isActive() ? "white" : "gray";
+            item->setText(fontTemplate.arg(color, item->text()));
         }
 
         _itemsLayout->addWidget(item);

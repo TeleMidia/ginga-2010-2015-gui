@@ -292,7 +292,7 @@ void MainWindow::analyzeDir(QString dir)
              _lockCreated = false;
              if (_usbPage){
                  PageXmlParser *parser = new PageXmlParser (USB_XML_FILE);
-                 _usbPage->setupItems(parser->items());
+                 _usbPage->setUpItems(parser->items());
                  delete parser;
              }
     }

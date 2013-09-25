@@ -46,6 +46,9 @@ MenuItem * PageXmlParser::parseItem(QDomElement &itemElement)
     MenuItem * item = new MenuItem;
 
     if (!itemElement.isNull()){
+        bool enabled = itemElement.attribute("enable", "true") == "true";
+        item->setEnable(enabled);
+
         QDomElement itemChild = itemElement.firstChildElement();
 
         while (!itemChild.isNull()){

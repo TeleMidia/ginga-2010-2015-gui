@@ -66,7 +66,7 @@ public:
 
     bool eventFilter(QObject *, QEvent *);
 
-    void setupItems (QList <MenuItem *> items);
+    void setUpItems (QList <MenuItem *> items);
 
     void mouseMoveEvent(QMouseEvent *);
     void keyPressEvent(QKeyEvent *);
