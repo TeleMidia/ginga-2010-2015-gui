@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     useraccountpage.cpp \
     defaultrichmenuitem.cpp \
     comborichmenuitem.cpp \
-    userpreferences.cpp
+    userpreferences.cpp \
+    ippage.cpp
 
 HEADERS  += mainwindow.h \
     page.h \
@@ -37,7 +38,8 @@ HEADERS  += mainwindow.h \
     richmenuitem.h \
     defaultrichmenuitem.h \
     comborichmenuitem.h \
-    userpreferences.h
+    userpreferences.h \
+    ippage.h
 
 FORMS    += mainwindow.ui
 

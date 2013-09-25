@@ -31,7 +31,7 @@ UserAccountPage::UserAccountPage(Page *parentPage, QString language, QWidget *pa
 
     QFont labelFont ("Tiresias", SCREEN_HEIGHT * 0.025, QFont::Bold);
 
-    _changeValuesLabel = new FocusableLabel (QString ("<font color='white'>%1</font>").arg("> ChangeValues"));
+    _changeValuesLabel = new FocusableLabel (QString ("<font color='white'>%1</font>").arg("> Save Values"));
     _changeValuesLabel->setFont(labelFont);
     _changeValuesLabel->installEventFilter(this);
 

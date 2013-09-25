@@ -47,7 +47,7 @@
             <item>
                 <title>Shutdown</title>
                 <description>Shut your computer down.</description>
-                <link>exec:///system/shutdown</link>
+                <link>exec:///system/shutdown -h now</link>
                 <enclosure url="/usr/local/lib/ginga/gui/files/img/shutdown.png" type="image/png" />
             </item>
         </channel>

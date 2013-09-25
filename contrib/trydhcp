@@ -6,14 +6,10 @@
 IP=$(getip)
 
 if [[ -z "$IP" ]]; then
-	PID=$(cat /var/run/dhcpcd.pid)
-
-	if [[ -n "$PID" ]]; then
-		echo `killall -9 dhcpcd`
-		sleep 3
-	fi
-
+	echo `killall -9 dhcpcd`
+	sleep 3
 	echo `dhcpcd eth1`
 	echo `ifconfig eth1 up`
+	sleep 5
 fi
 

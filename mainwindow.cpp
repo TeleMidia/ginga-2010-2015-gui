@@ -10,12 +10,14 @@
 #include "pagexmlparser.h"
 #include "useraccountpage.h"
 #include "userpreferences.h"
+#include "ippage.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
     _lockCreated = false;
     _usbPage = 0;
+    _ipPage = 0;
 
     _stackedLayout = new QStackedLayout;
     QWidget *mainWidget = new QWidget;
@@ -86,7 +88,7 @@ void MainWindow::changePage(MenuItem *item)
         QString path = item->link();
 
         Page *requestedPage = _pages.value(path);
-        if (requestedPage){
+        if (requestedPage && requestedPage != _ipPage){
             _stackedLayout->setCurrentWidget(requestedPage);
             requestedPage->updateValues();
         }
@@ -102,21 +104,51 @@ void MainWindow::changePage(MenuItem *item)
                 QStringList tokens = path.split("/", QString::SkipEmptyParts);
                 QString lastToken = tokens.last();
                 if (path.startsWith("exec:")){
+                    QProcess *process = new QProcess (this);
+
+                    _lastPage = _stackedLayout->currentWidget();
+                    _stackedLayout->setCurrentWidget(_loadingPage);
+
+                    QStringList args = lastToken.split(" ");
+
+                    qDebug () << args;
+
+                    QString program = args[0];
+                    args.removeFirst();
+
+                    process->start(program, args);
+
+                    QEventLoop loop (this);
+                    connect (process, SIGNAL(finished(int)), &loop, SLOT(quit()));
+                    loop.exec();
+
+                    delete process;
+
                     if (lastToken == "trydhcp"){
-                        QProcess *process = new QProcess (this);
+                        process = new QProcess(this);
 
-                        _lastPage = _stackedLayout->currentWidget();
-                        _stackedLayout->setCurrentWidget(_loadingPage);
-
-                        process->start(lastToken);
-
-                        QEventLoop loop (this);
+                        process->start("getip");
                         connect (process, SIGNAL(finished(int)), &loop, SLOT(quit()));
                         loop.exec();
 
+                        QString ip = QString (process->readAllStandardOutput()).trimmed();
+
+                        qDebug () << ip;
+
                         delete process;
 
-                        _stackedLayout->setCurrentWidget(_lastPage);
+                        if (_ipPage)
+                            ((IPPage *)_ipPage)->setupIp (ip);
+                        else{
+                            _ipPage = new IPPage ((Page *)_lastPage, ip);
+                            _pages.insert(path, _ipPage);
+                            _stackedLayout->addWidget(_ipPage);
+
+                            connect (_ipPage, SIGNAL(parentPageRequested(Page*)), this, SLOT(changePage(Page*)));
+                        }
+
+                        _stackedLayout->setCurrentWidget(_ipPage);
+
                         _lastPage = 0;
                     }
                 }
