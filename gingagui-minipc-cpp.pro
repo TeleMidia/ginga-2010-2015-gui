@@ -13,7 +13,10 @@ TEMPLATE = app
 
 target.path = /usr/local/bin
 
-INSTALLS += target
+xmls.path = /usr/local/lib/ginga/gui/files/xml
+xmls.files += files/xml/*
+
+INSTALLS += target xmls
 
 SOURCES += main.cpp\
         mainwindow.cpp \
