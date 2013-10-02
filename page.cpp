@@ -53,6 +53,8 @@ Page::Page (Page *parentPage, QString title, QString description, QString langua
 
 void Page::setUpItems(QList<MenuItem *> items)
 {
+    _descriptionLabel->setText ("");
+    
     QLayoutItem *child;
     while ((child = _itemsLayout->takeAt(0)) != 0) {
         delete child->widget();
@@ -61,6 +63,14 @@ void Page::setUpItems(QList<MenuItem *> items)
 
     QFont labelFont ("Tiresias", SCREEN_HEIGHT * 0.02, QFont::Bold);
     QString fontTemplate = tr("<font color='%1'>%2</font>");
+
+    if (items.size() == 0) {
+	MenuItem *item = new MenuItem;
+	item->setText("No item");
+	item->setEnable(false);
+	item->setFocusPolicy (Qt::NoFocus);
+	items.append(item);
+    }
 
     for (int i = 0; i < items.size(); i++){
         MenuItem * item = items.at(i);
@@ -218,8 +228,10 @@ bool Page::eventFilter(QObject *obj, QEvent *event)
             else if (keyEvent->key() == Qt::Key_Down){
                 focusNextChild();
             }
-            else if (keyEvent->key() == Qt::Key_Left || keyEvent->key() == Qt::Key_Backspace)
+            else if (keyEvent->key() == Qt::Key_Left || keyEvent->key() == Qt::Key_Backspace){
+
                 emit parentPageRequested (_parentPage);
+	    }
 
             _itemsScrollArea->ensureWidgetVisible(focusWidget());
 

@@ -37,7 +37,8 @@ public slots:
     void analyzeDir (QString);
 
 private:
-    void parsePage (QString);
+    Page * parsePage (QString);
+    void setUpPage (QString, Page *);
 
     QStackedLayout *_stackedLayout;
 
@@ -48,6 +49,8 @@ private:
     Page * _usbPage;
 
     Page * _ipPage;
+
+    Page * _mainPage;
 
     GingaProxy * _gingaProxy;
 

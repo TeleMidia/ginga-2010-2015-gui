@@ -6,6 +6,7 @@
 #include <QPainter>
 #include <QFileInfo>
 #include <QDebug>
+#include "util.h"
 
 MenuItem::MenuItem(QString text, QString description, QString link, QPair<QString, QString> enclosure, bool isActive, QWidget *parent) :
     QWidget(parent)
@@ -14,7 +15,10 @@ MenuItem::MenuItem(QString text, QString description, QString link, QPair<QStrin
     _link = link;
     _enclosure = enclosure;
 
+    QFont labelFont ("Tiresias", SCREEN_HEIGHT * 0.02, QFont::Bold);
+
     _textLabel = new QLabel (text);
+    _textLabel->setFont(labelFont);
     _textLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
     QHBoxLayout *mainLayout = new QHBoxLayout;
@@ -40,10 +44,9 @@ bool MenuItem::eventFilter(QObject *obj, QEvent *event)
     if (event->type() == QEvent::FocusIn)
         emit focusIn(this);
 
-    else if (event->type() == QEvent::KeyPress)
+    else if (event->type() == QEvent::KeyPress && _link != "")
         if( ((QKeyEvent *)event)->key() == Qt::Key_Enter || ((QKeyEvent *)event)->key() == Qt::Key_Return
                 || ((QKeyEvent *)event)->key() == Qt::Key_Right){
-
             QFileInfo fileInfo (_link);
             if (fileInfo.suffix() == "ncl")
                 emit gingaRequested (_link);

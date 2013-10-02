@@ -45,6 +45,8 @@ cat >>$DEST <<EOF
 </rss>
 EOF
 
+sleep 2
+
 rm -f "$DEST.lock"
 
 # local variables:

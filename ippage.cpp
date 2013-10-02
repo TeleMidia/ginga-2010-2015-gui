@@ -1,6 +1,7 @@
 #include "ippage.h"
 
 #include <QLabel>
+#include <QPalette>
 
 IPPage::IPPage(Page *parentPage, QString ip, QString language, QWidget *parent)
     : Page (parentPage, "Your IP Address is:", "Press BACK for go back.", language, parent)
@@ -20,6 +21,12 @@ IPPage::IPPage(Page *parentPage, QString ip, QString language, QWidget *parent)
 
     QWidget *scrollWidget = new QWidget;
     scrollWidget->setLayout(mainLayout);
+
+    QPalette palette = this->palette();
+    palette.setColor (QPalette::Window, QColor::fromRgb(0,0,0,0));
+
+    scrollWidget->setPalette (palette);
+    scrollWidget->setBackgroundRole (QPalette::Window);
 
     _itemsScrollArea->setWidget(scrollWidget);
 

@@ -15,4 +15,6 @@ const QString USB_XML_FILE = "/var/run/gingagui/usb.xml"; //USB default xml file
 
 const QString USB_XML_PARENT_DIR = "/var/run/gingagui/"; //USB default xml parent directory
 
+const QString USB_JOKER = "/usr/local/lib/ginga/gui/files/xml/dyncontent.xml#mnt-usb"; //USB Joker
+
 #endif // UTIL_H

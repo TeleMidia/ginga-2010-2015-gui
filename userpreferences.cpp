@@ -43,7 +43,7 @@ UserPreferences::UserPreferences(Page * parentPage, QString language, QWidget *p
                             for (int i = begin; i <= end; i++)
                                 options << QString::number(i);
                         }
-                    }
+			    }
                 }
             }
         }
@@ -78,6 +78,12 @@ UserPreferences::UserPreferences(Page * parentPage, QString language, QWidget *p
 
     QWidget *scrollWidget = new QWidget;
     scrollWidget->setLayout(mainLayout);
+
+    QPalette palette = this->palette ();
+    palette.setColor (QPalette::Window, QColor::fromRgb(0,0,0,0));
+
+    scrollWidget->setBackgroundRole (QPalette::Window);   
+    scrollWidget->setPalette(palette);
 
     _itemsScrollArea->setWidget(scrollWidget);
 

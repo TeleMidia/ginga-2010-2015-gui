@@ -32,12 +32,12 @@
             </item>-->
 
             <item><title></title></item>
-            <item>
+<!--            <item>
                 <title>Release Notes</title>
                 <description>Read relevant notes about this version of Ginga Live CD.</description>
                 <link>/misc/ncl30/relnotes/main.ncl</link>
                 <enclosure url="/usr/local/lib/ginga/gui/files/img/livecd.png" type="image/png" />
-            </item>
+	    </item>-->
             <item>
                 <title>Settings</title>
                 <description>Configure some system settings.</description>
@@ -47,7 +47,7 @@
             <item>
                 <title>Shutdown</title>
                 <description>Shut your computer down.</description>
-                <link>exec:///system/shutdown -h now</link>
+                <link>exec://shutdown -h now</link>
                 <enclosure url="/usr/local/lib/ginga/gui/files/img/shutdown.png" type="image/png" />
             </item>
         </channel>

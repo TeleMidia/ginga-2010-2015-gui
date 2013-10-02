@@ -14,7 +14,7 @@ public:
 
     QString title () const { return _title; }
     QString description () const { return _description; }
-    QString languague () const { return _languague; }
+    QString language () const { return _language; }
     QList <MenuItem *> items() const { return _items; }
     bool hasError () const { return _error; }
 
@@ -24,7 +24,7 @@ private:
     bool _error;
     QString _title;
     QString _description;
-    QString _languague;
+    QString _language;
     QList <MenuItem *> _items;
 };
 

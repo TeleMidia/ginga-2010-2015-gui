@@ -15,7 +15,7 @@ class FocusableLabel : public QLabel
 public:
     explicit inline FocusableLabel (QString text, QWidget *parent = 0) : QLabel (text, parent)
     { setFocusPolicy(Qt::StrongFocus);}
-
+	
     inline void paintEvent(QPaintEvent *event)
     {
         if (hasFocus()){
@@ -42,6 +42,16 @@ public:
                   QList <MenuItem *> items = QList <MenuItem *>(), QWidget *parent = 0);
     
     explicit Page (Page * parentPage, QString title = "", QString description = "", QString language = "en", QWidget *parent = 0);
+
+    inline void setFocus ()
+    {
+	QLayout *l = _itemsScrollArea->layout ();
+	if (l->count() > 0){
+		QLayoutItem *child = l->itemAt(0);
+		child->widget()->setFocus();
+	}
+    }
+
 
     inline void setTitle (QString title)
     { this->_title = title; }

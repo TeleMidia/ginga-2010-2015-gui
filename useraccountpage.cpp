@@ -45,6 +45,13 @@ UserAccountPage::UserAccountPage(Page *parentPage, QString language, QWidget *pa
 
     QWidget *scrollWidget = new QWidget;
     scrollWidget->setLayout(mainLayout);
+   
+    QPalette palette = this->palette ();
+    palette.setColor (QPalette::Window, QColor::fromRgb (0,0,0,0));
+
+    scrollWidget->setBackgroundRole(QPalette::Window);
+    scrollWidget->setPalette (palette);
+
 
     _itemsScrollArea->setWidget(scrollWidget);
 

@@ -27,7 +27,7 @@
 	    <item>
                 <title>Get IP Automatically</title>
                 <description>Try to get an IP address from a DHCP server. A valid IP address is required if you want to access the NCL Club repository or start a SSH server. The IP address acquired will be shown after selection.</description>
-                <link>exec:///system/trydhcp</link>
+		<link>exec://trydhcp</link>
                 <enclosure url="/usr/local/lib/ginga/gui/files/img/netmgmt.png" type="image/png" />
             </item>
         </channel>

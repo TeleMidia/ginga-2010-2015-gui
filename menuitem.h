@@ -11,6 +11,12 @@ public:
     explicit MenuItem(QString title = "", QString description = "", QString link = "",
                       QPair <QString, QString> _enclosure = QPair <QString, QString> (), bool isActive = true, QWidget *parent = 0);
     
+    inline void setFont (const QFont &font)
+    {
+        _textLabel->setFont(font);
+        QWidget::setFont(font);
+    }
+
     inline bool isActive () const
     { return _isEnabled; }
 

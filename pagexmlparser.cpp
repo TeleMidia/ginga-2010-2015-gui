@@ -30,7 +30,7 @@ PageXmlParser::PageXmlParser(QString path)
                 _description = childText;
 
             else if (childElement.tagName() == "language")
-                _languague = childText;
+                _language = childText;
 
             else if (childElement.tagName() == "item")
                 _items.append(parseItem(childElement));

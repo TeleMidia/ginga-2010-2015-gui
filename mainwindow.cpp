@@ -36,22 +36,18 @@ MainWindow::MainWindow(QWidget *parent) :
     connect (_gingaProxy, SIGNAL(gingaFinished(int,QProcess::ExitStatus)), this, SLOT(hideGingaView()));
     connect (this, SIGNAL(keyPressed(QString)), _gingaProxy, SLOT(sendCommand(QString)));
 
-    _usbPathWatcher = new QFileSystemWatcher(this);
-    _usbPathWatcher->addPath(USB_XML_PARENT_DIR);
+    _mainPage = parsePage(":/pages/main");
 
-    connect (_usbPathWatcher, SIGNAL(directoryChanged(QString)), this, SLOT(analyzeDir(QString)));
+    QStringList args;
+    args << "/mnt" << USB_XML_FILE;
 
-    parsePage(":/pages/main");
-
-    if (!QFile::exists(USB_XML_FILE)){ //create USB_XML_FILE
-        system (QString ("gingagui-minipc-walk /mnt " + USB_XML_FILE).toStdString().c_str());
-    }
+    QProcess::execute("gingagui-minipc-walk", args);
 
     _loadingPage = new QWidget (this);
     QMovie *movie = new QMovie(":/backgrounds/loading");
     QLabel *loadingLabel = new QLabel(this);
     loadingLabel->setMovie(movie);
-    movie->setScaledSize(QSize (SCREEN_WIDTH, SCREEN_HEIGHT));
+    //movie->setScaledSize(QSize (SCREEN_WIDTH, SCREEN_HEIGHT));
     movie->start();
 
     QHBoxLayout *loadingLayout = new QHBoxLayout();
@@ -61,16 +57,21 @@ MainWindow::MainWindow(QWidget *parent) :
     _loadingPage->setLayout(loadingLayout);
 
     _stackedLayout->addWidget(_loadingPage);
+    _stackedLayout->setCurrentWidget(_mainPage);
+
+    _usbPathWatcher = new QFileSystemWatcher(this);
+    _usbPathWatcher->addPath(USB_XML_PARENT_DIR);
+    connect (_usbPathWatcher, SIGNAL (directoryChanged(QString)), this, SLOT(analyzeDir(QString)));
 }
 
 
-void MainWindow::parsePage(QString pagePath)
+Page* MainWindow::parsePage(QString pagePath)
 {
     PageXmlParser *pageParser = new PageXmlParser(pagePath);
 
     if (!pageParser->hasError()){
         Page *currentPage = new Page (0, _gingaPage, pageParser->title(), pageParser->description(),
-                                      pageParser->languague(), pageParser->items());
+                                      pageParser->language(), pageParser->items());
 
         connect (currentPage, SIGNAL(menuItemSelected(MenuItem*)), this, SLOT(changePage(MenuItem*)));
         connect (currentPage, SIGNAL(configurePlay()), this, SLOT(showGingaView()));
@@ -78,8 +79,10 @@ void MainWindow::parsePage(QString pagePath)
         _pages.insert(pagePath, currentPage);
 
         _stackedLayout->addWidget(currentPage);
-        _stackedLayout->setCurrentWidget(currentPage);
+        return currentPage;
     }
+
+    return 0;
 }
 
 void MainWindow::changePage(MenuItem *item)
@@ -98,7 +101,7 @@ void MainWindow::changePage(MenuItem *item)
             PageXmlParser *pageParser = new PageXmlParser(path);
             if (!pageParser->hasError()){
                 newPage = new Page ((Page *)_stackedLayout->currentWidget(), _gingaPage, pageParser->title(),
-                                          pageParser->description(), pageParser->languague(), pageParser->items());
+                                          pageParser->description(), pageParser->language(), pageParser->items());
             }
             else {
                 QStringList tokens = path.split("/", QString::SkipEmptyParts);
@@ -109,12 +112,15 @@ void MainWindow::changePage(MenuItem *item)
                     _lastPage = _stackedLayout->currentWidget();
                     _stackedLayout->setCurrentWidget(_loadingPage);
 
-                    QStringList args = lastToken.split(" ");
+                    QStringList args = path.split(" ");
 
                     qDebug () << args;
 
-                    QString program = args[0];
-                    args.removeFirst();
+                    QString program = args[0].mid(7);
+		    
+   		    args.removeFirst();
+		    
+		    qDebug () << program << " " << args;
 
                     process->start(program, args);
 
@@ -169,7 +175,7 @@ void MainWindow::changePage(MenuItem *item)
                                 pageParser = new PageXmlParser (USB_XML_FILE);
 
                                 newPage = new Page ((Page *)_stackedLayout->currentWidget(), _gingaPage, pageParser->title(),
-                                                    pageParser->description(), pageParser->languague(), pageParser->items());
+                                                    pageParser->description(), pageParser->language(), pageParser->items());
                                 _usbPage = newPage;
                             }
                         }
@@ -177,18 +183,31 @@ void MainWindow::changePage(MenuItem *item)
                 }
             }
             if (newPage){
-                connect (newPage, SIGNAL(configurePlay()), this, SLOT(showGingaView()));
-                connect (newPage, SIGNAL(menuItemSelected(MenuItem*)), this, SLOT(changePage(MenuItem*)));
-                connect (newPage, SIGNAL(parentPageRequested(Page*)), this, SLOT(changePage(Page*)));
+//                connect (newPage, SIGNAL(configurePlay()), this, SLOT(showGingaView()));
+//                connect (newPage, SIGNAL(menuItemSelected(MenuItem*)), this, SLOT(changePage(MenuItem*)));
+//                connect (newPage, SIGNAL(parentPageRequested(Page*)), this, SLOT(changePage(Page*)));
 
-                _pages.insert(path, newPage);
-                _stackedLayout->addWidget(newPage);
+//                _pages.insert(path, newPage);
+//                _stackedLayout->addWidget(newPage);
+		setUpPage(path, newPage);
                 _stackedLayout->setCurrentWidget(newPage);
             }
 
             delete pageParser;
         }
     }
+}
+
+void MainWindow::setUpPage (QString path, Page *page)
+{
+	if (!page) return;
+
+	connect (page, SIGNAL(configurePlay()), this, SLOT(showGingaView()));
+	connect (page, SIGNAL(menuItemSelected(MenuItem*)), this, SLOT(changePage(MenuItem*)));
+	connect (page, SIGNAL(parentPageRequested(Page*)), this, SLOT(changePage(Page*)));
+
+	_pages.insert(path, page);
+	_stackedLayout->addWidget(page);
 }
 
 void MainWindow::showGingaView()
@@ -218,6 +237,14 @@ void MainWindow::changePage(Page *page)
 
 void MainWindow::keyPressEvent(QKeyEvent *keyEvent)
 {
+//    qDebug () << "respondi " << (keyEvent->key() == Qt::Key_Left);
+    if (keyEvent->key() == Qt::Key_Left && _gingaProxy->state() != QProcess::Running){
+	    _stackedLayout->setCurrentWidget(_mainPage);
+	    focusNextChild();
+	    QMainWindow::keyPressEvent(keyEvent);
+	    return;	    
+    }
+
     if (keyEvent->key() - Qt::Key_0 >= 0 && keyEvent->key() - Qt::Key_0 <= 9)
     {
         emit keyPressed("SDLK_" + QString::number(keyEvent->key() - Qt::Key_0));
@@ -285,17 +312,33 @@ void MainWindow::analyzeDir(QString dir)
 {
     QDir directory (dir);
     if (directory.exists("usb.xml.lock")){
-        _lockCreated = true;
-        connect (_usbPathWatcher, SIGNAL(fileChanged(QString)), this, SLOT(analyzeDir(QString)));
+    	  _lastPage = _stackedLayout->currentWidget ();
+	  _stackedLayout->setCurrentWidget(_loadingPage);
     }
-    else if (_lockCreated) {
-             _lockCreated = false;
+    else { 
+	     PageXmlParser *parser = new PageXmlParser (USB_XML_FILE);
              if (_usbPage){
-                 PageXmlParser *parser = new PageXmlParser (USB_XML_FILE);
                  _usbPage->setUpItems(parser->items());
-                 delete parser;
+		
+ 		_stackedLayout->setCurrentWidget (_usbPage);		 
              }
+	     else {
+		_usbPage = new Page (_mainPage, _gingaPage, parser->title(), parser->description(),
+				parser->language(), parser->items());
+
+		setUpPage (USB_JOKER, _usbPage);
+		_stackedLayout->setCurrentWidget(_usbPage);
+	     }
+
+	     delete parser;
+//	     if (_lastPage) {
+//			_stackedLayout->setCurrentWidget(_lastPage);
+//			_lastPage = 0;
+//	     }
+//	     focusNextChild();
+	     _lastPage = 0;	     
     }
+    focusNextChild();
 }
 
 MainWindow::~MainWindow()
