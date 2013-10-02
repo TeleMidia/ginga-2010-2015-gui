@@ -10,6 +10,9 @@ public:
     static QString VERSION;
     static QString CMD_PREFIX;
     static QString QUIT;
+    static QString GINGA_KEY_PREFIX;
+    static QString GINGA_CLICK_PREFIX;
+
     static QStringList split(QString parameters);
 };
 

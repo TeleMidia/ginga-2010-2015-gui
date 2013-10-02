@@ -2,12 +2,9 @@
 #define QNPLVIEW_H
 
 #include <QGraphicsView>
-#include <QResizeEvent>
 #include <QDebug>
 
 #include "qnplscene.h"
-
-#include <QKeyEvent>
 
 class QnplView : public QGraphicsView
 {
@@ -20,9 +17,10 @@ public:
   QnplScene* getScene();
 
 signals:
-  void keyPressed(QString key);
+  void selected(QString key);
 
 protected:
+  void mousePressEvent(QMouseEvent *event);
   void resizeEvent(QResizeEvent* event);
   void keyPressEvent(QKeyEvent *event);
 

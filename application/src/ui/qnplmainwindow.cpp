@@ -326,7 +326,7 @@ void  QnplMainWindow::createConnections()
     connect(nextButton, SIGNAL(clicked()), SLOT(playNextChannel()));
     connect(previousButton, SIGNAL(clicked()), SLOT(playPreviousChannel())  );
 
-    connect(view,SIGNAL(keyPressed(QString)),SLOT(notifyKey(QString)));
+    connect(view,SIGNAL(selected(QString)),SLOT(notifyKey(QString)));
 }
 
 
@@ -487,7 +487,7 @@ void QnplMainWindow::performPlay()
             else if (location.endsWith(".ts"))
             {
                 parameters.insert(parameters.begin(),"--set-tuner");
-                parameters.replaceInStrings("${FILE}", "fs:"+location);
+                parameters.replaceInStrings("${FILE}", "file:"+location);
             }
 
             parameters.replaceInStrings("${SCREENSIZE}", settings->value("screensize").toString());
