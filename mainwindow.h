@@ -59,8 +59,6 @@ private:
     QWidget *_loadingPage;
 
     QFileSystemWatcher *_usbPathWatcher;
-
-    bool _lockCreated;
 };
 
 #endif // MAINWINDOW_H

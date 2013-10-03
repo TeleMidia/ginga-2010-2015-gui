@@ -15,7 +15,6 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-    _lockCreated = false;
     _usbPage = 0;
     _ipPage = 0;
 
@@ -47,7 +46,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QMovie *movie = new QMovie(":/backgrounds/loading");
     QLabel *loadingLabel = new QLabel(this);
     loadingLabel->setMovie(movie);
-    //movie->setScaledSize(QSize (SCREEN_WIDTH, SCREEN_HEIGHT));
     movie->start();
 
     QHBoxLayout *loadingLayout = new QHBoxLayout();
@@ -101,7 +99,7 @@ void MainWindow::changePage(MenuItem *item)
             PageXmlParser *pageParser = new PageXmlParser(path);
             if (!pageParser->hasError()){
                 newPage = new Page ((Page *)_stackedLayout->currentWidget(), _gingaPage, pageParser->title(),
-                                          pageParser->description(), pageParser->language(), pageParser->items());
+                                    pageParser->description(), pageParser->language(), pageParser->items());
             }
             else {
                 QStringList tokens = path.split("/", QString::SkipEmptyParts);
@@ -117,10 +115,10 @@ void MainWindow::changePage(MenuItem *item)
                     qDebug () << args;
 
                     QString program = args[0].mid(7);
-		    
-   		    args.removeFirst();
-		    
-		    qDebug () << program << " " << args;
+
+                    args.removeFirst();
+
+                    qDebug () << program << " " << args;
 
                     process->start(program, args);
 
@@ -183,13 +181,13 @@ void MainWindow::changePage(MenuItem *item)
                 }
             }
             if (newPage){
-//                connect (newPage, SIGNAL(configurePlay()), this, SLOT(showGingaView()));
-//                connect (newPage, SIGNAL(menuItemSelected(MenuItem*)), this, SLOT(changePage(MenuItem*)));
-//                connect (newPage, SIGNAL(parentPageRequested(Page*)), this, SLOT(changePage(Page*)));
+                //                connect (newPage, SIGNAL(configurePlay()), this, SLOT(showGingaView()));
+                //                connect (newPage, SIGNAL(menuItemSelected(MenuItem*)), this, SLOT(changePage(MenuItem*)));
+                //                connect (newPage, SIGNAL(parentPageRequested(Page*)), this, SLOT(changePage(Page*)));
 
-//                _pages.insert(path, newPage);
-//                _stackedLayout->addWidget(newPage);
-		setUpPage(path, newPage);
+                //                _pages.insert(path, newPage);
+                //                _stackedLayout->addWidget(newPage);
+                setUpPage(path, newPage);
                 _stackedLayout->setCurrentWidget(newPage);
             }
 
@@ -200,14 +198,14 @@ void MainWindow::changePage(MenuItem *item)
 
 void MainWindow::setUpPage (QString path, Page *page)
 {
-	if (!page) return;
+    if (!page) return;
 
-	connect (page, SIGNAL(configurePlay()), this, SLOT(showGingaView()));
-	connect (page, SIGNAL(menuItemSelected(MenuItem*)), this, SLOT(changePage(MenuItem*)));
-	connect (page, SIGNAL(parentPageRequested(Page*)), this, SLOT(changePage(Page*)));
+    connect (page, SIGNAL(configurePlay()), this, SLOT(showGingaView()));
+    connect (page, SIGNAL(menuItemSelected(MenuItem*)), this, SLOT(changePage(MenuItem*)));
+    connect (page, SIGNAL(parentPageRequested(Page*)), this, SLOT(changePage(Page*)));
 
-	_pages.insert(path, page);
-	_stackedLayout->addWidget(page);
+    _pages.insert(path, page);
+    _stackedLayout->addWidget(page);
 }
 
 void MainWindow::showGingaView()
@@ -237,72 +235,75 @@ void MainWindow::changePage(Page *page)
 
 void MainWindow::keyPressEvent(QKeyEvent *keyEvent)
 {
-//    qDebug () << "respondi " << (keyEvent->key() == Qt::Key_Left);
     if (keyEvent->key() == Qt::Key_Left && _gingaProxy->state() != QProcess::Running){
-	    _stackedLayout->setCurrentWidget(_mainPage);
-	    focusNextChild();
-	    QMainWindow::keyPressEvent(keyEvent);
-	    return;	    
+        _stackedLayout->setCurrentWidget(_mainPage);
+        focusNextChild();
+        QMainWindow::keyPressEvent(keyEvent);
+        return;
     }
 
-    if (keyEvent->key() - Qt::Key_0 >= 0 && keyEvent->key() - Qt::Key_0 <= 9)
+    if (keyEvent->key() == Qt::Key_F11)
     {
-        emit keyPressed("SDLK_" + QString::number(keyEvent->key() - Qt::Key_0));
+        _gingaProxy->killProcess();
+    }
+    else if (keyEvent->key() - Qt::Key_0 >= 0 && keyEvent->key() - Qt::Key_0 <= 9)
+    {
+        emit keyPressed(GINGA_KEY_PREFIX + QString::number(keyEvent->key() - Qt::Key_0));
     }
     else if (keyEvent->key() - Qt::Key_A >= 0 && keyEvent->key() - Qt::Key_A <= 26)
     {
         if (keyEvent->modifiers() == Qt::ShiftModifier)
-            emit keyPressed("SDLK_"+QString(('A'+(keyEvent->key() - Qt::Key_A))));
+            emit keyPressed(GINGA_KEY_PREFIX + QString(('A'+(keyEvent->key() - Qt::Key_A))));
         else
-            emit keyPressed("SDLK_"+QString(('a'+(keyEvent->key() - Qt::Key_A))));
+            emit keyPressed(GINGA_KEY_PREFIX + QString(('a'+(keyEvent->key() - Qt::Key_A))));
     }
     else if (keyEvent->key() == Qt::Key_PageDown)
     {
-        emit keyPressed("SDLK_PAGEDOWN");
+        emit keyPressed(GINGA_KEY_PREFIX + "PAGEDOWN");
     }
     else if (keyEvent->key() == Qt::Key_PageUp)
     {
-        emit keyPressed("SDLK_PAGEUP");
+        emit keyPressed(GINGA_KEY_PREFIX + "PAGEUP");
     }
-    else if (keyEvent->key() - Qt::Key_F1 >= 0 && keyEvent->key() - Qt::Key_F1 <= 11)
+    else if (keyEvent->key() - Qt::Key_F1 >= 0 && keyEvent->key() - Qt::Key_F1 < 11)
     {
-        emit keyPressed("SDLK_F"+QString::number(keyEvent->key() - Qt::Key_F1 + 1));
+        emit keyPressed(GINGA_KEY_PREFIX + "F"+QString::number(keyEvent->key() - Qt::Key_F1 + 1));
     }
     else if (keyEvent->key() == Qt::Key_Down)
     {
-        emit keyPressed("SDLK_DOWN");
+        emit keyPressed(GINGA_KEY_PREFIX + "DOWN");
     }
     else if (keyEvent->key() == Qt::Key_Left)
     {
-        emit keyPressed("SDLK_LEFT");
+        emit keyPressed(GINGA_KEY_PREFIX + "LEFT");
     }
     else if (keyEvent->key() == Qt::Key_Right)
     {
-        emit keyPressed("SDLK_RIGHT");
+        emit keyPressed(GINGA_KEY_PREFIX + "RIGHT");
     }
     else if (keyEvent->key() == Qt::Key_Up)
     {
-        emit keyPressed("SDLK_UP");
+        emit keyPressed(GINGA_KEY_PREFIX + "UP");
     }
     else if (keyEvent->key() == Qt::Key_Tab)
     {
-        emit keyPressed("SDLK_TAB");
+        emit keyPressed(GINGA_KEY_PREFIX + "TAB");
     }
     else if (keyEvent->key() == Qt::Key_Space)
     {
-        emit keyPressed("SDLK_SPACE");
+        emit keyPressed(GINGA_KEY_PREFIX + "SPACE");
     }
     else if (keyEvent->key() == Qt::Key_Backspace)
     {
-        emit keyPressed("SDLK_BACKSPACE");
+        emit keyPressed(GINGA_KEY_PREFIX + "BACKSPACE");
     }
     else if (keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Return)
     {
-        emit keyPressed("SDLK_RETURN");
+        emit keyPressed(GINGA_KEY_PREFIX + "RETURN");
     }
     else if (keyEvent->key() == Qt::Key_Escape)
     {
-        _gingaProxy->killProcess();
+        emit keyPressed(GINGA_KEY_PREFIX + "ESCAPE");
     }
 
     QMainWindow::keyPressEvent(keyEvent);
@@ -312,31 +313,26 @@ void MainWindow::analyzeDir(QString dir)
 {
     QDir directory (dir);
     if (directory.exists("usb.xml.lock")){
-    	  _lastPage = _stackedLayout->currentWidget ();
-	  _stackedLayout->setCurrentWidget(_loadingPage);
+        _lastPage = _stackedLayout->currentWidget ();
+        _stackedLayout->setCurrentWidget(_loadingPage);
     }
-    else { 
-	     PageXmlParser *parser = new PageXmlParser (USB_XML_FILE);
-             if (_usbPage){
-                 _usbPage->setUpItems(parser->items());
-		
- 		_stackedLayout->setCurrentWidget (_usbPage);		 
-             }
-	     else {
-		_usbPage = new Page (_mainPage, _gingaPage, parser->title(), parser->description(),
-				parser->language(), parser->items());
+    else {
+        PageXmlParser *parser = new PageXmlParser (USB_XML_FILE);
+        if (_usbPage){
+            _usbPage->setUpItems(parser->items());
 
-		setUpPage (USB_JOKER, _usbPage);
-		_stackedLayout->setCurrentWidget(_usbPage);
-	     }
+            _stackedLayout->setCurrentWidget (_usbPage);
+        }
+        else {
+            _usbPage = new Page (_mainPage, _gingaPage, parser->title(), parser->description(),
+                                 parser->language(), parser->items());
 
-	     delete parser;
-//	     if (_lastPage) {
-//			_stackedLayout->setCurrentWidget(_lastPage);
-//			_lastPage = 0;
-//	     }
-//	     focusNextChild();
-	     _lastPage = 0;	     
+            setUpPage (USB_JOKER, _usbPage);
+            _stackedLayout->setCurrentWidget(_usbPage);
+        }
+
+        delete parser;
+        _lastPage = 0;
     }
     focusNextChild();
 }

@@ -17,4 +17,6 @@ const QString USB_XML_PARENT_DIR = "/var/run/gingagui/"; //USB default xml paren
 
 const QString USB_JOKER = "/usr/local/lib/ginga/gui/files/xml/dyncontent.xml#mnt-usb"; //USB Joker
 
+const QString GINGA_KEY_PREFIX = "SDLK_";
+
 #endif // UTIL_H
