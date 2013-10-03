@@ -1,0 +1,2 @@
+ACTION=="add", KERNEL=="sd[b-z][0-9]*", SUBSYSTEM=="block", RUN+="mount_usb %k"
+ACTION=="remove", KERNEL=="sd[b-z][0-9]*", SUBSYSTEM=="block", RUN+="umount_usb %k"

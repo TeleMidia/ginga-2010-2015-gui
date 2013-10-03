@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+     version="2.0">
+  <channel>
+    <title>Primeiro Joao - NCL Learning</title>
+    <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+    <link>/usr/local/lib/ginga/gui/files/xml/primeirojoaogroup.xml</link>
+    <language>en</language>
+    <item>
+      <title>Media Synchronization</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/root/PrimeiroJoao/Exemplos/01sync.ncl</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>Synchronization with User Interaction</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/root/PrimeiroJoao/Exemplos/02syncInt.ncl</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>Use of Context</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/root/PrimeiroJoao/Exemplos/03contextExample.ncl</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>Object Reuse</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/root/PrimeiroJoao/Exemplos/04reuse.ncl</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>Use of Interactive Channel</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/root/PrimeiroJoao/Exemplos/05Return.ncl</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>Content Alternatives</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/root/PrimeiroJoao/Exemplos/06switch.ncl</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>Settings Node</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/root/PrimeiroJoao/Exemplos/07settings.ncl</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>Transition Effects</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/root/PrimeiroJoao/Exemplos/08transition.ncl</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>Animation</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/root/PrimeiroJoao/Exemplos/09animation.ncl</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>Key Navigation</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/root/PrimeiroJoao/Exemplos/10menu.ncl</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>NCLua Object</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/root/PrimeiroJoao/Exemplos/11nclua.ncl</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>Multiple devices</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/usr/local/lib/ginga/gui/files/xml/primeirojoaomd.xml</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>Multiple devices</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/usr/local/lib/ginga/gui/files/xml/primeirojoaomd.xml</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>Multiple devices</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/usr/local/lib/ginga/gui/files/xml/primeirojoaomd.xml</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>Multiple devices</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/usr/local/lib/ginga/gui/files/xml/primeirojoaomd.xml</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>Multiple devices</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/usr/local/lib/ginga/gui/files/xml/primeirojoaomd.xml</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>Multiple devices</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/usr/local/lib/ginga/gui/files/xml/primeirojoaomd.xml</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>Multiple devices</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/usr/local/lib/ginga/gui/files/xml/primeirojoaomd.xml</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>Multiple devices</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/usr/local/lib/ginga/gui/files/xml/primeirojoaomd.xml</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>Multiple devices</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/usr/local/lib/ginga/gui/files/xml/primeirojoaomd.xml</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>Multiple devices</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/usr/local/lib/ginga/gui/files/xml/primeirojoaomd.xml</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>Multiple devices</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/usr/local/lib/ginga/gui/files/xml/primeirojoaomd.xml</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+    <item>
+      <title>Multiple devices</title>
+      <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes. </description>
+      <link>/usr/local/lib/ginga/gui/files/xml/primeirojoaomd.xml</link>
+      <enclosure url="/misc/ncl30/PrimeiroJoao/media/preview.png" type="image/png"/>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,58 @@
+#! /bin/sh -
+scriptversion=2013-09-20.11; # UTC
+progpath="$0"
+progname="${0##*/}"
+
+if test $# -ne 2; then
+  echo 1>&2 "usage: $progname SOURCE DEST"
+  exit 1
+fi
+
+SOURCE="$1"
+DEST="$2"
+mkdir -p `dirname "$DEST"`
+
+touch "$DEST.lock"
+
+# header
+
+cat >$DEST <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0">
+<channel>
+<title>USB Storage:</title>
+<description>USB Storage</description>
+EOF
+
+# body
+
+find $SOURCE -type f -name '*.ncl' -print0 | while read -d $'\0' path
+do
+  name=`basename "$path"`
+  cat >>$DEST <<EOF
+ <item>
+  <title>$name</title>
+  <description>$path</description>
+  <link>$path</link>
+ </item>
+EOF
+done
+
+# footer
+
+cat >>$DEST <<EOF
+</channel>
+</rss>
+EOF
+
+sleep 2
+
+rm -f "$DEST.lock"
+
+# local variables:
+# eval: (add-hook 'write-file-hooks 'time-stamp)
+# time-stamp-start: "scriptversion="
+# time-stamp-format: "%:y-%02m-%02d.%02H"
+# time-stamp-time-zone: "UTC"
+# time-stamp-end: "; # UTC"
+# End:

@@ -1,0 +1,6 @@
+#!/bin/sh -
+#
+# trydhcp script
+#
+
+exec /etc/rc.d/rc.inet1 restart
