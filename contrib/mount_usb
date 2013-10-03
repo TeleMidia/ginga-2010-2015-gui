@@ -1,0 +1,13 @@
+#!/bin/sh -
+
+DEV="/dev/$1"
+MNT="/mnt/$1"
+
+# If already mounted, do nothing.
+test "`mount | grep $MNT`"x = x || exit 0
+
+mkdir -p $MNT
+mount -o ro $DEV $MNT
+
+# Rebuild usb.xml.
+gingagui-minipc-walk "`dirname "$MNT"`" /var/run/gingagui/usb.xml

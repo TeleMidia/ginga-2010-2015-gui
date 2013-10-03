@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ version="2.0">
+        <channel>
+            <title>Content servers:</title>
+            <link>/usr/local/lib/ginga/gui/files/xml/appsoptions.xml</link>
+            <description></description>
+            <language>en</language>
+	    <item>
+                <title>No content server found</title>
+                <description>There is no content server in the network. Press LEFT to go back.</description>
+                <link></link>
+                <enclosure url="/usr/local/lib/ginga/gui/files/img/warning.png" type="image/png" />
+            </item>
+        </channel>
+</rss>

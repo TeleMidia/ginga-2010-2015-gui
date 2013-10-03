@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ version="2.0">
+        <channel>
+            <title>UDP Media Server</title>
+            <link>/usr/local/lib/ginga/gui/files/xml/udpcontent.xml</link>
+            <description>Play an NCL application made available in an MPEG-2 Transport Stream from a UDP Media Server. This feature is in Beta stage, which means that unexpected results may arise.</description>
+            <language>en</language>
+            <item>
+                <title>Source Address</title>
+                <description>Source IP address, which can be a unicast or a multicast address. Use the following format: 999.999.999.999</description>
+                <link>input:///text/?udp.address=</link>
+                <enclosure url="/usr/local/lib/ginga/gui/files/img/netmgmt.png" type="image/png" />
+            </item>
+            <item>
+                <title>Source Port</title>
+                <description>Source UDP port. Use the following format: 9999</description>
+                <link>input:///text/?udp.port=</link>
+                <enclosure url="/usr/local/lib/ginga/gui/files/img/netmgmt.png" type="image/png" />
+            </item>
+            <item>
+                <title>> Start</title>
+                <description>Press [Enter] to start listening to the specified UDP stream.</description>
+                <link>input:///submit/?action=exec:///system/udpserver/</link>
+                <enclosure url="/usr/local/lib/ginga/gui/files/img/netmgmt.png" type="image/png" />
+            </item>
+        </channel>
+</rss>

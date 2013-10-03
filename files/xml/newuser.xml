@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ version="2.0">
+        <channel>
+            <title>User Creation</title>
+            <link>/usr/local/lib/ginga/gui/files/xml/newuser.xml</link>
+            <description>Create a new user account.</description>
+            <language>en</language>
+            <item>
+                <title>Name</title>
+                <description>User name. Blank spaces are not permitted.</description>
+                <link>input:///text/?user.name=</link>
+                <enclosure url="/usr/local/lib/ginga/gui/files/img/userprofile.png" type="image/png" />
+            </item>
+            <item>
+                <title>Age</title>
+                <description>User age, in years old</description>
+                <link>input:///text/?user.age=</link>
+                <enclosure url="/usr/local/lib/ginga/gui/files/img/userprofile.png" type="image/png" />
+            </item>
+            <item>
+                <title>Location (Zip)</title>
+                <description>User location (Zip Code).</description>
+                <link>input:///text/?user.location=</link>
+                <enclosure url="/usr/local/lib/ginga/gui/files/img/userprofile.png" type="image/png" />
+            </item>
+            <item>
+                <title>Genre (m/f)</title>
+                <description>User genre (m/f).</description>
+                <link>input:///text/?user.genre=</link>
+                <enclosure url="/usr/local/lib/ginga/gui/files/img/userprofile.png" type="image/png" />
+            </item>
+            <item>
+                <title>> Create User</title>
+                <description>Press [Enter] to create this user.</description>
+                <link>input:///submit/?action=exec:///system/newuser/</link>
+                <enclosure url="/usr/local/lib/ginga/gui/files/img/userprofile.png" type="image/png" />
+            </item>
+        </channel>
+</rss>
