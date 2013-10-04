@@ -18,6 +18,13 @@ public:
         return _instance;
     }
 
+    inline QProcess *process () const
+    { return _process; }
+
+    inline void setWorkingDirectory (QString workingDirectory)
+    { _workingDirectory = workingDirectory; }
+
+
     inline void setBinaryPath (QString path)
     { _binaryPath = path; }
 
@@ -40,23 +47,29 @@ public:
             _process->kill();
     }
 
+    void terminateProcess ();
+
+
 signals:
     void gingaStarted ();
     void gingaFinished(int, QProcess::ExitStatus);
     
 public slots:
-    bool run (QString, WId wid);
+    void run (QString, bool parentFlag = false, bool forceKill = true);
+    void run (QStringList args, bool forceKill = true);
     void finished (int, QProcess::ExitStatus);
     int sendCommand (QString);
 
 private:
+    bool gingaIsRunning () const;
+
     explicit GingaProxy(QString binaryPath, QWidget *parent = 0);
 
     static GingaProxy *_instance;
 
     QProcess *_process;
     QString _binaryPath;
-    QStringList _args;
+    QString _workingDirectory;
 };
 
 #endif // GINGAPROXY_H

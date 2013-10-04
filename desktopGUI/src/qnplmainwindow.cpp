@@ -1,3 +1,4 @@
+
 #include "qnplmainwindow.h"
 
 #include <QLayout>
@@ -5,7 +6,12 @@
 #include <QDebug>
 #include <QProcessEnvironment>
 #include <QMovie>
-
+#include <QKeyEvent>
+#include <QGraphicsProxyWidget>
+#include <QMenu>
+#include <QMenuBar>
+#include <QToolBar>
+#include <QMessageBox>
 
 QnplMainWindow::QnplMainWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -13,6 +19,8 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
     setWindowTitle("Ginga GUI");
     setWindowIcon(QIcon(":icon/gingagui-128x128"));
     settings = new QnplSettings();
+
+    _gingaProxy = GingaProxy::getInstance();
 
     createActions();
     createMenus();
@@ -65,6 +73,12 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     resize(w+20, h+100);
+
+    _developerView = new DeveloperView;
+    addDockWidget(Qt::RightDockWidgetArea, _developerView);
+
+    _developerView->setVisible(false);
+    connect (_developerView, SIGNAL(sendCommandRequested(QString)), _gingaProxy, SLOT(sendCommand(QString)));
 }
 
 QnplMainWindow::~QnplMainWindow()
@@ -253,7 +267,8 @@ void QnplMainWindow::createWidgets()
     openLine = new QLineEdit(this);
     openLine->setEnabled(true);
 
-    view = new QnplView(this); setCentralWidget(view);
+    view = new QnplView(this);
+    setCentralWidget(view);
 }
 
 void QnplMainWindow::createDialogs()
@@ -295,7 +310,6 @@ void QnplMainWindow::createToolbars()
     openToolbar->addWidget(new QLabel("  "));
     openToolbar->addWidget(channelsButton);
 
-
     addToolBar(Qt::BottomToolBarArea, openToolbar);
 }
 
@@ -326,7 +340,10 @@ void  QnplMainWindow::createConnections()
     connect(nextButton, SIGNAL(clicked()), SLOT(playNextChannel()));
     connect(previousButton, SIGNAL(clicked()), SLOT(playPreviousChannel())  );
 
-    connect(view,SIGNAL(selected(QString)),SLOT(notifyKey(QString)));
+    connect(view, SIGNAL(selected(QString)), _gingaProxy, SLOT(sendCommand(QString)));
+
+    connect(_gingaProxy, SIGNAL(gingaStarted()), this, SLOT(startSession()));
+//    connect(view,SIGNAL(selected(QString)),SLOT(notifyKey(QString)));
 }
 
 
@@ -436,9 +453,6 @@ void QnplMainWindow::performPlay()
 
         QStringList parameters;
 
-        process = new QProcess(this);
-        setUpProcessConnections(process);
-
         playButton->setEnabled(false);
         stopButton->setEnabled(true);
 
@@ -457,7 +471,6 @@ void QnplMainWindow::performPlay()
         // playing as base device
         if (baseAction->isChecked())
         {
-
             parameters = QnplUtil::split(settings->value("parameters").toString());
 
             parameters << "--context-dir" << settings->value("gingaconfig_file").toString();
@@ -492,17 +505,24 @@ void QnplMainWindow::performPlay()
 
             parameters.replaceInStrings("${SCREENSIZE}", settings->value("screensize").toString());
 
+            QFileInfo finfo(location);
+            _gingaProxy->setWorkingDirectory(finfo.absoluteDir().absolutePath());
+
+            qDebug() << settings->value("location").toString() << parameters;
+
+            _gingaProxy->setBinaryPath(settings->value("location").toString());
+            _gingaProxy->run(parameters);
+
+            process = _gingaProxy->process();
+            if (!process) return;
+
 #ifdef Q_OS_LINUX
             process->setProcessEnvironment(enviroment);
 #endif
 
-            QFileInfo finfo(location);
-            process->setWorkingDirectory(finfo.absoluteDir().absolutePath());
-
-            qDebug() << settings->value("location").toString() << parameters;
-
             connect (process, SIGNAL(started()), this, SLOT(removeCarouselData()));
-            process->start(settings->value("location").toString(), parameters);
+            setUpProcessConnections(process);
+
             view->setFocus();
         }
         // play as passive device
@@ -540,14 +560,16 @@ void QnplMainWindow::performStop()
     if (process != NULL){
         animTuning->setVisible(false);
 
-        disconnect(process);
+//        disconnect(process);
 
-        process->terminate();
-        process->close();
+//        process->terminate();
+//        process->close();
 
-        process->deleteLater();
+//        process->deleteLater();
 
-        process = NULL;
+//        process = NULL;
+
+        _gingaProxy->terminateProcess();
     }
 
     if (passiveIsRunning){
@@ -607,12 +629,6 @@ void QnplMainWindow::playChannel(Channel channel)
     if (channel.frequency != ""){
         performStop();
 
-        process = new QProcess (this);
-        setUpProcessConnections(process);
-
-        connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(writeTunerOutput()));
-        connect(process, SIGNAL(readyReadStandardError()), this, SLOT(writeTunerOutput()));
-
         QStringList plist;
 
         plist << "--set-tuner" << "sbtvdt:" + channel.frequency;
@@ -622,6 +638,7 @@ void QnplMainWindow::playChannel(Channel channel)
         }
 
         plist << "--wid" << viewWID();
+        plist << "--poll-stdin";
 
         qDebug () << plist;
 
@@ -644,7 +661,16 @@ void QnplMainWindow::playChannel(Channel channel)
         passiveAction->setEnabled(false);
         activeAction->setEnabled(false);
 
-        process->start(settings->value("location").toString(), plist);
+//        process->start(settings->value("location").toString(), plist);
+        _gingaProxy->setBinaryPath(settings->value("location").toString());
+        _gingaProxy->run(plist);
+
+        process = _gingaProxy->process();
+        setUpProcessConnections(process);
+
+        connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(writeTunerOutput()));
+        connect(process, SIGNAL(readyReadStandardError()), this, SLOT(writeTunerOutput()));
+
         isPlayingChannel = false;
 
         timer = new QTimer (this);
@@ -679,6 +705,7 @@ void QnplMainWindow::writeTunerOutput()
 
     for (int i = 0; i < lines.count(); i++){
         QString line = lines.at(i).trimmed();
+        qDebug () << line;
         if (line.startsWith(QnplUtil::CMD_PREFIX)){
             QStringList tokens = line.split("::");
             if (tokens.count() == 4){
@@ -689,7 +716,7 @@ void QnplMainWindow::writeTunerOutput()
 
                 if (command == "cmd"){
                     if (status == "0"){
-                        if (entity == "start" && msg == "?mAV?"){
+                        if (entity == "start" && msg == "?mAV?"){//cmd::0::start::?mAV?
                             isPlayingChannel = true;
                             animTuning->setVisible(false);
                         }
@@ -708,6 +735,7 @@ void QnplMainWindow::writeTunerOutput()
                 }
             }
         }
+        appendDebugMessage(line);
     }
 }
 
@@ -758,6 +786,7 @@ void QnplMainWindow::writeScanOutput()
                 }
             }
         }
+        appendDebugMessage(line);
     }
 }
 
@@ -934,8 +963,7 @@ void QnplMainWindow::notifyKey(QString key)
     if (process != NULL)
     {
         qDebug() << "Writing:" << key;
-
-        process->write(QString(key+"\n").toStdString().c_str());
+//        process->write(QString(key+"\n").toStdString().c_str());
     }
 }
 
@@ -1036,17 +1064,6 @@ void QnplMainWindow::scan()
 {
     performStop();
 
-    process = new QProcess (this);
-    setUpProcessConnections(process);
-
-    connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(writeScanOutput()));
-    connect(process, SIGNAL(readyReadStandardError()), this, SLOT(writeScanOutput()));
-
-    connect(process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SIGNAL(scanFinished()));
-    connect(process, SIGNAL(finished(int, QProcess::ExitStatus)), scanProgress, SLOT(done(int)));
-    connect(process, SIGNAL(started()), scanProgress, SLOT(exec()));
-    connect(scanProgress, SIGNAL(canceled()), this, SLOT(sendKillMessage()));
-
     QStringList plist;
     plist << "--set-tuner" << "sbtvdt:scan";
     plist << "--wid" << hwndToString(scanProgress->winId());
@@ -1056,8 +1073,22 @@ void QnplMainWindow::scan()
         plist << "--enable-log" << "file";
     }
 
+    process = new QProcess(this);
     scanProgress->setValue(0);
-    process->start(settings->value("location").toString(), plist, QProcess::ReadWrite);
+    _gingaProxy->setBinaryPath(settings->value("location").toString());
+    _gingaProxy->run(plist);
+//    process->start(settings->value("location").toString(), plist, QProcess::ReadWrite);
+
+    process = _gingaProxy->process();
+    setUpProcessConnections(process);
+
+    connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(writeScanOutput()));
+    connect(process, SIGNAL(readyReadStandardError()), this, SLOT(writeScanOutput()));
+
+    connect(process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SIGNAL(scanFinished()));
+    connect(process, SIGNAL(finished(int, QProcess::ExitStatus)), scanProgress, SLOT(done(int)));
+    connect(_gingaProxy, SIGNAL(gingaStarted()), scanProgress, SLOT(exec()));
+    connect(scanProgress, SIGNAL(canceled()), this, SLOT(sendKillMessage()));
 }
 
 
@@ -1066,10 +1097,12 @@ void QnplMainWindow::sendKillMessage()
     disconnect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(writeScanOutput()));
     disconnect(process, SIGNAL(readyReadStandardError()), this, SLOT(writeScanOutput()));
 
-    if (process){
-        qint64 bytes = process->write(QnplUtil::QUIT.toStdString().c_str());
-        qDebug () << bytes;
-    }
+    qDebug () << _gingaProxy->sendCommand(QnplUtil::QUIT.toStdString().c_str());
+
+//    if (process){
+//        qint64 bytes = process->write(QnplUtil::QUIT.toStdString().c_str());
+//        qDebug () << bytes;
+//    }
     emit scanFinished();
 }
 
@@ -1112,6 +1145,14 @@ void QnplMainWindow::removePath(QString path)
     }
 }
 
+void QnplMainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_D && (event->modifiers() & Qt::ControlModifier))
+    {
+        _developerView->setVisible(!_developerView->isVisible());
+    }
+}
+
 void QnplMainWindow::setUpProcessConnections(QProcess *process)
 {
     if (process){
@@ -1119,4 +1160,16 @@ void QnplMainWindow::setUpProcessConnections(QProcess *process)
         connect(process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(showErrorDialog(QProcess::ProcessError)));
         connect(process, SIGNAL(started()), this, SLOT(removeCarouselData()));
     }
+}
+
+void QnplMainWindow::appendDebugMessage(QString message)
+{
+    if (! process) return;
+
+    _developerView->appendConsoleMessage(message);
+}
+
+void QnplMainWindow::startSession()
+{
+    _developerView->clear();
 }

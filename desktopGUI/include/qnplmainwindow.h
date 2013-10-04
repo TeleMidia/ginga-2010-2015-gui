@@ -2,28 +2,10 @@
 #define QNPLMAINWINDOW_H
 
 #include <QMainWindow>
-#include <QAction>
-#include <QMenu>
-#include <QMenuBar>
-#include <QToolBar>
-#include <QStatusBar>
-#include <QProcess>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QLineEdit>
-#include <QActionGroup>
-#include <QPushButton>
-#include <QSpacerItem>
-#include <QRegExp>
-#include <QDir>
-#include <QTranslator>
-#include <QFileInfo>
-#include <QDesktopServices>
 #include <QProgressDialog>
-#include <QGraphicsProxyWidget>
-#include <QMacNativeWidget>
 #include <QTimer>
 
+#include "gingaproxy.h"
 #include "qnplview.h"
 #include "qnplsettings.h"
 #include "qnplpreferencesdialog.h"
@@ -32,6 +14,7 @@
 #include "qnplchannelsdialog.h"
 #include "qnpliptvtunerdialog.h"
 #include "qnplaplicationdialog.h"
+#include "developerview.h"
 
 class QnplMainWindow : public QMainWindow
 {
@@ -87,6 +70,11 @@ public slots:
     void stopTuning();
     void removeCarouselData();
 
+    void keyPressEvent(QKeyEvent *);
+
+    void appendDebugMessage(QString);
+
+    void startSession ();
 protected:
     void resizeEvent(QResizeEvent* event);
 
@@ -175,7 +163,9 @@ private:
     bool isPlayingChannel;
     QTimer *timer;
 
-//    QMessageBox *messageBoxManager;
+    GingaProxy *_gingaProxy;
+
+    DeveloperView *_developerView;
 };
 
 #endif // QNPLMAINWINDOW_H

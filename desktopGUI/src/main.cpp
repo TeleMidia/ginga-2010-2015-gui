@@ -1,10 +1,14 @@
 #include <QApplication>
 #include <QTranslator>
 #include <QDebug>
+#include <QDesktopWidget>
 
 #include "qnplmainwindow.h"
 #include "qnplsettings.h"
 #include "qnplutil.h"
+
+int SCREEN_HEIGHT;
+int SCREEN_WIDTH;
 
 int main(int argc, char *argv[])
 {
@@ -16,6 +20,10 @@ int main(int argc, char *argv[])
     application.setApplicationVersion(QString(QnplUtil::VERSION));
     application.setOrganizationName("telemidia");
     application.setOrganizationDomain("telemidia.puc-rio.br");
+
+    SCREEN_HEIGHT = QApplication::desktop()->height();
+    SCREEN_WIDTH = QApplication::desktop()->width();
+
 
     QnplSettings settings;
     QString lang = settings.value("lang").toString();

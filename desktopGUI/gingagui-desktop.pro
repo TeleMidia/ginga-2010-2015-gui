@@ -19,7 +19,6 @@ QT += \
 
 INCLUDEPATH += include\
 
-
 SOURCES += \
     src/main.cpp \
     src/qnplmainwindow.cpp \
@@ -31,7 +30,9 @@ SOURCES += \
     src/qnplutil.cpp \
     src/qnplchannelsdialog.cpp \
     src/qnpliptvtunerdialog.cpp \
-    src/qnplaplication.cpp
+    src/qnplaplication.cpp \
+    src/gingaproxy.cpp \
+    src/developerview.cpp
 
 HEADERS += \
     include/qnplmainwindow.h \
@@ -43,7 +44,10 @@ HEADERS += \
     include/qnplutil.h \
     include/qnplchannelsdialog.h \
     include/qnpliptvtunerdialog.h \
-    include/qnplaplicationdialog.h
+    include/qnplaplicationdialog.h \
+    include/gingaproxy.h \
+    include/util.h \
+    include/developerview.h
 
 RESOURCES += \
     application.qrc
