@@ -1,3 +1,5 @@
+QMAKE_LFLAGS += /INCREMENTAL:NO
+
 TARGET = \
     gingagui
 

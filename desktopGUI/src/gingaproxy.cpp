@@ -17,7 +17,7 @@ GingaProxy::GingaProxy(QString binaryPath, QWidget *parent) :
     installEventFilter(this);
 }
 
-void GingaProxy::run(QString nclFile, bool parentFlag, bool forceKill)
+void GingaProxy::run(QString nclFile, bool parentFlag, QProcessEnvironment environment, bool forceKill)
 {
     if (gingaIsRunning()){
         qDebug () << "Ginga is already running.";
@@ -58,7 +58,7 @@ bool GingaProxy::gingaIsRunning() const
     return false;
 }
 
-void GingaProxy::run(QStringList args, bool forceKill)
+void GingaProxy::run(QStringList args, QProcessEnvironment environment, bool forceKill)
 {
     if (gingaIsRunning()){
         qDebug () << "Ginga is already running.";
@@ -78,6 +78,7 @@ void GingaProxy::run(QStringList args, bool forceKill)
     connect (_process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(finished(int,QProcess::ExitStatus)));
 
     _process->setWorkingDirectory(_workingDirectory);
+    _process->setProcessEnvironment(environment);
     _process->start(_binaryPath, args);
 }
 
@@ -86,8 +87,7 @@ void GingaProxy::finished(int code, QProcess::ExitStatus status)
     if (_process){
         qDebug () << _process->state();
 
-        _process->deleteLater();
-        _process = 0;
+        destroyProcess();
     }
 
     emit gingaFinished(code, status);
@@ -117,10 +117,16 @@ void GingaProxy::terminateProcess()
         disconnect(_process);
 
         _process->terminate();
+
+        destroyProcess();
+    }
+}
+
+void GingaProxy::destroyProcess()
+{
+    if (_process){
         _process->close();
-
         _process->deleteLater();
-
         _process = NULL;
     }
 }

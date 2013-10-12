@@ -5,6 +5,7 @@ QString QnplUtil::CMD_PREFIX = "cmd::";
 QString QnplUtil::GINGA_KEY_PREFIX = "GIEK:";
 QString QnplUtil::GINGA_CLICK_PREFIX = "GIEC:";
 QString QnplUtil::QUIT = QnplUtil::GINGA_KEY_PREFIX + "QUIT\n";
+QString QnplUtil::GINGA_COMMAND_PREFIX = "GCMD:";
 
 QStringList QnplUtil::split(QString parameters)
 {

@@ -24,7 +24,6 @@ public:
     inline void setWorkingDirectory (QString workingDirectory)
     { _workingDirectory = workingDirectory; }
 
-
     inline void setBinaryPath (QString path)
     { _binaryPath = path; }
 
@@ -55,13 +54,14 @@ signals:
     void gingaFinished(int, QProcess::ExitStatus);
     
 public slots:
-    void run (QString, bool parentFlag = false, bool forceKill = true);
-    void run (QStringList args, bool forceKill = true);
+    void run (QString, bool parentFlag = false, QProcessEnvironment environment = QProcessEnvironment (), bool forceKill = true);
+    void run (QStringList args, QProcessEnvironment environment = QProcessEnvironment (), bool forceKill = true);
     void finished (int, QProcess::ExitStatus);
     int sendCommand (QString);
 
 private:
     bool gingaIsRunning () const;
+    void destroyProcess ();
 
     explicit GingaProxy(QString binaryPath, QWidget *parent = 0);
 
