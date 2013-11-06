@@ -145,12 +145,14 @@ void  QnplMainWindow::createActions()
     _passiveAction->setEnabled(true);
     _passiveAction->setCheckable(true);
     _passiveAction->setText(tr("Passive"));
+    connect (_passiveAction, SIGNAL(triggered()), this, SLOT(performRunAsPassive()));
 
     // active action
     _activeAction = new QAction(this);
     _activeAction->setEnabled(true);
     _activeAction->setCheckable(true);
     _activeAction->setText(tr("Active"));
+    connect (_activeAction, SIGNAL(triggered()), this, SLOT(performRunAsActive()));
 
     // preferences action
     _preferencesAction = new QAction(this);

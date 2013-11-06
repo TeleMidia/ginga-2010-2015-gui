@@ -1,9 +1,0 @@
-#!/bin/sh -
-
-DEV="/dev/$1"
-MNT="/mnt/$1"
-
-umount $DEV && rmdir $MNT
-
-# Rebuild usb.xml.
-gingagui-minipc-walk "`dirname "$MNT"`" /var/run/gingagui/usb.xml
