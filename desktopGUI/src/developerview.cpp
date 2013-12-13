@@ -51,7 +51,8 @@ void DeveloperView::sendButtonPressed()
     QString currentCommand = _commandLine->text();
     _commandLine->clear();
 
-    if (currentCommand != ""){
+    if (currentCommand != "")
+    {
         _commandsSent->append(currentCommand);
         _index = _commandsSent->count();
 
@@ -67,16 +68,21 @@ void DeveloperView::changeSendButtonStatus()
 
 bool DeveloperView::eventFilter(QObject *obj, QEvent *event)
 {
-    if (obj == _commandLine && event->type() == QEvent::KeyPress){
-        if (((QKeyEvent *)event)->key() == Qt::Key_Up){
-            if (_index > 0){
+    if (obj == _commandLine && event->type() == QEvent::KeyPress)
+    {
+        if (((QKeyEvent *)event)->key() == Qt::Key_Up)
+        {
+            if (_index > 0)
+            {
                 _index--;
                 _commandLine->setText(_commandsSent->at(_index));
             }
             return true;
         }
-        else if (((QKeyEvent *)event)->key() == Qt::Key_Down){
-            if (_index < _commandsSent->count() - 1){
+        else if (((QKeyEvent *)event)->key() == Qt::Key_Down)
+        {
+            if (_index < _commandsSent->count() - 1)
+            {
                 _index++;
                 _commandLine->setText(_commandsSent->at(_index));
             }

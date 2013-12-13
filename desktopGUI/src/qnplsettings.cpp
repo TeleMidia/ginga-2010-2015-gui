@@ -4,7 +4,8 @@
 #include <QDir>
 
 QnplSettings::QnplSettings()
-    : QSettings(QSettings::IniFormat, QSettings::UserScope, "telemidia", "gingagui")
+    : QSettings(QSettings::IniFormat, QSettings::UserScope,
+                "telemidia", "gingagui")
 {
     if (value("autoplay").toString() ==  ""){
         setValue("autoplay", true);

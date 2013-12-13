@@ -1,4 +1,4 @@
-QMAKE_LFLAGS += /INCREMENTAL:NO
+#QMAKE_LFLAGS += /INCREMENTAL:NO
 
 TARGET = \
     gingagui
@@ -29,12 +29,12 @@ SOURCES += \
     src/qnplsettings.cpp \
     src/qnplpreferencesdialog.cpp \
     src/qnplaboutdialog.cpp \
-    src/qnplutil.cpp \
     src/qnplchannelsdialog.cpp \
     src/qnpliptvtunerdialog.cpp \
     src/qnplaplication.cpp \
     src/gingaproxy.cpp \
-    src/developerview.cpp
+    src/developerview.cpp \
+    src/util.cpp
 
 HEADERS += \
     include/qnplmainwindow.h \
@@ -43,13 +43,12 @@ HEADERS += \
     include/qnplsettings.h \
     include/qnplpreferencesdialog.h \
     include/qnplaboutdialog.h \
-    include/qnplutil.h \
     include/qnplchannelsdialog.h \
     include/qnpliptvtunerdialog.h \
     include/qnplaplicationdialog.h \
     include/gingaproxy.h \
-    include/util.h \
-    include/developerview.h
+    include/developerview.h \
+    include/util.h
 
 RESOURCES += \
     application.qrc

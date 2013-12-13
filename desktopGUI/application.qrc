@@ -44,4 +44,7 @@
         <file alias="gingagui4">images/backgrounds/bg-gingagui4.fw.png</file>
         <file alias="anim-tuning">images/backgrounds/bg-tuning.gif</file>
     </qresource>
+    <qresource prefix="/config">
+        <file alias="config">config/config.ini</file>
+    </qresource>
 </RCC>

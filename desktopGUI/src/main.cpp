@@ -5,10 +5,10 @@
 
 #include "qnplmainwindow.h"
 #include "qnplsettings.h"
-#include "qnplutil.h"
+#include "util.h"
 
-int SCREEN_HEIGHT;
-int SCREEN_WIDTH;
+int Util::SCREEN_HEIGHT;
+int Util::SCREEN_WIDTH;
 
 int main(int argc, char *argv[])
 {
@@ -16,13 +16,16 @@ int main(int argc, char *argv[])
 
     QApplication application(argc, argv);
     application.addLibraryPath(QDir::currentPath());
-    application.setApplicationName("gingagui");
-    application.setApplicationVersion(QString(QnplUtil::VERSION));
-    application.setOrganizationName("telemidia");
+    application.setApplicationName("GingaGui");
+    application.setOrganizationName("Telemidia Lab");
     application.setOrganizationDomain("telemidia.puc-rio.br");
 
-    SCREEN_HEIGHT = QApplication::desktop()->height();
-    SCREEN_WIDTH = QApplication::desktop()->width();
+    Util::init();
+
+    application.setApplicationVersion(Util::VERSION);
+
+    Util::SCREEN_HEIGHT = QApplication::desktop()->height();
+    Util::SCREEN_WIDTH = QApplication::desktop()->width();
 
 
     QnplSettings settings;

@@ -1,22 +1,34 @@
-#ifndef UTIL_H
-#define UTIL_H
+#ifndef QNPLUTIL_H
+#define QNPLUTIL_H
 
+#include <QStringList>
 #include <QString>
-extern int SCREEN_HEIGHT;
-extern int SCREEN_WIDTH;
 
-const QString GINGA_PATH = "/usr/bin/ginga"; //Ginga's binary path
+class Util
+{   
+public:
+  static void init ();
 
-const QString USER_ACCOUNT_PATH = "/usr/etc/ginga/files/contextmanager/users.ini"; //Users' file info
+  //Util strings
+  static QString VERSION;
+  static QString CMD_PREFIX;
 
-const QString USER_PREFERENCES_PATH = "/usr/etc/ginga/files/contextmanager/contexts.ini"; //Ginga's global variables
+  //Ginga wilcard strings
+  static QString GINGA_KEY_PREFIX;
+  static QString GINGA_CLICK_PREFIX;
+  static QString GINGA_COMMAND_PREFIX;
+  static QString GINGA_QUIT;
 
-const QString USB_XML_FILE = "/var/run/gingagui/usb.xml"; //USB default xml file
+  //Preferences labels
+  static QString PREFERENCES_ENVIRONMENT;
+  static QString PREFERENCES_GINGA;
+  static QString PREFERENCES_ADVANCED;
 
-const QString USB_XML_PARENT_DIR = "/var/run/gingagui/"; //USB default xml parent directory
+  static QStringList split(QString parameters);
 
-const QString USB_JOKER = "/usr/local/lib/ginga/gui/files/xml/dyncontent.xml#mnt-usb"; //USB wildcard
+  static int SCREEN_HEIGHT;
+  static int SCREEN_WIDTH;
+};
 
-const QString GINGA_KEY_PREFIX = "SDLK_";
 
-#endif // UTIL_H
+#endif // QNPLUTIL_H

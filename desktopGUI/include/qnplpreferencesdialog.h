@@ -9,6 +9,7 @@
 #include "ui_qnplenvironmentform.h"
 #include "ui_qnplpreferencesform.h"
 #include "ui_qnplrunform.h"
+#include "ui_advancedpreferences.h"
 
 #include "qnplsettings.h"
 
@@ -30,17 +31,22 @@ public slots:
     void browseExecutable();
     void browseGingaSettingsFile();
 
+    void customMenuRequested(QPoint);
+    void removeVariable ();
+
+private slots:
+
 private:
     void loadSettings();
     void loadGingaPreferences();
     void saveGingaPreferences();
 
-    QWidget* wGeneral;
-    QWidget* wRun;
+    QWidget* _generalPane;
+    QWidget* _runPane;
 
-    Ui::QnplGeneralForm formGeneral;
-    Ui::QnplRunForm formRun;
-    Ui::QnplPreferencesForm formPreferences;
+    Ui::QnplGeneralForm _generalForm;
+    Ui::QnplRunForm _runForm;
+    Ui::QnplPreferencesForm _preferencesForm;
 
     QnplSettings* settings;
 };

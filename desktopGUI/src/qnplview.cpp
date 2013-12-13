@@ -3,7 +3,7 @@
 #include <QResizeEvent>
 #include <QMouseEvent>
 
-#include "qnplutil.h"
+#include "util.h"
 
 QnplView::QnplView(QWidget* parent)
     : QGraphicsView(parent)
@@ -29,58 +29,58 @@ void QnplView::keyPressEvent(QKeyEvent *event)
 
         if (event->key() - Qt::Key_0 >= 0 && event->key() - Qt::Key_0 <= 9)
         {
-            emit selected(QnplUtil::GINGA_KEY_PREFIX + ""+QString::number(event->key() - Qt::Key_0));
+            emit selected(Util::GINGA_KEY_PREFIX + ""+QString::number(event->key() - Qt::Key_0));
         }
         else if (event->key() - Qt::Key_A >= 0 && event->key() - Qt::Key_A <= 26)
         {
             if (event->modifiers() == Qt::ShiftModifier)
-                emit selected(QnplUtil::GINGA_KEY_PREFIX + "" + QString(('A'+(event->key() - Qt::Key_A))));
+                emit selected(Util::GINGA_KEY_PREFIX + "" + QString(('A'+(event->key() - Qt::Key_A))));
             else
-                emit selected(QnplUtil::GINGA_KEY_PREFIX + "" + QString(('a'+(event->key() - Qt::Key_A))));
+                emit selected(Util::GINGA_KEY_PREFIX + "" + QString(('a'+(event->key() - Qt::Key_A))));
         }
         else if (event->key() == Qt::Key_PageDown)
         {
-            emit selected(QnplUtil::GINGA_KEY_PREFIX + "PAGEDOWN");
+            emit selected(Util::GINGA_KEY_PREFIX + "PAGEDOWN");
         }
         else if (event->key() == Qt::Key_PageUp)
         {
-            emit selected(QnplUtil::GINGA_KEY_PREFIX + "PAGEUP");
+            emit selected(Util::GINGA_KEY_PREFIX + "PAGEUP");
         }
         else if (event->key() - Qt::Key_F1 >= 0 && event->key() - Qt::Key_F1 <= 11)
         {
-            emit selected(QnplUtil::GINGA_KEY_PREFIX + "F"+QString::number(event->key() - Qt::Key_F1 + 1));
+            emit selected(Util::GINGA_KEY_PREFIX + "F"+QString::number(event->key() - Qt::Key_F1 + 1));
         }
         else if (event->key() == Qt::Key_Down)
         {
-            emit selected(QnplUtil::GINGA_KEY_PREFIX + "DOWN");
+            emit selected(Util::GINGA_KEY_PREFIX + "DOWN");
         }
         else if (event->key() == Qt::Key_Left)
         {
-            emit selected(QnplUtil::GINGA_KEY_PREFIX + "LEFT");
+            emit selected(Util::GINGA_KEY_PREFIX + "LEFT");
         }
         else if (event->key() == Qt::Key_Right)
         {
-            emit selected(QnplUtil::GINGA_KEY_PREFIX + "RIGHT");
+            emit selected(Util::GINGA_KEY_PREFIX + "RIGHT");
         }
         else if (event->key() == Qt::Key_Up)
         {
-            emit selected(QnplUtil::GINGA_KEY_PREFIX + "UP");
+            emit selected(Util::GINGA_KEY_PREFIX + "UP");
         }
         else if (event->key() == Qt::Key_Tab)
         {
-            emit selected(QnplUtil::GINGA_KEY_PREFIX + "TAB");
+            emit selected(Util::GINGA_KEY_PREFIX + "TAB");
         }
         else if (event->key() == Qt::Key_Space)
         {
-            emit selected(QnplUtil::GINGA_KEY_PREFIX + "SPACE");
+            emit selected(Util::GINGA_KEY_PREFIX + "SPACE");
         }
         else if (event->key() == Qt::Key_Backspace)
         {
-            emit selected(QnplUtil::GINGA_KEY_PREFIX + "BACKSPACE");
+            emit selected(Util::GINGA_KEY_PREFIX + "BACKSPACE");
         }
         else if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
         {
-            emit selected(QnplUtil::GINGA_KEY_PREFIX + "RETURN");
+            emit selected(Util::GINGA_KEY_PREFIX + "RETURN");
         }
     }
     QGraphicsView::keyPressEvent(event);
@@ -88,7 +88,7 @@ void QnplView::keyPressEvent(QKeyEvent *event)
 
 void QnplView::mousePressEvent(QMouseEvent *event)
 {
-    emit selected(QnplUtil::GINGA_CLICK_PREFIX + QString::number(event->x()) + "," + QString::number(event->y()));
+    emit selected(Util::GINGA_CLICK_PREFIX + QString::number(event->x()) + "," + QString::number(event->y()));
 
     QGraphicsView::mousePressEvent(event);
 }

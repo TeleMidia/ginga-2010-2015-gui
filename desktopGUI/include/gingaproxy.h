@@ -10,7 +10,8 @@ class GingaProxy : public QObject
 {
     Q_OBJECT
 public:
-    inline static GingaProxy * getInstance (QString binaryPath = "", QWidget *parent = 0)
+    inline static GingaProxy * getInstance (QString binaryPath = "",
+                                            QWidget *parent = 0)
     {
         if (!_instance)
             _instance = new GingaProxy (binaryPath, parent);
@@ -19,16 +20,24 @@ public:
     }
 
     inline QProcess *process () const
-    { return _process; }
+    {
+      return _process;
+    }
 
     inline void setWorkingDirectory (QString workingDirectory)
-    { _workingDirectory = workingDirectory; }
+    {
+      _workingDirectory = workingDirectory;
+    }
 
     inline void setBinaryPath (QString path)
-    { _binaryPath = path; }
+    {
+      _binaryPath = path;
+    }
 
     inline QString binaryPath () const
-    { return _binaryPath; }
+    {
+      return _binaryPath;
+    }
 
     bool eventFilter(QObject *, QEvent *);
 
@@ -54,8 +63,11 @@ signals:
     void gingaFinished(int, QProcess::ExitStatus);
     
 public slots:
-    void run (QString, bool parentFlag = false, QProcessEnvironment environment = QProcessEnvironment (), bool forceKill = true);
-    void run (QStringList args, QProcessEnvironment environment = QProcessEnvironment (), bool forceKill = true);
+    void run (QString, bool parentFlag = false,
+              bool forceKill = true);
+    void run (QStringList args,
+              bool forceKill = true);
+
     void finished (int, QProcess::ExitStatus);
     int sendCommand (QString);
 

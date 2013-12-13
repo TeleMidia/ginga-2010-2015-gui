@@ -10,11 +10,10 @@
 #include "qnplsettings.h"
 #include "qnplpreferencesdialog.h"
 #include "qnplaboutdialog.h"
-#include "qnplutil.h"
+#include "util.h"
 #include "qnplchannelsdialog.h"
 #include "qnpliptvtunerdialog.h"
 #include "qnplaplicationdialog.h"
-#include "developerview.h"
 
 class QnplMainWindow : public QMainWindow
 {
@@ -108,7 +107,7 @@ private:
     QMenu* _fileMenu;
     QMenu* _recentMenu;
     QMenu* _deviceMenu;
-    QMenu* _windowMenu;
+    QMenu* _toolsMenu;
     QMenu* _helpMenu;
 
     QAction* _openAction;
@@ -165,8 +164,6 @@ private:
     QTimer *_timer;
 
     GingaProxy *_gingaProxy;
-
-    DeveloperView *_developerView;
 };
 
 #endif // QNPLMAINWINDOW_H
