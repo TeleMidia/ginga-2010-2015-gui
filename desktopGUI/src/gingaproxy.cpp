@@ -1,5 +1,4 @@
 #include "gingaproxy.h"
-#include "util.h"
 
 #include <QDebug>
 #include <QApplication>
@@ -8,7 +7,7 @@
 
 GingaProxy* GingaProxy::_instance = 0;
 
-GingaProxy::GingaProxy(QString binaryPath, QWidget *parent) :
+GingaProxy::GingaProxy(QString binaryPath, QObject *parent) :
     QObject(parent)
 {
     _process = 0;

@@ -14,6 +14,7 @@
 #include "qnplchannelsdialog.h"
 #include "qnpliptvtunerdialog.h"
 #include "qnplaplicationdialog.h"
+#include "developerview.h"
 
 class QnplMainWindow : public QMainWindow
 {
@@ -164,6 +165,7 @@ private:
     QTimer *_timer;
 
     GingaProxy *_gingaProxy;
+    DeveloperView * _developerView;
 };
 
 #endif // QNPLMAINWINDOW_H

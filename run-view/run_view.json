@@ -1,0 +1,14 @@
+{
+  "name": "Run View",
+  "version": "0.2",
+  "compatVersion": "0.2",
+
+  "vendor": "TeleMidia Labs",
+  "copyright": "TeleMidia/PUC-Rio",
+  "license": "LGPL",
+
+  "description": "Run View.",
+  "url": "http://composer.telemidia.puc-rio.br/run",
+
+  "category": "NCL"
+}

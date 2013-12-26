@@ -5,18 +5,31 @@
 #include <QProcess>
 #include <QStringList>
 #include <qwindowdefs.h>
+#include <QDebug>
+
+#include "util.h"
 
 class GingaProxy : public QObject
 {
     Q_OBJECT
 public:
     inline static GingaProxy * getInstance (QString binaryPath = "",
-                                            QWidget *parent = 0)
+                                            QObject *parent = 0)
     {
         if (!_instance)
             _instance = new GingaProxy (binaryPath, parent);
 
         return _instance;
+    }
+
+    inline static void deleteInstance ()
+    {
+      _instance->terminateProcess();
+      if (_instance)
+      {
+        delete _instance;
+        _instance = 0;
+      }
     }
 
     inline QProcess *process () const
@@ -68,6 +81,8 @@ public slots:
     void run (QStringList args,
               bool forceKill = true);
 
+    inline void stop () {terminateProcess();}
+
     void finished (int, QProcess::ExitStatus);
     int sendCommand (QString);
 
@@ -75,7 +90,7 @@ private:
     bool gingaIsRunning () const;
     void destroyProcess ();
 
-    explicit GingaProxy(QString binaryPath, QWidget *parent = 0);
+    explicit GingaProxy(QString binaryPath, QObject *parent = 0);
 
     static GingaProxy *_instance;
 
