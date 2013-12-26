@@ -85,6 +85,7 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
 QnplMainWindow::~QnplMainWindow()
 {
   performStop();
+  delete _gingaProxy;
 }
 
 void QnplMainWindow::performDevice()
@@ -352,7 +353,7 @@ void  QnplMainWindow::createConnections()
 
 void QnplMainWindow::performOpen()
 {
-  qDebug() << _view->winId();;
+  qDebug() << _view->winId();
 
   if (_location != "*"){
     performClose();

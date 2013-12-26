@@ -4,7 +4,7 @@
 #include <QMessageBox>
 
 #include "qnplpreferencesdialog.h"
-#include "util.h"
+#include "include/util.h"
 
 #include <QDebug>
 
@@ -15,8 +15,8 @@ QnplPreferencesDialog::QnplPreferencesDialog(QWidget* parent)
   _generalPane = new QWidget();
   _runPane = new QWidget();
 
-  _generalForm.setupUi(new QDialog(this));
-  _runForm.setupUi(new QDialog(this));
+  _generalForm.setupUi(this);
+  _runForm.setupUi(this);
 
   _generalPane->setLayout(_generalForm.verticalLayout);
   _runPane->setLayout(_runForm.verticalLayout);
@@ -31,10 +31,10 @@ QnplPreferencesDialog::QnplPreferencesDialog(QWidget* parent)
   connect(_preferencesForm._buttonsGroup, SIGNAL(accepted()),
           SLOT(saveSettings()));
 
-  connect(_runForm.pushButton, SIGNAL(clicked()),
+  connect(_runForm.executableButton, SIGNAL(clicked()),
           SLOT(browseExecutable()));
 
-  connect(_runForm.pushButton_2, SIGNAL(clicked()),
+  connect(_runForm.contextFileButton, SIGNAL(clicked()),
           SLOT(browseGingaSettingsFile()));
 
   connect(_runForm.table, SIGNAL(customContextMenuRequested(QPoint)),
@@ -109,7 +109,7 @@ void QnplPreferencesDialog::loadSettings()
     _generalForm.checkBox->setChecked(false);
   }
 
-  _runForm.lineEdit->setText(settings->value("location").toString());
+  _runForm.contextFileLocation->setText(settings->value("location").toString());
 
   if (settings->value("screensize").toString() == "640x480"){
     _generalForm.comboBox_2->setCurrentIndex(1);
@@ -145,9 +145,9 @@ void QnplPreferencesDialog::loadSettings()
     _generalForm.comboBox->setCurrentIndex(2);
   }
 
-  _runForm.textEdit->setText(settings->value("parameters").toString());
+  _runForm.argsEdit->setText(settings->value("parameters").toString());
 
-  _runForm.lineEdit_2->setText(settings->value("gingaconfig_file").toString());
+  _runForm.contextFileLocation->setText(settings->value("gingaconfig_file").toString());
 
   loadGingaPreferences();
 }
@@ -168,7 +168,7 @@ void QnplPreferencesDialog::saveSettings()
     settings->setValue("enablelog",false);
   }
 
-  settings->setValue("location",_runForm.lineEdit->text());
+  settings->setValue("location",_runForm.contextFileLocation->text());
 
   switch (_generalForm.comboBox_2->currentIndex()){
     case 1:
@@ -219,8 +219,8 @@ void QnplPreferencesDialog::saveSettings()
       break;
   }
 
-  settings->setValue("parameters",_runForm.textEdit->toPlainText());
-  settings->setValue("gingaconfig_file", _runForm.lineEdit_2->text());
+  settings->setValue("parameters",_runForm.argsEdit->toPlainText());
+  settings->setValue("gingaconfig_file", _runForm.contextFileLocation->text());
 
   saveGingaPreferences();
 }
@@ -251,10 +251,10 @@ void QnplPreferencesDialog::showPreferencesItem(QModelIndex index)
 
 void QnplPreferencesDialog::loadGingaPreferences()
 {
-  if (QFile::exists(_runForm.lineEdit_2->text()))
+  if (QFile::exists(_runForm.contextFileLocation->text()))
   {
 
-    QFile* file = new QFile(_runForm.lineEdit_2->text());
+    QFile* file = new QFile(_runForm.contextFileLocation->text());
 
     if (file->open(QIODevice::ReadOnly))
     {
@@ -322,9 +322,9 @@ void QnplPreferencesDialog::loadGingaPreferences()
 
 void QnplPreferencesDialog::saveGingaPreferences()
 {
-  if (QFile::exists(_runForm.lineEdit_2->text())){
+  if (QFile::exists(_runForm.contextFileLocation->text())){
 
-    QFile* file = new QFile(_runForm.lineEdit_2->text());
+    QFile* file = new QFile(_runForm.contextFileLocation->text());
 
     if (file->open(QIODevice::WriteOnly | QIODevice::Text)){
       QTextStream stream(file);
@@ -359,7 +359,7 @@ void QnplPreferencesDialog::browseExecutable()
   QString f = QFileDialog::getOpenFileName(this,tr("Open"));
 
   if (f != ""){
-    _runForm.lineEdit->setText(f);
+    _runForm.executableEdit->setText(f);
   }
 }
 
@@ -368,7 +368,7 @@ void QnplPreferencesDialog::browseGingaSettingsFile()
   QString f = QFileDialog::getOpenFileName(this,tr("Open"));
 
   if (f != ""){
-    _runForm.lineEdit_2->setText(f);
+    _runForm.contextFileLocation->setText(f);
 
     loadGingaPreferences();
   }
