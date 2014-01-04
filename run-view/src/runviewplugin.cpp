@@ -8,6 +8,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QLineEdit>
+#include <QKeyEvent>
 
 int Util::SCREEN_HEIGHT;
 int Util::SCREEN_WIDTH;
@@ -16,6 +17,7 @@ RunViewPlugin::RunViewPlugin()
 {
   _gingaView = new QnplView;
   _runWidget = new QWidget;
+  _runWidget->setFocusPolicy(Qt::ClickFocus);
 
   _projectControl = ProjectControl::getInstance();
   _gingaProxy = GingaProxy::getInstance("", this);
@@ -50,6 +52,7 @@ RunViewPlugin::RunViewPlugin()
   layout->addLayout(bottomLayout);
 
   _runWidget->setLayout(layout);
+  _runWidget->setFocusProxy(_gingaView);
 
   connect (_playButton, SIGNAL(pressed()),
            SLOT(playApplication()));
@@ -61,6 +64,8 @@ RunViewPlugin::RunViewPlugin()
            SLOT(updateGUI()));
   connect (_gingaProxy, SIGNAL(gingaFinished(int,QProcess::ExitStatus)),
            SLOT(updateGUI()));
+  connect (_gingaView, SIGNAL(selected(QString)),
+           _gingaProxy, SLOT(sendCommand(QString)));
 }
 
 void RunViewPlugin::updateGUI()
@@ -94,7 +99,7 @@ void RunViewPlugin::playApplication()
       if(file.open(QFile::WriteOnly | QIODevice::Truncate))
       {
         if(project->getChildren().size())
-         file.write(project->getChildren().at(0)->toString(0,false).toLatin1());
+          file.write(project->getChildren().at(0)->toString(0,false).toLatin1());
 
         file.close();
       }
@@ -113,11 +118,11 @@ void RunViewPlugin::playApplication()
   QStringList argsList = args.split(" ");
 
   QString vmode = QString::number(_gingaView->width()) + "x" +
-                  QString::number(_gingaView->height());
+      QString::number(_gingaView->height());
 
   argsList.replaceInStrings("${FILE}", nclFilePath);
   argsList.replaceInStrings("${WID}", QString::number((unsigned long long)
-                                                  _gingaView->winId()));
+                                                      _gingaView->winId()));
   argsList.replaceInStrings("${SCREENSIZE}", vmode);
 
   argsList << "--context-dir" << contextLocation;
@@ -127,6 +132,7 @@ void RunViewPlugin::playApplication()
   qDebug () << argsList;
   _gingaProxy->setBinaryPath(gingaLocation);
   _gingaProxy->run(argsList);
+  _gingaView->setFocus();
 }
 
 void RunViewPlugin::execConfigDialog()

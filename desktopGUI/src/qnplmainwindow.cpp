@@ -344,7 +344,8 @@ void  QnplMainWindow::createConnections()
   connect(_nextButton, SIGNAL(clicked()), SLOT(playNextChannel()));
   connect(_previousButton, SIGNAL(clicked()), SLOT(playPreviousChannel())  );
 
-  connect(_view, SIGNAL(selected(QString)), _gingaProxy, SLOT(sendCommand(QString)));
+  connect(_view, SIGNAL(selected(QString)),
+          _gingaProxy, SLOT(sendCommand(QString)));
 
   connect(_gingaProxy, SIGNAL(gingaStarted()), this, SLOT(startSession()));
   //    connect(view,SIGNAL(selected(QString)),SLOT(notifyKey(QString)));
