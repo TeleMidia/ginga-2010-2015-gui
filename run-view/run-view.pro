@@ -8,7 +8,7 @@ TARGET = RunView
 include (plugins-common.pri)
 
 INCLUDEPATH += . \
-                ..\desktopGUI\include \
+                ../desktopGUI/include \
             include
 
 

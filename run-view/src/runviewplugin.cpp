@@ -20,7 +20,7 @@ RunViewPlugin::RunViewPlugin()
   _runWidget->setFocusPolicy(Qt::ClickFocus);
 
   _projectControl = ProjectControl::getInstance();
-  _gingaProxy = GingaProxy::getInstance("", this);
+  _gingaProxy = GingaProxy::getInstance("");
 
   Util::SCREEN_HEIGHT = QApplication::desktop()->height();
   Util::SCREEN_WIDTH = QApplication::desktop()->width();
@@ -66,6 +66,7 @@ RunViewPlugin::RunViewPlugin()
            SLOT(updateGUI()));
   connect (_gingaView, SIGNAL(selected(QString)),
            _gingaProxy, SLOT(sendCommand(QString)));
+
 }
 
 void RunViewPlugin::updateGUI()

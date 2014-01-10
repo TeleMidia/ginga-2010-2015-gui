@@ -6,6 +6,7 @@ RunViewFactory::RunViewFactory()
 
 RunViewFactory::~RunViewFactory()
 {
+  GingaProxy::deleteInstance();
 }
 
 void RunViewFactory::releasePluginInstance(IPlugin *plugin)

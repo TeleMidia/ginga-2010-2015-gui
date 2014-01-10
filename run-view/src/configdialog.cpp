@@ -95,7 +95,7 @@ void ConfigDialog::loadSettings()
 void ConfigDialog::setGingaLocation()
 {
   QString gingaLocation = QFileDialog::getOpenFileName((QWidget *) parent(),
-                                                       "Ginga", "", "Bin (*.exe)");
+                                                  "Select an executable file");
   if (!gingaLocation.isEmpty())
     _runForm->executableEdit->setText(gingaLocation);
 }
@@ -103,7 +103,8 @@ void ConfigDialog::setGingaLocation()
 void ConfigDialog::setContextLocation()
 {
   QString contextLocation = QFileDialog::getOpenFileName((QWidget *) parent(),
-                                                         "Ginga", "", "Ini (*.ini)");
+                                                    "Select a config file", "",
+                                                         "Ini (*.ini)");
   if (!contextLocation.isEmpty())
     _runForm->contextFileLocation->setText(contextLocation);
 }
