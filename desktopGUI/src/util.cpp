@@ -19,9 +19,18 @@ QString Util::V_LOCATION = "location";
 QString Util::V_CONTEXT_FILE = "gingaconfig_file";
 QString Util::V_PARAMETERS = "parameters";
 QString Util::V_ASPECT_RATIO = "aspect_ratio";
+QString Util::V_LAST_DIR = "lastdir_opened";
+QString Util::V_FILES = "files";
+QString Util::V_AUTOPLAY = "autoplay";
+QString Util::V_SCREENSIZE = "screensize";
+QString Util::V_PASSIVE = "passive_running";
+QString Util::V_DEVICE_PORT = "device_port";
 
+QString Util::TRUE_ = "true";
+QString Util::FALSE_ = "false";
 QString Util::WIDE = "wide";
 QString Util::STANDARD = "standard";
+int Util::DEFAULT_PORT = 22222;
 
 void Util::init()
 {

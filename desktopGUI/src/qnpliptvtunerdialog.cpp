@@ -21,7 +21,7 @@ QnplIPTVTunerDialog::~QnplIPTVTunerDialog()
 }
 
 
-QString QnplIPTVTunerDialog::ler_caixa()
+QString QnplIPTVTunerDialog::ip()
 {
     return form.lineEdit->text();
 }

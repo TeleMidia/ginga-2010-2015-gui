@@ -75,6 +75,7 @@ public slots:
     void appendDebugMessage(QString);
 
     void startSession ();
+
 protected:
     void resizeEvent(QResizeEvent* event);
 
@@ -104,6 +105,8 @@ private:
     }
 
     QString hwndToString(WId winid);
+
+    QString _appName;
 
     QMenu* _fileMenu;
     QMenu* _recentMenu;

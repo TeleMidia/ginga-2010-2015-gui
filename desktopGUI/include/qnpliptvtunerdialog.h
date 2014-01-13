@@ -21,7 +21,7 @@ class QnplIPTVTunerDialog :public QDialog
 public:
     QnplIPTVTunerDialog(QWidget* parent = 0);
     ~QnplIPTVTunerDialog();
-    QString ler_caixa();
+    QString ip();
 
 private:
   Ui::QnplIPTVTunerForm form;

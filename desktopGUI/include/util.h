@@ -28,14 +28,24 @@ public:
   static int SCREEN_WIDTH;
 
   //GingaGui variables
+  //"V" stands for "variable"
   static QString V_LOCATION;
   static QString V_CONTEXT_FILE;
   static QString V_PARAMETERS;
   static QString V_ASPECT_RATIO;
+  static QString V_LAST_DIR;
+  static QString V_FILES;
+  static QString V_AUTOPLAY;
+  static QString V_SCREENSIZE;
+  static QString V_PASSIVE;
+  static QString V_DEVICE_PORT;
 
   //GingaGui variables values
+  static QString TRUE_;
+  static QString FALSE_;
   static QString WIDE;
   static QString STANDARD;
+  static int DEFAULT_PORT;
 
   static QStringList split(QString parameters);
   static QString defaultParameters ();
