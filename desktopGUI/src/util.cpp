@@ -15,6 +15,13 @@ QString Util::PREFERENCES_ENVIRONMENT = "Environment";
 QString Util::PREFERENCES_GINGA = "Ginga";
 QString Util::PREFERENCES_ADVANCED = "Advanced";
 
+QString Util::V_LOCATION = "location";
+QString Util::V_CONTEXT_FILE = "gingaconfig_file";
+QString Util::V_PARAMETERS = "parameters";
+QString Util::V_ASPECT_RATIO = "aspect_ratio";
+
+QString Util::WIDE = "wide";
+QString Util::STANDARD = "standard";
 
 void Util::init()
 {
@@ -70,7 +77,8 @@ QStringList Util::split(QString parameters)
   QRegExp rx; rx.setPattern("([-${}\\w\\\\:]+|\\\".*\\\")");
 
   int pos = 0;
-  while ((pos = rx.indexIn(ps, pos)) != -1) {
+  while ((pos = rx.indexIn(ps, pos)) != -1)
+  {
     plist << rx.cap(1);
 
     pos += rx.matchedLength();
@@ -79,4 +87,9 @@ QStringList Util::split(QString parameters)
   return plist;
 }
 
-
+QString Util::defaultParameters()
+{
+  return "--ncl ${FILE} --wid ${WID} "
+      "--vmode ${SCREENSIZE} --set-exitonend "
+      "--disable-multicast --poll-stdin";
+}

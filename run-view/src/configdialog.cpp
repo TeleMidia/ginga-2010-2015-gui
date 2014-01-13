@@ -9,6 +9,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QTextStream>
+#include <util.h>
 
 ConfigDialog::ConfigDialog(QWidget *parent) :
   QDialog(parent)
@@ -46,11 +47,22 @@ void ConfigDialog::loadSettings()
   QSettings settings (QSettings::IniFormat, QSettings::UserScope,
                       "telemidia", "gingagui");
 
-  QString gingaLocation = settings.value("location", "").toString();
-  QString contextLocation = settings.value("gingaconfig_file", "").toString();
-  QString args = settings.value("parameters", "${FILE} --wid ${WID} "
-                                "--vmode ${SCREENSIZE} --set-exitonend "
-                                "--disable-multicast --poll-stdin").toString();
+  QString gingaLocation = settings.value(Util::V_LOCATION, "").toString();
+  QString contextLocation = settings.value(Util::V_CONTEXT_FILE, "").toString();
+  QString args = settings.value(Util::V_PARAMETERS,
+                                Util::defaultParameters()).toString();
+
+  QString aspectRatio = settings.value(Util::V_ASPECT_RATIO, "0").toString();
+  if (aspectRatio == "0")
+    _runForm->aspectRatioGroupBox->setChecked(false);
+  else
+  {
+    _runForm->aspectRatioGroupBox->setChecked(true);
+    if (aspectRatio == Util::WIDE)
+      _runForm->wideRadioButton->setChecked(true);
+    else
+      _runForm->standardRadioButton->setChecked(true);
+  }
 
   QStandardItemModel *model = new QStandardItemModel;
   _runForm->table->setModel(model);
@@ -141,9 +153,17 @@ void ConfigDialog::saveSettings()
 {
   QSettings settings (QSettings::IniFormat, QSettings::UserScope,
                       "telemidia", "gingagui");
-  settings.setValue("location", _runForm->executableEdit->text());
-  settings.setValue("gingaconfig_file", _runForm->contextFileLocation->text());
-  settings.setValue("parameters", _runForm->argsEdit->toPlainText());
+
+  settings.setValue(Util::V_LOCATION, _runForm->executableEdit->text());
+  settings.setValue(Util::V_CONTEXT_FILE, _runForm->contextFileLocation->text());
+  settings.setValue(Util::V_PARAMETERS, _runForm->argsEdit->toPlainText());
+
+  if (_runForm->aspectRatioGroupBox->isChecked())
+    settings.setValue(Util::V_ASPECT_RATIO,
+                      _runForm->wideRadioButton->isChecked() ?
+                      Util::WIDE : Util::STANDARD);
+  else
+    settings.setValue(Util::V_ASPECT_RATIO, "0");
 
   settings.sync();
   saveGingaPreferences();

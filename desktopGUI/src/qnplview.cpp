@@ -101,10 +101,10 @@ void QnplView::mousePressEvent(QMouseEvent *event)
 
 void QnplView::resizeEvent(QResizeEvent* event)
 {
-  QGraphicsView::resizeEvent(event);
-
   qreal w = event->size().width();
   qreal h = event->size().height();
 
-  scene->setSize(w,h);
+  scene->setSize(w, h);
+
+  QGraphicsView::resizeEvent(event);
 }

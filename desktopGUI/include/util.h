@@ -24,10 +24,21 @@ public:
   static QString PREFERENCES_GINGA;
   static QString PREFERENCES_ADVANCED;
 
-  static QStringList split(QString parameters);
-
   static int SCREEN_HEIGHT;
   static int SCREEN_WIDTH;
+
+  //GingaGui variables
+  static QString V_LOCATION;
+  static QString V_CONTEXT_FILE;
+  static QString V_PARAMETERS;
+  static QString V_ASPECT_RATIO;
+
+  //GingaGui variables values
+  static QString WIDE;
+  static QString STANDARD;
+
+  static QStringList split(QString parameters);
+  static QString defaultParameters ();
 };
 
 

@@ -15,12 +15,16 @@ int Util::SCREEN_WIDTH;
 
 RunViewPlugin::RunViewPlugin()
 {
+  _settings = new QSettings(QSettings::IniFormat, QSettings::UserScope,
+                            "telemidia", "gingagui", this);
   _gingaView = new QnplView;
+  _gingaView->installEventFilter(this);
+
   _runWidget = new QWidget;
   _runWidget->setFocusPolicy(Qt::ClickFocus);
 
   _projectControl = ProjectControl::getInstance();
-  _gingaProxy = GingaProxy::getInstance("");
+  _gingaProxy = GingaProxy::getInstance();
 
   Util::SCREEN_HEIGHT = QApplication::desktop()->height();
   Util::SCREEN_WIDTH = QApplication::desktop()->width();
@@ -67,6 +71,11 @@ RunViewPlugin::RunViewPlugin()
   connect (_gingaView, SIGNAL(selected(QString)),
            _gingaProxy, SLOT(sendCommand(QString)));
 
+  QString aspectRatio = _settings->value(Util::V_ASPECT_RATIO, "").toString();
+  if (aspectRatio == Util::WIDE)
+    _gingaView->resize(_gingaView->width(),_gingaView->width() * 9 / 16);
+  else if (aspectRatio == Util::STANDARD)
+    _gingaView->resize(_gingaView->width(),_gingaView->width() * 3 / 4);
 }
 
 void RunViewPlugin::updateGUI()
@@ -107,12 +116,9 @@ void RunViewPlugin::playApplication()
     }
   }
 
-  QSettings settings (QSettings::IniFormat, QSettings::UserScope,
-                      "telemidia", "gingagui");
-
-  QString gingaLocation = settings.value("location", "").toString();
-  QString contextLocation = settings.value("gingaconfig_file", "").toString();
-  QString args = settings.value("parameters", "${FILE} --wid ${WID} "
+  QString gingaLocation = _settings->value("location", "").toString();
+  QString contextLocation = _settings->value("gingaconfig_file", "").toString();
+  QString args = _settings->value("parameters", "${FILE} --wid ${WID} "
                                 "--vmode ${SCREENSIZE} --set-exitonend "
                                 "--disable-multicast --poll-stdin").toString();
 
