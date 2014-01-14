@@ -13,10 +13,7 @@
 #include <QStandardItemModel>
 #include <QFileDialog>
 
-
-
 #include "ui_qnplchannelsform.h"
-#include "qnplsettings.h"
 
 class Channel {
 public:

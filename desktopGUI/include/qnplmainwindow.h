@@ -4,10 +4,11 @@
 #include <QMainWindow>
 #include <QProgressDialog>
 #include <QTimer>
+#include <QLineEdit>
+#include <QSettings>
 
 #include "gingaproxy.h"
 #include "qnplview.h"
-#include "qnplsettings.h"
 #include "qnplpreferencesdialog.h"
 #include "qnplaboutdialog.h"
 #include "util.h"
@@ -52,7 +53,7 @@ public slots:
     void performPlay();
     void performPause();
     void performStop();
-
+    void performSeek();
     void performRun();
     void performRunAsPassive();
     void performRunAsActive();
@@ -74,8 +75,10 @@ public slots:
     void keyPressEvent(QKeyEvent *);
 
     void appendDebugMessage(QString);
-
     void startSession ();
+
+private slots:
+    void enableSeekButton ();
 
 protected:
     void resizeEvent(QResizeEvent* event);
@@ -133,7 +136,7 @@ private:
 
     QActionGroup* _deviceGroup;
 
-    QToolBar* _playToolbar;
+    QToolBar* _toolbar;
     QToolBar* _openToolbar;
 
     QLineEdit* _openLine;
@@ -146,6 +149,9 @@ private:
     QPushButton* _previousButton;
     QPushButton* _refreshButton;
     QPushButton* _channelsButton;
+    QPushButton* _seekButton;
+
+    QLineEdit* _seekPlayTime;
 
     QString _location;
 
@@ -155,7 +161,7 @@ private:
     bool _isChannel;
 
     QnplView* _view;
-    QnplSettings* settings;
+    QSettings* _settings;
 
     QnplPreferencesDialog* _preferencesDialog;
     QnplAboutDialog* _aboutDialog;

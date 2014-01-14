@@ -1,8 +1,7 @@
 #include "qnplaboutdialog.h"
 #include "util.h"
-#include "qnplsettings.h"
 
-QnplAboutDialog::QnplAboutDialog(QWidget* parent)
+QnplAboutDialog::QnplAboutDialog(QString execLocation, QWidget* parent)
   : QDialog(parent)
 {
   setWindowTitle(tr("About Ginga GUI"));
@@ -20,9 +19,7 @@ QnplAboutDialog::QnplAboutDialog(QWidget* parent)
   connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(printGingaVersion()));
   connect(process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(printFailToStart(QProcess::ProcessError)));
 
-  QnplSettings *settings = new QnplSettings();
-
-  process->start(settings->value("location").toString(), plist);
+  process->start(execLocation, plist);
 
   // connecting
   connect(form.btMore, SIGNAL(pressed()), SLOT(showMore()));

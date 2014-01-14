@@ -9,6 +9,9 @@ class Util
 public:
   static void init ();
 
+  static int SCREEN_HEIGHT;
+  static int SCREEN_WIDTH;
+
   //Util strings
   static QString VERSION;
   static QString CMD_PREFIX;
@@ -25,8 +28,10 @@ public:
   static QString PREFERENCES_GINGA;
   static QString PREFERENCES_ADVANCED;
 
-  static int SCREEN_HEIGHT;
-  static int SCREEN_WIDTH;
+  //GingaGUI wilcard strings
+  static QString GUI_WID;
+  static QString GUI_FILE;
+  static QString GUI_SCREENSIZE;
 
   //GingaGui variables
   //"V" stands for "variable"

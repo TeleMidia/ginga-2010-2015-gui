@@ -5,24 +5,24 @@
 #include <QStandardItemModel>
 #include <QFileDialog>
 #include <QFile>
+#include <QSettings>
 
 #include "ui_qnplenvironmentform.h"
 #include "ui_qnplpreferencesform.h"
 #include "ui_qnplrunform.h"
 #include "ui_advancedpreferences.h"
 
-#include "qnplsettings.h"
 
 class QnplPreferencesDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    QnplPreferencesDialog(QWidget* parent = 0);
+    QnplPreferencesDialog(QSettings*, QWidget* parent = 0);
 
     ~QnplPreferencesDialog();
 
-    void init(QnplSettings* s);
+    void init(QSettings *s);
 
 public slots:
     void showPreferencesItem(QModelIndex index);
@@ -33,8 +33,6 @@ public slots:
 
     void customMenuRequested(QPoint);
     void removeVariable ();
-
-private slots:
 
 private:
     void loadSettings();
@@ -48,7 +46,7 @@ private:
     Ui::QnplRunForm _runForm;
     Ui::QnplPreferencesForm _preferencesForm;
 
-    QnplSettings* settings;
+    QSettings* _settings;
 };
 
 #endif // QNPLPREFERENCESDIALOG_H

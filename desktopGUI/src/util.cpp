@@ -16,6 +16,10 @@ QString Util::PREFERENCES_ENVIRONMENT = "Environment";
 QString Util::PREFERENCES_GINGA = "Ginga";
 QString Util::PREFERENCES_ADVANCED = "Advanced";
 
+QString Util::GUI_WID = "${WID}";
+QString Util::GUI_FILE = "${FILE}";
+QString Util::GUI_SCREENSIZE = "${SCREENSIZE}";
+
 QString Util::V_LOCATION = "location";
 QString Util::V_CONTEXT_FILE = "gingaconfig_file";
 QString Util::V_PARAMETERS = "parameters";

@@ -3,25 +3,18 @@
 #include <iostream>
 
 QnplIPTVTunerDialog::QnplIPTVTunerDialog(QWidget *parent)
-    : QDialog(parent)
+  : QDialog(parent)
 {
-    setWindowTitle(tr("Insira o ip"));
-
-    // setting
-    form.setupUi(this);
-
-
+  setWindowTitle(tr("IP Address"));
+  // setting
+  _form.setupUi(this);
 }
-
-
 
 QnplIPTVTunerDialog::~QnplIPTVTunerDialog()
 {
-
 }
-
 
 QString QnplIPTVTunerDialog::ip()
 {
-    return form.lineEdit->text();
+  return _form.lineEdit->text();
 }

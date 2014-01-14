@@ -8,7 +8,8 @@
 
 #include <QDebug>
 
-QnplPreferencesDialog::QnplPreferencesDialog(QWidget* parent)
+QnplPreferencesDialog::QnplPreferencesDialog(QSettings *settings,
+                                             QWidget* parent)
   : QDialog(parent)
 {
 
@@ -39,6 +40,8 @@ QnplPreferencesDialog::QnplPreferencesDialog(QWidget* parent)
 
   connect(_runForm.table, SIGNAL(customContextMenuRequested(QPoint)),
           SLOT(customMenuRequested(QPoint)));
+
+  init (settings);
 }
 
 QnplPreferencesDialog::~QnplPreferencesDialog()
@@ -47,9 +50,11 @@ QnplPreferencesDialog::~QnplPreferencesDialog()
   delete _runPane;
 }
 
-void QnplPreferencesDialog::init(QnplSettings* s)
+void QnplPreferencesDialog::init(QSettings* settings)
 {
-  settings = s;
+  _settings = settings;
+
+  if ( !_settings ) return;
 
   QStandardItemModel *model = new QStandardItemModel(2,1);
   QStandardItem *environmentItem = new QStandardItem(
@@ -97,57 +102,65 @@ void QnplPreferencesDialog::init(QnplSettings* s)
 
 void QnplPreferencesDialog::loadSettings()
 {
-  if (settings->value("enablelog").toString() == "true"){
+  if (_settings->value("enablelog").toString() == "true")
     _generalForm.checkBox_2->setChecked(true);
-  }else{
+  else
     _generalForm.checkBox_2->setChecked(false);
-  }
 
-  if (settings->value("autoplay").toString() == "true"){
+
+  if (_settings->value(Util::V_AUTOPLAY).toString() == "true"){
     _generalForm.checkBox->setChecked(true);
   }else{
     _generalForm.checkBox->setChecked(false);
   }
 
-  _runForm.contextFileLocation->setText(settings->value("location").toString());
+  _runForm.executableEdit->setText(_settings->value(Util::V_LOCATION).
+                                   toString());
 
-  if (settings->value("screensize").toString() == "640x480"){
+  _runForm.contextFileLocation->setText(_settings->value(Util::V_CONTEXT_FILE).
+                                        toString());
+
+  if (_settings->value(Util::V_SCREENSIZE).toString() == "640x480")
     _generalForm.comboBox_2->setCurrentIndex(1);
-  }else if (settings->value("screensize").toString() == "800x600"){
+  else if (_settings->value(Util::V_SCREENSIZE).toString() == "800x600")
     _generalForm.comboBox_2->setCurrentIndex(2);
-  }else if (settings->value("screensize").toString() == "1024x768"){
+  else if (_settings->value(Util::V_SCREENSIZE).toString() == "1024x768")
     _generalForm.comboBox_2->setCurrentIndex(3);
-  }else if (settings->value("screensize").toString() == "854x480"){
+  else if (_settings->value(Util::V_SCREENSIZE).toString() == "854x480")
     _generalForm.comboBox_2->setCurrentIndex(4);
-  }else if (settings->value("screensize").toString() == "1280x720"){
+  else if (_settings->value(Util::V_SCREENSIZE).toString() == "1280x720")
     _generalForm.comboBox_2->setCurrentIndex(5);
-  }else if (settings->value("screensize").toString() == "1920x1080"){
+  else if (_settings->value(Util::V_SCREENSIZE).toString() == "1920x1080")
     _generalForm.comboBox_2->setCurrentIndex(6);
-  }else if (settings->value("screensize").toString() == "320x400"){
+  else if (_settings->value(Util::V_SCREENSIZE).toString() == "320x400")
     _generalForm.comboBox_2->setCurrentIndex(7); //(!)index 6 is an empty option
-  }else if (settings->value("screensize").toString() == "400x320"){
+  else if (_settings->value(Util::V_SCREENSIZE).toString() == "400x320")
     _generalForm.comboBox_2->setCurrentIndex(8);
-  }else if (settings->value("screensize").toString() == "320x180"){
+  else if (_settings->value(Util::V_SCREENSIZE).toString() == "320x180")
     _generalForm.comboBox_2->setCurrentIndex(9);
-  }else if (settings->value("screensize").toString() == "320x240"){
+  else if (_settings->value(Util::V_SCREENSIZE).toString() == "320x240")
     _generalForm.comboBox_2->setCurrentIndex(10);
-  }else if (settings->value("screensize").toString() == "240x320"){
+  else if (_settings->value(Util::V_SCREENSIZE).toString() == "240x320")
     _generalForm.comboBox_2->setCurrentIndex(11);
-  }else{
+  else
     _generalForm.comboBox_2->setCurrentIndex(0);
-  }
 
-  if (settings->value("lang").toString() == "en"){
+  if (_settings->value("lang").toString() == "en")
     _generalForm.comboBox->setCurrentIndex(0);
-  }else if (settings->value("lang").toString() == "pt_br"){
+  else if (_settings->value("lang").toString() == "pt_br")
     _generalForm.comboBox->setCurrentIndex(1);
-  }else if (settings->value("lang").toString() == "en"){
+  else if (_settings->value("lang").toString() == "en")
     _generalForm.comboBox->setCurrentIndex(2);
-  }
 
-  _runForm.argsEdit->setText(settings->value("parameters").toString());
 
-  _runForm.contextFileLocation->setText(settings->value("gingaconfig_file").toString());
+  qDebug () << _settings->value(Util::V_PARAMETERS).toString();
+
+  _runForm.argsEdit->setText(_settings->value(Util::V_PARAMETERS,
+                                              Util::defaultParameters())
+                                              .toString());
+
+  _runForm.contextFileLocation->setText(_settings->value(Util::V_CONTEXT_FILE)
+                                        .toString());
 
   loadGingaPreferences();
 }
@@ -156,71 +169,84 @@ void QnplPreferencesDialog::saveSettings()
 {
   qDebug() << "Saving settings...";
 
-  if (_generalForm.checkBox->isChecked()){
-    settings->setValue("autoplay",true);
-  }else{
-    settings->setValue("autoplay",false);
-  }
+  if (_generalForm.checkBox->isChecked())
+    _settings->setValue(Util::V_AUTOPLAY, true);
+  else
+    _settings->setValue(Util::V_AUTOPLAY, false);
 
-  if (_generalForm.checkBox_2->isChecked()){
-    settings->setValue("enablelog",true);
-  }else{
-    settings->setValue("enablelog",false);
-  }
+  if (_generalForm.checkBox_2->isChecked())
+    _settings->setValue("enablelog", true);
+  else
+    _settings->setValue("enablelog", false);
 
-  settings->setValue("location",_runForm.contextFileLocation->text());
-
-  switch (_generalForm.comboBox_2->currentIndex()){
+  switch (_generalForm.comboBox_2->currentIndex())
+  {
     case 1:
-      settings->setValue("screensize","640x480");
+      _settings->setValue(Util::V_SCREENSIZE, "640x480");
       break;
     case 2:
-      settings->setValue("screensize","800x600");
+      _settings->setValue(Util::V_SCREENSIZE,"800x600");
       break;
     case 3:
-      settings->setValue("screensize","1024x768");
+      _settings->setValue(Util::V_SCREENSIZE,"1024x768");
       break;
     case 4:
-      settings->setValue("screensize","854x480");
+      _settings->setValue(Util::V_SCREENSIZE,"854x480");
       break;
     case 5:
-      settings->setValue("screensize","1280x720");
+      _settings->setValue(Util::V_SCREENSIZE,"1280x720");
       break;
     case 6:
-      settings->setValue("screensize","1920x1080");
+      _settings->setValue(Util::V_SCREENSIZE,"1920x1080");
       break;
     case 7:
-      settings->setValue("screensize","320x400");
+      _settings->setValue(Util::V_SCREENSIZE,"320x400");
       break;
     case 8:
-      settings->setValue("screensize","400x320");
+      _settings->setValue(Util::V_SCREENSIZE,"400x320");
       break;
     case 9:
-      settings->setValue("screensize","320x180");
+      _settings->setValue(Util::V_SCREENSIZE,"320x180");
       break;
     case 10:
-      settings->setValue("screensize","320x240");
+      _settings->setValue(Util::V_SCREENSIZE,"320x240");
       break;
     case 11:
-      settings->setValue("screensize","240x320");
+      _settings->setValue(Util::V_SCREENSIZE,"240x320");
       break;
-
   }
 
-  switch (_generalForm.comboBox->currentIndex()){
+  switch (_generalForm.comboBox->currentIndex())
+  {
     case 0:
-      settings->setValue("lang","en");
+      _settings->setValue("lang","en");
       break;
     case 1:
-      settings->setValue("lang","pt_br");
+      _settings->setValue("lang","pt_br");
       break;
     case 2:
-      settings->setValue("lang","es");
+      _settings->setValue("lang","es");
       break;
   }
 
-  settings->setValue("parameters",_runForm.argsEdit->toPlainText());
-  settings->setValue("gingaconfig_file", _runForm.contextFileLocation->text());
+  _settings->setValue(Util::V_LOCATION, _runForm.executableEdit->text());
+  _settings->setValue(Util::V_PARAMETERS, _runForm.argsEdit->toPlainText());
+  _settings->setValue(Util::V_CONTEXT_FILE,
+                      _runForm.contextFileLocation->text());
+
+  QString aspectRatio = "0";
+
+  if (_runForm.aspectRatioGroupBox->isChecked())
+  {
+    if (_runForm.wideRadioButton->isChecked())
+      aspectRatio = Util::WIDE;
+    else
+      aspectRatio = Util::STANDARD;
+  }
+
+  _settings->setValue(Util::V_ASPECT_RATIO, aspectRatio);
+
+  _settings->sync();
 
   saveGingaPreferences();
 }
@@ -300,7 +326,8 @@ void QnplPreferencesDialog::loadGingaPreferences()
       QPair<QString, QString> p;
       foreach(p, params)
       {
-        if (p.first != "::" && p.first != "||"){
+        if (p.first != "::" && p.first != "||")
+        {
           QStandardItem* nitem = new QStandardItem(p.first);
           nitem->setEditable(true);
 
@@ -322,11 +349,13 @@ void QnplPreferencesDialog::loadGingaPreferences()
 
 void QnplPreferencesDialog::saveGingaPreferences()
 {
-  if (QFile::exists(_runForm.contextFileLocation->text())){
+  if (QFile::exists(_runForm.contextFileLocation->text()))
+  {
 
     QFile* file = new QFile(_runForm.contextFileLocation->text());
 
-    if (file->open(QIODevice::WriteOnly | QIODevice::Text)){
+    if (file->open(QIODevice::WriteOnly | QIODevice::Text))
+    {
       QTextStream stream(file);
       stream.setCodec("UTF-8");
 
@@ -337,11 +366,13 @@ void QnplPreferencesDialog::saveGingaPreferences()
 
       QAbstractItemModel* model = _runForm.table->model();
 
-      for (int i=0;i<n;i++){
+      for (int i = 0; i < n; i++)
+      {
         QString name = model->data(model->index(i,0)).toString();
         QString value = model->data(model->index(i,1)).toString();
 
-        if (name != ""){
+        if (name != "")
+        {
           stream << name
                  << " = "
                  << value
@@ -356,19 +387,19 @@ void QnplPreferencesDialog::saveGingaPreferences()
 
 void QnplPreferencesDialog::browseExecutable()
 {
-  QString f = QFileDialog::getOpenFileName(this,tr("Open"));
+  QString fileName = QFileDialog::getOpenFileName(this,tr("Open"));
 
-  if (f != ""){
-    _runForm.executableEdit->setText(f);
-  }
+  if (fileName != "")
+    _runForm.executableEdit->setText(fileName);
 }
 
 void QnplPreferencesDialog::browseGingaSettingsFile()
 {
-  QString f = QFileDialog::getOpenFileName(this,tr("Open"));
+  QString fileName = QFileDialog::getOpenFileName(this,tr("Open"));
 
-  if (f != ""){
-    _runForm.contextFileLocation->setText(f);
+  if (fileName != "")
+  {
+    _runForm.contextFileLocation->setText(fileName);
 
     loadGingaPreferences();
   }
@@ -376,7 +407,6 @@ void QnplPreferencesDialog::browseGingaSettingsFile()
 
 void QnplPreferencesDialog::customMenuRequested(QPoint point)
 {
-  QModelIndex index = _runForm.table->indexAt(point);
 
   QMenu *menu = new QMenu(this);
   QAction *removeAction = menu->addAction(tr("Remove variable"));

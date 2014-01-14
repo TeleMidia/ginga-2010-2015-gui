@@ -19,7 +19,7 @@ class QnplAboutDialog : public QDialog
   Q_OBJECT
 
 public:
-  QnplAboutDialog(QWidget* parent = 0);
+  QnplAboutDialog(QString execLocation, QWidget* parent = 0);
   ~QnplAboutDialog();
 
 public slots:

@@ -2,9 +2,9 @@
 #include <QTranslator>
 #include <QDebug>
 #include <QDesktopWidget>
+#include <QSettings>
 
 #include "qnplmainwindow.h"
-#include "qnplsettings.h"
 #include "util.h"
 
 int Util::SCREEN_HEIGHT;
@@ -28,7 +28,8 @@ int main(int argc, char *argv[])
     Util::SCREEN_WIDTH = QApplication::desktop()->width();
 
 
-    QnplSettings settings;
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope,
+                                       "telemidia", "gingagui");
     QString lang = settings.value("lang").toString();
 
     qDebug() << lang;
