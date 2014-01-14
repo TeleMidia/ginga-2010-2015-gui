@@ -18,11 +18,12 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
   _appName = "Ginga GUI";
 
   setWindowTitle(_appName);
-  setWindowIcon(QIcon(":icon/gingagui-128x128"));
+  setWindowIcon(QIcon(":icons/gingagui-128x128"));
   settings = new QnplSettings();
 
   _gingaProxy = GingaProxy::getInstance();
   _isChannel = false;
+  _isPaused = false;
 
   createActions();
   createMenus();
@@ -46,7 +47,7 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
 
   _passiveIsRunning = false;
 
-  QString ssize = settings->value("screensize").toString();
+  QString ssize = settings->value(Util::V_SCREENSIZE).toString();
 
   qDebug() << "open" << ssize;
 
@@ -59,7 +60,7 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
   _view->setSceneRect(0,0,w,h);
 
   _gifLabel = new QLabel();
-  _movie = new QMovie(":background/anim-tuning");
+  _movie = new QMovie(":backgrounds/anim-tuning");
 
   if (!_movie->isValid())
   {
@@ -239,38 +240,43 @@ void QnplMainWindow::createWidgets()
 {
   _playButton = new QPushButton();
   _playButton->setEnabled(true);
-  _playButton->setIcon(QIcon(":icon/play"));
+  _playButton->setIcon(QIcon(":icons/play"));
   _playButton->setToolTip(tr("Play"));
+
+  _pauseButton = new QPushButton();
+  _pauseButton->setEnabled(false);
+  _pauseButton->setIcon(QIcon(":icons/pause"));
+  _pauseButton->setToolTip(tr("Pause"));
 
   _stopButton = new QPushButton();
   _stopButton->setEnabled(false);
-  _stopButton->setIcon(QIcon(":icon/stop"));
+  _stopButton->setIcon(QIcon(":icons/stop"));
   _stopButton->setToolTip(tr("Stop"));
 
   _openButton = new QPushButton();
   _openButton->setEnabled(true);
-  _openButton->setIcon(QIcon(":icon/open"));
+  _openButton->setIcon(QIcon(":icons/open"));
   _openButton->setToolTip(tr("Open a new document"));
 
   _nextButton = new QPushButton();
   _nextButton->setEnabled(false);
-  _nextButton->setIcon(QIcon(":icon/up"));
+  _nextButton->setIcon(QIcon(":icons/up"));
   _nextButton->setToolTip(tr("Next Channel"));
 
   _previousButton = new QPushButton();
   _previousButton->setEnabled(false);
-  _previousButton->setIcon(QIcon(":icon/down"));
+  _previousButton->setIcon(QIcon(":icons/down"));
   _previousButton->setToolTip(tr("Previous Channel"));
 
   _refreshButton = new QPushButton();
-  _refreshButton->setIcon(QIcon(":icon/refresh"));
+  _refreshButton->setIcon(QIcon(":icons/refresh"));
   _refreshButton->setToolTip(tr("Scan"));
 
   connect(_refreshButton, SIGNAL(clicked()), SLOT(scan()));
 
   _channelsButton = new QPushButton();
   _channelsButton->setEnabled(true);
-  _channelsButton->setIcon(QIcon(":icon/channels"));
+  _channelsButton->setIcon(QIcon(":icons/channels"));
   _channelsButton->setToolTip(tr("Channel List"));
 
   _openLine = new QLineEdit(this);
@@ -300,6 +306,7 @@ void QnplMainWindow::createToolbars()
   _playToolbar->setMovable(false);
   _playToolbar->setFloatable(false);
   _playToolbar->addWidget(_playButton);
+  _playToolbar->addWidget(_pauseButton);
   _playToolbar->addWidget(_stopButton);
   _playToolbar->addSeparator();
 
@@ -359,19 +366,22 @@ void  QnplMainWindow::createConnections()
 
   connect(_tuneBroadChannellAction, SIGNAL(triggered()),
           SLOT(performChannels()));
-  connect(_playButton, SIGNAL(clicked()),
-          SLOT(performRun()));
-  connect(_stopButton, SIGNAL(clicked()),
-          SLOT(performStop()));
-  connect(_nextButton, SIGNAL(clicked()),
-          SLOT(playNextChannel()));
-  connect(_previousButton, SIGNAL(clicked()),
-          SLOT(playPreviousChannel()));
+  connect (_playButton, SIGNAL(clicked()),
+           SLOT(performRun()));
+  connect (_pauseButton, SIGNAL(clicked()),
+           SLOT(performPause()));
+  connect (_stopButton, SIGNAL(clicked()),
+           SLOT(performStop()));
+  connect (_nextButton, SIGNAL(clicked()),
+           SLOT(playNextChannel()));
+  connect (_previousButton, SIGNAL(clicked()),
+           SLOT(playPreviousChannel()));
 
-  connect(_view, SIGNAL(selected(QString)),
-          _gingaProxy, SLOT(sendCommand(QString)));
+  connect (_view, SIGNAL(selected(QString)),
+           _gingaProxy, SLOT(sendCommand(QString)));
 
-  connect(_gingaProxy, SIGNAL(gingaStarted()), this, SLOT(startSession()));
+  connect (_gingaProxy, SIGNAL(gingaStarted()),
+           SLOT(startSession()));
 }
 
 
@@ -470,6 +480,7 @@ void QnplMainWindow::performPlay()
     QStringList parameters;
 
     _playButton->setEnabled(false);
+    _pauseButton->setEnabled(true);
     _stopButton->setEnabled(true);
 
     _openButton->setEnabled(false);
@@ -559,7 +570,18 @@ void QnplMainWindow::performPlay()
     QMessageBox::information(this, tr ("Information"),
                              tr("Please, open NCL document to play."),
                              QMessageBox::Ok);
+}
 
+void QnplMainWindow::performPause()
+{
+  _isPaused = !_isPaused;
+
+  if (_isPaused)
+    _pauseButton->setIcon(QIcon(":icons/resume"));
+  else
+    _pauseButton->setIcon(QIcon(":icons/pause"));
+
+  _gingaProxy->sendCommand(Util::GINGA_KEY_PREFIX + Util::GINGA_PAUSE_KEY);
 }
 
 void QnplMainWindow::performStop()
@@ -587,6 +609,8 @@ void QnplMainWindow::performStop()
 
   _tuneAppChannellAction->setEnabled(false);
   _playButton->setEnabled(true);
+  _pauseButton->setEnabled(false);
+  _pauseButton->setIcon(QIcon(":icons/pause"));
   _stopButton->setEnabled(false);
 
   _openButton->setEnabled(true);
@@ -707,7 +731,7 @@ void QnplMainWindow::playChannel(Channel channel)
     connect(_process, SIGNAL(readyReadStandardError()),
             SLOT(writeTunerOutput()));
 
-    isPlayingChannel = false;
+    _isPlayingChannel = false;
 
     _timer = new QTimer (this);
     connect (_timer, SIGNAL(timeout()),
@@ -723,7 +747,7 @@ void QnplMainWindow::playChannel(Channel channel)
 
 void QnplMainWindow::stopTuning()
 {
-  if (!isPlayingChannel && _process)
+  if (!_isPlayingChannel && _process)
   {
     QMessageBox::StandardButton button =
         QMessageBox::warning(this, "Warning",
@@ -759,7 +783,7 @@ void QnplMainWindow::writeTunerOutput()
         if (command == "cmd"){
           if (status == "0"){
             if (entity == "start" && msg == "?mAV?"){//cmd::0::start::?mAV?
-              isPlayingChannel = true;
+              _isPlayingChannel = true;
               _animTuning->setVisible(false);
               _tuneAppChannellAction->setEnabled(true);
             }

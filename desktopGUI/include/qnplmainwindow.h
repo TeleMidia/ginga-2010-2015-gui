@@ -50,6 +50,7 @@ public slots:
     void performAbout();
 
     void performPlay();
+    void performPause();
     void performStop();
 
     void performRun();
@@ -106,6 +107,9 @@ private:
 
     QString hwndToString(WId winid);
 
+    bool _isPlayingChannel;
+    bool _isPaused;
+
     QString _appName;
 
     QMenu* _fileMenu;
@@ -136,6 +140,7 @@ private:
 
     QPushButton* _playButton;
     QPushButton* _stopButton;
+    QPushButton* _pauseButton;
     QPushButton* _openButton;
     QPushButton* _nextButton;
     QPushButton* _previousButton;
@@ -164,7 +169,6 @@ private:
     QGraphicsProxyWidget *_animTuning;
     QMovie *_movie;
     QLabel *_gifLabel;
-    bool isPlayingChannel;
     QTimer *_timer;
 
     GingaProxy *_gingaProxy;

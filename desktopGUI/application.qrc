@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/icon">
+    <qresource prefix="/icons">
         <file alias="about">images/icons/about.png</file>
         <file alias="close">images/icons/close.png</file>
         <file alias="mute">images/icons/mute.png</file>
@@ -32,13 +32,14 @@
         <file alias="up">images/icons/up.png</file>
         <file alias="channels">images/icons/channels.png</file>
         <file alias="pc">images/icons/pc.png</file>
+        <file alias="resume">images/icons/resume.png</file>
     </qresource>
     <qresource prefix="/logo">
         <file alias="nclplayer">images/logos/logo-nclplayer.png</file>
         <file alias="gingagui">images/logos/bg-gingagui2.png</file>
         <file alias="gingagui-g">images/icons/icon-ginga-G-256x256.fw.png</file>
     </qresource>
-    <qresource prefix="/background">
+    <qresource prefix="/backgrounds">
         <file alias="gingagui">images/backgrounds/bg-gingagui.png</file>
         <file alias="gingagui3">images/backgrounds/bg-gingagui3.png</file>
         <file alias="gingagui4">images/backgrounds/bg-gingagui4.fw.png</file>

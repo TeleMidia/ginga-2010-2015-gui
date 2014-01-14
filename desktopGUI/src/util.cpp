@@ -10,6 +10,7 @@ QString Util::GINGA_KEY_PREFIX = "GIEK:";
 QString Util::GINGA_CLICK_PREFIX = "GIEC:";
 QString Util::GINGA_QUIT = Util::GINGA_KEY_PREFIX + "QUIT\n";
 QString Util::GINGA_COMMAND_PREFIX = "GCMD:";
+QString Util::GINGA_PAUSE_KEY = "F12";
 
 QString Util::PREFERENCES_ENVIRONMENT = "Environment";
 QString Util::PREFERENCES_GINGA = "Ginga";

@@ -30,16 +30,16 @@ void QnplView::keyPressEvent(QKeyEvent *event)
 
     if (event->key() - Qt::Key_0 >= 0 && event->key() - Qt::Key_0 <= 9)
     {
-      emit selected(Util::GINGA_KEY_PREFIX + ""+QString::number(event->key() -
+      emit selected(Util::GINGA_KEY_PREFIX + QString::number(event->key() -
                                                                 Qt::Key_0));
     }
     else if (event->key() - Qt::Key_A >= 0 && event->key() - Qt::Key_A <= 26)
     {
       if (event->modifiers() == Qt::ShiftModifier)
-        emit selected(Util::GINGA_KEY_PREFIX + "" + QString(('A'+(event->key()-
+        emit selected(Util::GINGA_KEY_PREFIX + QString(('A'+(event->key()-
                                                                   Qt::Key_A))));
       else
-        emit selected(Util::GINGA_KEY_PREFIX + "" + QString(('a'+(event->key()-
+        emit selected(Util::GINGA_KEY_PREFIX + QString(('a'+(event->key()-
                                                                   Qt::Key_A))));
     }
     else if (event->key() == Qt::Key_PageDown)
