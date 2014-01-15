@@ -152,15 +152,22 @@ void QnplPreferencesDialog::loadSettings()
   else if (_settings->value("lang").toString() == "en")
     _generalForm.comboBox->setCurrentIndex(2);
 
-
-  qDebug () << _settings->value(Util::V_PARAMETERS).toString();
-
   _runForm.argsEdit->setText(_settings->value(Util::V_PARAMETERS,
                                               Util::defaultParameters())
                                               .toString());
 
   _runForm.contextFileLocation->setText(_settings->value(Util::V_CONTEXT_FILE)
                                         .toString());
+
+  QString aspectRatio = _settings->value(Util::V_ASPECT_RATIO, "0").toString();
+  if ( aspectRatio != "0")
+  {
+    _runForm.aspectRatioGroupBox->setChecked(true);
+    if (aspectRatio == Util::WIDE)
+      _runForm.wideRadioButton->setChecked(true);
+    else
+      _runForm.standardRadioButton->setChecked(true);
+  }
 
   loadGingaPreferences();
 }

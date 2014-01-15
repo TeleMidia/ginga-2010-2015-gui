@@ -187,7 +187,7 @@ void QnplMainWindow::createRecent()
 {
   _recentMenu->clear();
 
-  foreach(QString file, _settings->value("files").toStringList())
+  foreach(QString file, _settings->value(Util::V_FILES).toStringList())
   {
     QAction* action = new QAction(this);
     action->setText(file);
@@ -268,6 +268,7 @@ void QnplMainWindow::createWidgets()
   _view = new QnplView(this);
   _view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   _view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  _view->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
   _gifLabel = new QLabel();
   _movie = new QMovie(":backgrounds/anim-tuning");
@@ -385,8 +386,8 @@ void QnplMainWindow::performOpen()
     performClose();
 
   QString fileName = QFileDialog::getOpenFileName(this, "Open File",
-                                   _settings->value(Util::V_LAST_DIR).toString(),
-                                   "Files (*.ncl *.ts)");
+                                                  _settings->value(Util::V_LAST_DIR).toString(),
+                                                  "Files (*.ncl *.ts)");
 
   if (QFile::exists(fileName))
   {
@@ -532,7 +533,7 @@ void QnplMainWindow::performPlay()
       }
 
       parameters.replaceInStrings(Util::GUI_SCREENSIZE,
-                               _settings->value(Util::V_SCREENSIZE).toString());
+                                  _settings->value(Util::V_SCREENSIZE).toString());
 
       QFileInfo finfo(_location);
       _gingaProxy->setWorkingDirectory(finfo.absoluteDir().absolutePath());
@@ -1095,25 +1096,47 @@ QString QnplMainWindow::hwndToString(WId winid)
 
 void QnplMainWindow::resizeEvent(QResizeEvent* event)
 {
-  QMainWindow::resizeEvent(event);
+  qDebug () << "resizing";
 
-  qDebug() << "resizing...";
+  QString aspectRatio = _settings->value(Util::V_ASPECT_RATIO, "").toString();
+
+  if (aspectRatio == Util::WIDE)
+  {
+    setFixedHeight(width () * 9 / 16);
+    QCoreApplication::processEvents();
+    event->accept();
+  }
+  else if (aspectRatio == Util::STANDARD)
+  {
+    setFixedHeight(width() * 3 / 4);
+    QCoreApplication::processEvents();
+    event->accept();
+  }
+  else
+  {
+    setMinimumSize(0, 0);
+    setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+  }
+
 
   int w_span = 20;
   int h_span = 100;
 
-  qreal w = event->size().width() - w_span ;
-  qreal h = event->size().height() - h_span;
+  qreal w = width() - w_span ;
+  qreal h = height() - h_span;
 
-  _settings->setValue(Util::V_SCREENSIZE,
-                     QString::number(w) + "x" + QString::number(h));
-
-  _view->setSceneRect (0,0,w,h);
+  _view->setSceneRect (0,0, w, h);
 
   _animTuning->setPos(0, -h_span);
 
   _movie->setScaledSize(QSize (w + w_span, h + h_span));
   _gifLabel->setFixedSize (w + w_span, h + h_span);
+
+  _settings->setValue(Util::V_SCREENSIZE,
+                      QString::number(width())+ "x" +QString::number(height()));
+
+  if (!event->isAccepted())
+    QMainWindow::resizeEvent(event);
 }
 
 void QnplMainWindow::playNextChannel()
@@ -1143,9 +1166,8 @@ void QnplMainWindow::scan()
   plist << "--wid" << hwndToString(_scanProgress->winId());
   plist << "--poll-stdin";
 
-  if (_settings->value("enablelog").toBool()){
+  if (_settings->value("enablelog").toBool())
     plist << "--enable-log" << "file";
-  }
 
   _process = new QProcess(this);
   _scanProgress->setValue(0);
@@ -1233,7 +1255,8 @@ void QnplMainWindow::keyPressEvent(QKeyEvent *event)
 
 void QnplMainWindow::setUpProcessConnections(QProcess *process)
 {
-  if (process){
+  if (process)
+  {
     connect(process, SIGNAL(finished(int,QProcess::ExitStatus)),
             SLOT(performCloseWindow(int, QProcess::ExitStatus)));
     connect(process, SIGNAL(error(QProcess::ProcessError)),

@@ -73,15 +73,13 @@ public slots:
     void removeCarouselData();
 
     void keyPressEvent(QKeyEvent *);
+    void resizeEvent(QResizeEvent *event);
 
     void appendDebugMessage(QString);
     void startSession ();
 
 private slots:
     void enableSeekButton ();
-
-protected:
-    void resizeEvent(QResizeEvent* event);
 
 private:
     void createMenus();
@@ -111,7 +109,7 @@ private:
     QString hwndToString(WId winid);
 
     bool _isPlayingChannel;
-    bool _isPaused;
+    bool _isPaused;    
 
     QString _appName;
 
