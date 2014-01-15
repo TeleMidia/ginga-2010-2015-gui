@@ -42,10 +42,10 @@ public slots:
 
   inline bool eventFilter(QObject *obj, QEvent *event)
   {
-    QString aspectRatio = _settings->value(Util::V_ASPECT_RATIO,
-                                           "").toString();
     if (event->type() == QEvent::Resize)
     {
+      QString aspectRatio = _settings->value(Util::V_ASPECT_RATIO,
+                                             "").toString();
       if (aspectRatio == Util::WIDE)
       {
         _gingaView->setFixedHeight(_gingaView->width() * 9 / 16);

@@ -116,21 +116,20 @@ void RunViewPlugin::playApplication()
     }
   }
 
-  QString gingaLocation = _settings->value("location", "").toString();
-  QString contextLocation = _settings->value("gingaconfig_file", "").toString();
-  QString args = _settings->value("parameters", "${FILE} --wid ${WID} "
-                                "--vmode ${SCREENSIZE} --set-exitonend "
-                                "--disable-multicast --poll-stdin").toString();
+  QString gingaLocation = _settings->value(Util::V_LOCATION, "").toString();
+  QString contextLocation = _settings->value(Util::V_CONTEXT_FILE, "").toString();
+  QString args = _settings->value(Util::V_PARAMETERS,
+                                  Util::defaultParameters()).toString();
 
   QStringList argsList = args.split(" ");
 
   QString vmode = QString::number(_gingaView->width()) + "x" +
       QString::number(_gingaView->height());
 
-  argsList.replaceInStrings("${FILE}", nclFilePath);
-  argsList.replaceInStrings("${WID}", QString::number((unsigned long long)
+  argsList.replaceInStrings(Util::GUI_FILE, nclFilePath);
+  argsList.replaceInStrings(Util::GUI_WID, QString::number((unsigned long long)
                                                       _gingaView->winId()));
-  argsList.replaceInStrings("${SCREENSIZE}", vmode);
+  argsList.replaceInStrings(Util::GUI_SCREENSIZE, vmode);
 
   argsList << "--context-dir" << contextLocation;
 
