@@ -22,6 +22,34 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
   _settings = new QSettings(QSettings::IniFormat, QSettings::UserScope,
                             "telemidia", "gingagui");
 
+  QString contextFile = _settings->value(Util::V_CONTEXT_FILE, "").toString();
+  QFileInfo fileInfo (contextFile);
+
+  if (!fileInfo.exists())
+  {
+    QFile file (":config/context");
+    if (file.open(QIODevice::ReadOnly))
+    {
+     QString context = QString (file.readAll());
+
+     QDir dir;
+     QString tempPath = dir.tempPath();
+     dir.mkdir(tempPath + "/ginga");
+
+     QFile contextOut (tempPath + "/ginga/contexts.ini");
+
+     if (contextOut.open(QIODevice::WriteOnly))
+     {
+       contextOut.write(context.toStdString().c_str());
+       contextOut.close();
+
+       _settings->setValue(Util::V_CONTEXT_FILE, contextOut.fileName());
+       _settings->sync();
+     }
+     file.close();
+    }
+  }
+
   _gingaProxy = GingaProxy::getInstance();
   _isChannel = false;
   _isPaused = false;
@@ -498,7 +526,8 @@ void QnplMainWindow::performPlay()
 
       QFileInfo fileInfo (_settings->value(Util::V_CONTEXT_FILE).toString());
       QString contextFilePath = fileInfo.absoluteDir().path();
-      if (! contextFilePath.isEmpty())
+
+      if (!contextFilePath.isEmpty())
         parameters << "--context-dir" << contextFilePath;
 
       QString WID = "";
@@ -533,7 +562,8 @@ void QnplMainWindow::performPlay()
       }
 
       parameters.replaceInStrings(Util::GUI_SCREENSIZE,
-                                  _settings->value(Util::V_SCREENSIZE).toString());
+                                  _settings->value(Util::V_SCREENSIZE)
+                                  .toString());
 
       QFileInfo finfo(_location);
       _gingaProxy->setWorkingDirectory(finfo.absoluteDir().absolutePath());
