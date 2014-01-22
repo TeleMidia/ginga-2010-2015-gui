@@ -23,6 +23,7 @@ QT += \
 
 INCLUDEPATH += include\
 
+
 SOURCES += \
     src/main.cpp \
     src/qnplmainwindow.cpp \

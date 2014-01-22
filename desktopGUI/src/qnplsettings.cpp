@@ -2,6 +2,7 @@
 
 #include <QApplication>
 #include <QDir>
+#include <util.h>
 
 QnplSettings::QnplSettings()
     : QSettings(QSettings::IniFormat, QSettings::UserScope,
@@ -43,7 +44,7 @@ QnplSettings::QnplSettings()
 
     //if (value("parameters").toString() == "" || value("version").toInt() < 106)
     //{
-        setValue("parameters", "${FILE} --wid ${WID} --vmode ${SCREENSIZE} --disable-fkeys --set-exitonend --disable-multicast --poll-stdin");
+        setValue(Util::V_PARAMETERS, Util::defaultParameters());
     //}
 
 #ifdef Q_OS_WIN
