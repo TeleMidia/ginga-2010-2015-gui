@@ -12,6 +12,9 @@
 #include <QToolBar>
 #include <QMessageBox>
 
+#define DEFAULT_WIDTH 400
+#define DEFAULT_HEIGHT 300
+
 QnplMainWindow::QnplMainWindow(QWidget* parent)
   : QMainWindow(parent)
 {
@@ -21,6 +24,40 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
   setWindowIcon(QIcon(":icons/gingagui-128x128"));
   _settings = new QSettings(QSettings::IniFormat, QSettings::UserScope,
                             "telemidia", "gingagui");
+
+  QString iniPath = QFileInfo(_settings->fileName()).absolutePath();
+
+  QString contextFile = _settings->value(Util::V_CONTEXT_FILE, "").toString();
+  if (contextFile.isEmpty())
+    contextFile = iniPath + "/ginga/contextFile";
+
+  QFileInfo fileInfo (contextFile);
+
+  if (!fileInfo.exists())
+  {
+    QFile gingaContextFile (":config/context");
+    if (gingaContextFile.open(QIODevice::ReadOnly))
+    {
+     QString context = QString (gingaContextFile.readAll());
+
+     QDir dir;
+     dir.setCurrent(iniPath);
+     dir.mkdir("ginga");
+
+     QFile tempGingaContextFile (iniPath + "/ginga/contexts.ini");
+
+     if (tempGingaContextFile.open(QIODevice::WriteOnly))
+     {
+       tempGingaContextFile.write(context.toStdString().c_str());
+       tempGingaContextFile.close();
+
+       _settings->setValue(Util::V_CONTEXT_FILE,
+                           tempGingaContextFile.fileName());
+       _settings->sync();
+     }
+     gingaContextFile.close();
+    }
+  }
 
   _gingaProxy = GingaProxy::getInstance();
   _isChannel = false;
@@ -39,14 +76,19 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
   createToolbars();
   createConnections();
 
-  QString size = _settings->value(Util::V_SCREENSIZE).toString();
+  QString size = _settings->value(Util::V_SCREENSIZE, "0x0").toString();
 
   int width = size.section('x',0,0).toInt();
   int height = size.section('x',1,1).toInt();
 
+  if (width == 0 && height ==0)
+  {
+    width = DEFAULT_WIDTH;
+    height = DEFAULT_HEIGHT;
+  }
   _view->setSceneRect(0, 0, width, height);
 
-  resize(width + 20, height + 100);
+  resize(width, height);
 }
 
 QnplMainWindow::~QnplMainWindow()
@@ -201,15 +243,6 @@ void QnplMainWindow::createRecent()
 
 void QnplMainWindow::createWidgets()
 {
-  _seekPlayTime = new QLineEdit (this);
-  _seekPlayTime->setEnabled(false);
-  _seekPlayTime->setValidator(new QRegExpValidator(
-                                QRegExp("[ \\d]{3}:[0-5 ][ \\d]:[0-5 ][ \\d]"),
-                                this));
-  _seekPlayTime->setInputMask("999:99:99");
-  _seekPlayTime->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  _seekPlayTime->setMaximumWidth(60);
-
   _playButton = new QPushButton();
   _playButton->setEnabled(true);
   _playButton->setIcon(QIcon(":icons/play"));
@@ -225,8 +258,20 @@ void QnplMainWindow::createWidgets()
   _stopButton->setIcon(QIcon(":icons/stop"));
   _stopButton->setToolTip(tr("Stop"));
 
+#ifdef G_SEEKABLE
+  _seekPlayTime = new QLineEdit (this);
+  _seekPlayTime->setEnabled(false);
+  _seekPlayTime->setValidator(new QRegExpValidator(
+                                QRegExp("[ \\d]{3}:[0-5 ][ \\d]:[0-5 ][ \\d]"),
+                                this));
+  _seekPlayTime->setInputMask("999:99:99");
+  _seekPlayTime->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  _seekPlayTime->setMaximumWidth(60);
+
   _seekButton = new QPushButton("Seek");
   _seekButton->setEnabled(false);
+
+#endif
 
   _openButton = new QPushButton();
   _openButton->setEnabled(true);
@@ -304,10 +349,14 @@ void QnplMainWindow::createToolbars()
   _toolbar->addWidget(_pauseButton);
   _toolbar->addWidget(_stopButton);
   _toolbar->addSeparator();
+
+#ifdef G_SEEKABLE
   _toolbar->addWidget(new QLabel ("Skip to time:"));
   _toolbar->addWidget(_seekPlayTime);
   _toolbar->addWidget(_seekButton);
   _toolbar->addSeparator();
+#endif
+
   _toolbar->addWidget(_openLine);
   _toolbar->addWidget(_openButton);
   _toolbar->addSeparator();
@@ -367,12 +416,15 @@ void  QnplMainWindow::createConnections()
            _gingaProxy, SLOT(sendCommand(QString)));
   connect (_gingaProxy, SIGNAL(gingaStarted()),
            SLOT(startSession()));
+
+#ifdef G_SEEKABLE
   connect (_seekPlayTime, SIGNAL(returnPressed()),
            SLOT(performSeek()));
   connect (_seekButton, SIGNAL(pressed()),
            SLOT(performSeek()));
   connect (_seekPlayTime, SIGNAL(textChanged(QString)),
            SLOT(enableSeekButton()));
+#endif
   connect (_developerView, SIGNAL(sendCommandRequested(QString)),
            _gingaProxy, SLOT(sendCommand(QString)));
   connect(_refreshButton, SIGNAL(clicked()),
@@ -386,7 +438,9 @@ void QnplMainWindow::performOpen()
     performClose();
 
   QString fileName = QFileDialog::getOpenFileName(this, "Open File",
-                                                  _settings->value(Util::V_LAST_DIR).toString(),
+                                                  _settings->value(
+                                                    Util::V_LAST_DIR).
+                                                  toString(),
                                                   "Files (*.ncl *.ts)");
 
   if (QFile::exists(fileName))
@@ -477,7 +531,10 @@ void QnplMainWindow::performPlay()
     _playButton->setEnabled(false);
     _pauseButton->setEnabled(true);
     _stopButton->setEnabled(true);
+
+#ifdef G_SEEKABLE
     _seekPlayTime->setEnabled(true);
+#endif
 
     _openButton->setEnabled(false);
     _openAction->setEnabled(false);
@@ -498,7 +555,8 @@ void QnplMainWindow::performPlay()
 
       QFileInfo fileInfo (_settings->value(Util::V_CONTEXT_FILE).toString());
       QString contextFilePath = fileInfo.absoluteDir().path();
-      if (! contextFilePath.isEmpty())
+
+      if (!contextFilePath.isEmpty())
         parameters << "--context-dir" << contextFilePath;
 
       QString WID = "";
@@ -533,7 +591,8 @@ void QnplMainWindow::performPlay()
       }
 
       parameters.replaceInStrings(Util::GUI_SCREENSIZE,
-                                  _settings->value(Util::V_SCREENSIZE).toString());
+                                  _settings->value(Util::V_SCREENSIZE)
+                                  .toString());
 
       QFileInfo finfo(_location);
       _gingaProxy->setWorkingDirectory(finfo.absoluteDir().absolutePath());
@@ -612,9 +671,11 @@ void QnplMainWindow::performStop()
   _pauseButton->setIcon(QIcon(":icons/pause"));
   _stopButton->setEnabled(false);
 
+#ifdef G_SEEKABLE
   _seekPlayTime->setEnabled(false);
   _seekPlayTime->setText("");
   _seekButton->setEnabled(false);
+#endif
 
   _openButton->setEnabled(true);
   _openAction->setEnabled(true);
@@ -885,7 +946,7 @@ void QnplMainWindow::performPreferences()
 
   _view->setSceneRect(0,0,w,h);
 
-  resize(w+20, h+100);
+  resize(w, h);
 }
 
 void QnplMainWindow::performBug()

@@ -18,8 +18,11 @@ QT += \
 #		VERSION=\\\"$${VERSION}\\\"
 #}
 
+#QMAKE_LFLAGS = -static-libgcc -static-libstdc++
+
 
 INCLUDEPATH += include\
+
 
 SOURCES += \
     src/main.cpp \

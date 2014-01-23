@@ -47,5 +47,6 @@
     </qresource>
     <qresource prefix="/config">
         <file alias="config">config/config.ini</file>
+        <file alias="context">config/contexts.ini</file>
     </qresource>
 </RCC>

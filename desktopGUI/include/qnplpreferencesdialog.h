@@ -10,7 +10,6 @@
 #include "ui_qnplenvironmentform.h"
 #include "ui_qnplpreferencesform.h"
 #include "ui_qnplrunform.h"
-#include "ui_advancedpreferences.h"
 
 
 class QnplPreferencesDialog : public QDialog
