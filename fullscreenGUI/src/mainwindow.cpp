@@ -12,7 +12,7 @@
 #include "userpreferences.h"
 #include "ippage.h"
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(QString mainPage, QWidget *parent) :
     QMainWindow(parent)
 {
     _usbPage = 0;
@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mainWidget->setLayout(_stackedLayout);
     setCentralWidget(mainWidget);
 
-    setStyleSheet("QMainWindow { border-image: url(:/backgrounds/bg_gui); }");
+    setStyleSheet("QMainWindow { border-image: url(:backgrounds/bg_gui); }");
     showFullScreen();
 
     _gingaProxy = GingaProxy::getInstance(GINGA_PATH, this);
@@ -35,7 +35,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect (_gingaProxy, SIGNAL(gingaFinished(int,QProcess::ExitStatus)), this, SLOT(hideGingaView()));
     connect (this, SIGNAL(keyPressed(QString)), _gingaProxy, SLOT(sendCommand(QString)));
 
-    _mainPage = parsePage(":/pages/main");
+    _mainPage = parsePage(mainPage);
+    focusNextChild();
 
     QStringList args;
     args << "/mnt" << USB_XML_FILE;

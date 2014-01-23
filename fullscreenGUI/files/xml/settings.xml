@@ -3,20 +3,20 @@
  version="2.0">
         <channel>
             <title>Live CD Settings</title>
-            <link>/usr/local/lib/ginga/gui/files/xml/settings.xml</link>
+            <link>settings.xml</link>
             <description>The settings area allows you to change some presentation features, manage users accounts, network devices etc.</description>
             <language>en</language>
             <item>
                 <title>User Management</title>
                 <description>Manage user accounts and preferences. You can choose the user currently logged in, his preferences, add new users etc.</description>
-                <link>/usr/local/lib/ginga/gui/files/xml/usermgmt.xml</link>
-                <enclosure url="/usr/local/lib/ginga/gui/files/img/usermgmt.png" type="image/png" />
+                <link>usermgmt.xml</link>
+                <enclosure url="../img/usermgmt.png" type="image/png" />
             </item>
             <item>
                 <title>Network Management</title>
                 <description>Manage network settings such as interface configuration, IP address allocation and network services initialization.</description>
-                <link>/usr/local/lib/ginga/gui/files/xml/netmgmt.xml</link>
-                <enclosure url="/usr/local/lib/ginga/gui/files/img/netmgmt.png" type="image/png" />
+                <link>netmgmt.xml</link>
+                <enclosure url="../img/netmgmt.png" type="image/png" />
             </item>
         </channel>
 </rss>

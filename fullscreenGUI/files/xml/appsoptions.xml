@@ -3,44 +3,44 @@
  version="2.0">
         <channel>
             <title>Play NCL application from:</title>
-            <link>/usr/local/lib/ginga/gui/files/xml/appsoptions.xml</link>
+            <link>appsoptions.xml</link>
             <description>Choose the application source.</description>
             <language>en</language>
             <item enable="false">
                 <title>TV channel</title>
 		<description>Play aplications from a broadcast frequency channel.</description>
                 <link></link>
-                <enclosure url="/usr/local/lib/ginga/gui/files/img/antenna.png" type="image/png" />
+                <enclosure url="../img/antenna.png" type="image/png" />
             </item>
             <item>
                 <title>Local Storage</title>
                 <description>Play applications included in this Ginga Box. This content were jointly created by TeleMidia Lab Team and many partners.</description>
-                <link>/usr/local/lib/ginga/gui/files/xml/localapps.xml</link>
-                <enclosure url="/usr/local/lib/ginga/gui/files/img/hd.png" type="image/png" />
+                <link>localapps.xml</link>
+                <enclosure url="../img/hd.png" type="image/png" />
             </item>
 	    <item>
                 <title>USB Storage</title>
                 <description>Play applications included in a USB mass storage device. This is the option if you want to test your own NCL applications.</description>
-                <link>/usr/local/lib/ginga/gui/files/xml/dyncontent.xml#mnt-usb</link>
-                <enclosure url="/usr/local/lib/ginga/gui/files/img/usbstorage.png" type="image/png" />
+                <link>dyncontent.xml#mnt-usb</link>
+                <enclosure url="../img/usbstorage.png" type="image/png" />
             </item>
 	    <item>
                 <title>IP Network</title>
                 <description>Play applications included in a content server located in network.</description>
-                <link>/usr/local/lib/ginga/gui/files/xml/nocontentserver.xml</link>
-                <enclosure url="/usr/local/lib/ginga/gui/files/img/network.png" type="image/png" />
+                <link>nocontentserver.xml</link>
+                <enclosure url="../img/network.png" type="image/png" />
             </item>
 <!--            <item>
                 <title>A Multi-Device Domain</title>
                 <description>Play an NCL application acting as an exhibition device associated to another Base Device. Your machine will be registered in a Multi-Device domain as a Class 1 (passive) device. This feature is in Beta stage, so unexpected results may arise.</description>
                 <link>exec:///system/mdpassive</link>
-                <enclosure url="/usr/local/lib/ginga/gui/files/img/multidev.png" type="image/png" />
+                <enclosure url="../img/multidev.png" type="image/png" />
             </item>
             <item>
                 <title>A UDP Media Server</title>
                 <description>Play an NCL application made available in an MPEG-2 Transport Stream from a UDP Media Server. This feature is in Beta stage, so unexpected results may arise.</description>
-                <link>/usr/local/lib/ginga/gui/files/xml/udpcontent.xml</link>
-                <enclosure url="/usr/local/lib/ginga/gui/files/img/usbstorage.png" type="image/png" />
+                <link>udpcontent.xml</link>
+                <enclosure url="../img/usbstorage.png" type="image/png" />
             </item>-->
         </channel>
 </rss>
