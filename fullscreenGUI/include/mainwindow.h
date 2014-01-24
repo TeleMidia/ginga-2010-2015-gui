@@ -17,7 +17,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
     
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QString mainPage, QWidget *parent = 0);
     inline WId gingaViewWId () const
     { return _gingaPage->viewWId(); }
 

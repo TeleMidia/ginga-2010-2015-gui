@@ -65,11 +65,11 @@ void Page::setUpItems(QList<MenuItem *> items)
     QString fontTemplate = tr("<font color='%1'>%2</font>");
 
     if (items.size() == 0) {
-	MenuItem *item = new MenuItem;
-	item->setText("No item");
-	item->setEnable(false);
-	item->setFocusPolicy (Qt::NoFocus);
-	items.append(item);
+        MenuItem *item = new MenuItem;
+        item->setText("No item");
+        item->setEnable(false);
+        item->setFocusPolicy (Qt::NoFocus);
+        items.append(item);
     }
 
     for (int i = 0; i < items.size(); i++){
@@ -178,7 +178,7 @@ void Page::updateDescription(MenuItem *item)
         QPixmap p(imagePath);
 
         if (p.isNull())
-            p.load(":/backgrounds/default");
+            p.load(":backgrounds/default");
 
         const QPixmap *currentPixmap = _imageLabel->pixmap();
 
@@ -212,7 +212,7 @@ void Page::updateDescription(MenuItem *item)
 void Page::runGinga(QString filename)
 {
     WId wid = /*_gingaPage->viewWId();*/ QApplication::activeWindow()->winId();
-//    _gingaPage->setInputInfo(QFileInfo (filename).fileName());
+    //    _gingaPage->setInputInfo(QFileInfo (filename).fileName());
     _gingaProxy->run(filename, wid);
 }
 
@@ -231,7 +231,7 @@ bool Page::eventFilter(QObject *obj, QEvent *event)
             else if (keyEvent->key() == Qt::Key_Left || keyEvent->key() == Qt::Key_Backspace){
 
                 emit parentPageRequested (_parentPage);
-	    }
+            }
 
             _itemsScrollArea->ensureWidgetVisible(focusWidget());
 

@@ -1,7 +1,9 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <QDesktopWidget>
-#include <QtNetwork/QNetworkInterface>
+#include <QDir>
+#include <QFileInfo>
+#include <QDebug>
 
 #include "util.h"
 
@@ -10,13 +12,28 @@ int SCREEN_WIDTH;
 
 int main(int argc, char *argv[])
 {
+    if (argc < 2)
+    {
+        qDebug() << "Please specify the path of the first page.";
+        exit (0);
+    }
+    QString path = QString::fromAscii(argv[1]);
+    QFileInfo fileInfo (path);
+    if (!fileInfo.exists())
+    {
+        qDebug() << "Please specify a valid file.";
+        exit (0);
+    }
+
+    QDir::setCurrent(fileInfo.path());
+
     QApplication a(argc, argv);
     a.setOverrideCursor(Qt::BlankCursor);
 
     SCREEN_HEIGHT = QApplication::desktop()->height();
     SCREEN_WIDTH = QApplication::desktop()->width();
 
-    MainWindow w;
+    MainWindow w(path);
     w.show();
     
     return a.exec();
