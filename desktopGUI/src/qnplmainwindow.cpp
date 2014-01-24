@@ -519,6 +519,8 @@ void QnplMainWindow::performQuit()
 
 void QnplMainWindow::performPlay()
 {
+  _settings->sync();
+
   if (QFile::exists(_location))
   {
     _lastChannel.setNull();
@@ -962,6 +964,7 @@ void QnplMainWindow::performAbout()
 
 void QnplMainWindow::performRun()
 {
+  _settings->sync();
   if (_baseAction->isChecked())
   {
     qDebug() << "run as base";
@@ -988,12 +991,13 @@ void QnplMainWindow::performRunAsPassive()
 
   plist << "--wid" << viewWID();
   plist << "--device-class" << "1";
-  plist << "--vmode" << _settings->value("screensize").toString();
+  plist << "--vmode" << _settings->value(Util::V_SCREENSIZE).toString();
   plist << "--context-dir" << context_dir;
   plist << "--disable-multicast";
   plist << "--poll-stdin";
 
-  if (_settings->value("enablelog").toBool()){
+  if (_settings->value("enablelog").toBool())
+  {
     plist << "--enable-log" << "file";
   }
 
@@ -1027,17 +1031,17 @@ void QnplMainWindow::performRunAsPassive()
 
 void QnplMainWindow::performRunAsActive()
 {
+  _settings->sync();
   QString conf_location = _settings->value(Util::V_CONTEXT_FILE).toString();
   QString context_dir = QFileInfo(conf_location).absoluteDir().path();
 
   int port =  _settings->value(Util::V_DEVICE_PORT).toInt();
-  port++;
+  ++port;
 
   if (port > 33333)
     _settings->setValue(Util::V_DEVICE_PORT, Util::DEFAULT_PORT);
   else
     _settings->setValue(Util::V_DEVICE_PORT, port);
-
 
   QStringList plist;
   plist << "--wid" << viewWID();
