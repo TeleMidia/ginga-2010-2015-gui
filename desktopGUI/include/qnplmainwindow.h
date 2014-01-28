@@ -80,6 +80,7 @@ public slots:
 
 private slots:
     void enableSeekButton ();
+    void finishScan (int code);
 
 private:
     void createMenus();
@@ -120,9 +121,9 @@ private:
     QMenu* _helpMenu;
 
     QAction* _openAction;
-    QAction* _tuneAppChannellAction;
+    QAction* _tuneApplicationChannelAction;
     QAction* _tuneIPTVChannellAction;
-    QAction* _tuneBroadChannellAction;
+    QAction* _tuneBroadcastChannelAction;
     QAction* _quitAction;
     QAction* _clearAction;
     QAction* _baseAction;

@@ -93,7 +93,7 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
 
 QnplMainWindow::~QnplMainWindow()
 {
-  performStop();
+  _gingaProxy->killProcess();
   GingaProxy::deleteInstance();
 }
 
@@ -122,13 +122,13 @@ void  QnplMainWindow::createActions()
   _openAction->setText(tr("Open..."));
   _openAction->setShortcut(QKeySequence("Ctrl+O"));
 
-  _tuneAppChannellAction = new QAction(this);
-  _tuneAppChannellAction->setEnabled(false);
-  _tuneAppChannellAction->setText(tr("Tune Application Channel..."));
+  _tuneApplicationChannelAction = new QAction(this);
+  _tuneApplicationChannelAction->setEnabled(false);
+  _tuneApplicationChannelAction->setText(tr("Tune Application Channel..."));
 
-  _tuneBroadChannellAction = new QAction(this);
-  _tuneBroadChannellAction->setEnabled(true);
-  _tuneBroadChannellAction->setText(tr("Tune Broadcast Channel..."));
+  _tuneBroadcastChannelAction = new QAction(this);
+  _tuneBroadcastChannelAction->setEnabled(true);
+  _tuneBroadcastChannelAction->setText(tr("Tune Broadcast Channel..."));
 
   _tuneIPTVChannellAction = new QAction(this);
   _tuneIPTVChannellAction->setEnabled(true);
@@ -202,9 +202,9 @@ void  QnplMainWindow::createMenus()
   _fileMenu->addAction(_openAction);
   _fileMenu->addMenu(_recentMenu);
   _fileMenu->addSeparator();
-  _fileMenu->addAction(_tuneBroadChannellAction);
+  _fileMenu->addAction(_tuneBroadcastChannelAction);
   //fileMenu->addAction(tuneIPTVChannellAction);
-  _fileMenu->addAction(_tuneAppChannellAction);
+  _fileMenu->addAction(_tuneApplicationChannelAction);
   _fileMenu->addSeparator();
   _fileMenu->addAction(_quitAction);
 
@@ -382,7 +382,7 @@ void  QnplMainWindow::createConnections()
           SLOT(performQuit()));
   connect(_tuneIPTVChannellAction, SIGNAL(triggered()),
           SLOT(performIptv()));
-  connect(_tuneAppChannellAction, SIGNAL(triggered()),
+  connect(_tuneApplicationChannelAction, SIGNAL(triggered()),
           SLOT(performAplication()));
   connect(_baseAction, SIGNAL(triggered()),
           SLOT(performDevice()));
@@ -400,7 +400,7 @@ void  QnplMainWindow::createConnections()
           SLOT(performOpen()));
   connect(_channelsButton, SIGNAL(clicked()),
           SLOT(performChannels()));
-  connect(_tuneBroadChannellAction, SIGNAL(triggered()),
+  connect(_tuneBroadcastChannelAction, SIGNAL(triggered()),
           SLOT(performChannels()));
   connect (_playButton, SIGNAL(clicked()),
            SLOT(performRun()));
@@ -416,6 +416,8 @@ void  QnplMainWindow::createConnections()
            _gingaProxy, SLOT(sendCommand(QString)));
   connect (_gingaProxy, SIGNAL(gingaStarted()),
            SLOT(startSession()));
+  connect(_scanProgress, SIGNAL(canceled()),
+          SLOT(sendKillMessage()));
 
 #ifdef G_SEEKABLE
   connect (_seekPlayTime, SIGNAL(returnPressed()),
@@ -509,11 +511,6 @@ void QnplMainWindow::performClose()
 
 void QnplMainWindow::performQuit()
 {
-  performStop();
-  performClose();
-
-  GingaProxy::deleteInstance();
-
   QApplication::quit();
 }
 
@@ -525,8 +522,8 @@ void QnplMainWindow::performPlay()
   {
     _lastChannel.setNull();
 
-    QProcessEnvironment enviroment = QProcessEnvironment::systemEnvironment();
-    enviroment.insert("LD_LIBRARY_PATH","/usr/local/lib/lua/5.1/socket:/usr/local/lib/ginga:/usr/local/lib/ginga/adapters:/usr/local/lib/ginga/cm:/usr/local/lib/ginga/mb:/usr/local/lib/ginga/mb/dec:/usr/local/lib/ginga/converters:/usr/local/lib/ginga/dp:/usr/local/lib/ginga/ic:/usr/local/lib/ginga/iocontents:/usr/local/lib/ginga/players:/usr/local/lib:");
+    /*QProcessEnvironment enviroment = QProcessEnvironment::systemEnvironment();
+    enviroment.insert("LD_LIBRARY_PATH","/usr/local/lib/lua/5.1/socket:/usr/local/lib/ginga:/usr/local/lib/ginga/adapters:/usr/local/lib/ginga/cm:/usr/local/lib/ginga/mb:/usr/local/lib/ginga/mb/dec:/usr/local/lib/ginga/converters:/usr/local/lib/ginga/dp:/usr/local/lib/ginga/ic:/usr/local/lib/ginga/iocontents:/usr/local/lib/ginga/players:/usr/local/lib:")*/;
 
     QStringList parameters;
 
@@ -589,7 +586,7 @@ void QnplMainWindow::performPlay()
 
         parameters.replaceInStrings(Util::GUI_FILE, "file:" + _location);
 
-        _tuneAppChannellAction->setEnabled(true);
+        _tuneApplicationChannelAction->setEnabled(true);
       }
 
       parameters.replaceInStrings(Util::GUI_SCREENSIZE,
@@ -607,7 +604,7 @@ void QnplMainWindow::performPlay()
       _process = _gingaProxy->process();
       if (!_process) return;
 
-      _process->setProcessEnvironment(enviroment);
+      //_process->setProcessEnvironment(enviroment);
 
       connect (_process, SIGNAL(started()),
                SLOT(removeCarouselData()));
@@ -667,7 +664,7 @@ void QnplMainWindow::performStop()
     _settings->setValue(Util::V_PASSIVE, Util::FALSE_);
   }
 
-  _tuneAppChannellAction->setEnabled(false);
+  _tuneApplicationChannelAction->setEnabled(false);
   _playButton->setEnabled(true);
   _pauseButton->setEnabled(false);
   _pauseButton->setIcon(QIcon(":icons/pause"));
@@ -709,11 +706,14 @@ void QnplMainWindow::performAplication()
 {
   QString application =
       QFileDialog::getOpenFileName(this, "Application Channel",
-                                   _settings->value(Util::V_LAST_DIR).toString(),
-                                   "Files (*.ncl *.ts)");
+                                   _settings->value(Util::V_LAST_DIR).
+                                   toString(), "Files (*.ncl *.ts)");
   if (application != "")
+  {
     _gingaProxy->sendCommand(Util::GINGA_COMMAND_PREFIX + "start," +
                              application);
+    _view->setFocus();
+  }
 
 }
 
@@ -731,7 +731,10 @@ void QnplMainWindow::performChannels()
   {
     Channel selectedChannel = _channelDialog->channel();
     if (!selectedChannel.isNull())
+    {
       playChannel (selectedChannel);
+      _view->setFocus();
+    }
   }
 }
 
@@ -845,18 +848,22 @@ void QnplMainWindow::writeTunerOutput()
     if (line.startsWith(Util::CMD_PREFIX))
     {
       QStringList tokens = line.split("::");
-      if (tokens.count() == 4){
+      if (tokens.count() == 4)
+      {
         QString command = tokens.at(0);
         QString status = tokens.at(1);
         QString entity = tokens.at(2);
         QString msg = tokens.at(3);
 
-        if (command == "cmd"){
-          if (status == "0"){
-            if (entity == "start" && msg == "?mAV?"){//cmd::0::start::?mAV?
+        if (command == "cmd")
+        {
+          if (status == "0")
+          {
+            if (entity == "start" && msg == "?mAV?")
+            {//cmd::0::start::?mAV?
               _isPlayingChannel = true;
               _animTuning->setVisible(false);
-              _tuneAppChannellAction->setEnabled(true);
+              _tuneApplicationChannelAction->setEnabled(true);
             }
           }
           else if (status == "1")
@@ -1234,28 +1241,35 @@ void QnplMainWindow::scan()
   if (_settings->value("enablelog").toBool())
     plist << "--enable-log" << "file";
 
-  _process = new QProcess(this);
-  _scanProgress->setValue(0);
   _gingaProxy->setBinaryPath(_settings->value(Util::V_LOCATION).toString());
   _gingaProxy->run(plist);
-  //    process->start(settings->value("location").toString(), plist, QProcess::ReadWrite);
+  _scanProgress->setValue(1);
 
   _process = _gingaProxy->process();
-  setUpProcessConnections(_process);
+
+  removeCarouselData();
 
   connect(_process, SIGNAL(readyReadStandardOutput()),
           SLOT(writeScanOutput()));
   connect(_process, SIGNAL(readyReadStandardError()),
           SLOT(writeScanOutput()));
 
-  connect(_process, SIGNAL(finished(int, QProcess::ExitStatus)),
-          SIGNAL(scanFinished()));
-  connect(_process, SIGNAL(finished(int, QProcess::ExitStatus)),
-          _scanProgress, SLOT(done(int)));
   connect(_gingaProxy, SIGNAL(gingaStarted()),
           _scanProgress, SLOT(exec()));
-  connect(_scanProgress, SIGNAL(canceled()),
-          SLOT(sendKillMessage()));
+  connect(_gingaProxy, SIGNAL(gingaFinished(int,QProcess::ExitStatus)),
+            this, SLOT(finishScan(int)));
+}
+
+void QnplMainWindow::finishScan(int code)
+{
+  qDebug () << "code::" << code;
+  _scanProgress->done(code);
+  disconnect(_gingaProxy, SIGNAL(gingaStarted()),
+          _scanProgress, SLOT(exec()));
+  disconnect(_gingaProxy, SIGNAL(gingaFinished(int, QProcess::ExitStatus)),
+          this, SLOT(finishScan(int)));
+
+  qDebug() <<  "finishScan()::finished";
 }
 
 
