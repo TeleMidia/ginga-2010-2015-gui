@@ -22,6 +22,7 @@ public:
   static QString GINGA_COMMAND_PREFIX;
   static QString GINGA_QUIT;
   static QString GINGA_PAUSE_KEY;
+  static QString GINGA_TS_FILE;
 
   //Preferences labels
   static QString PREFERENCES_ENVIRONMENT;

@@ -584,7 +584,8 @@ void QnplMainWindow::performPlay()
           parameters.removeAt(index + 1);
         }
 
-        parameters.replaceInStrings(Util::GUI_FILE, "file:" + _location);
+        parameters.replaceInStrings(Util::GUI_FILE, Util::GINGA_TS_FILE
+                                    + _location);
 
         _tuneApplicationChannelAction->setEnabled(true);
       }
