@@ -161,8 +161,6 @@ void GingaProxy::catchGingaOutput()
     if (output.isEmpty())
       output = _process->readAllStandardError();
 
-    qDebug () << output;
     emit gingaOutput(output);
-
   }
 }

@@ -37,7 +37,8 @@ SOURCES += \
     src/qnplaplication.cpp \
     src/gingaproxy.cpp \
     src/developerview.cpp \
-    src/util.cpp
+    src/util.cpp \
+    src/debugview.cpp
 
 HEADERS += \
     include/qnplmainwindow.h \
@@ -51,7 +52,8 @@ HEADERS += \
     include/qnplaplicationdialog.h \
     include/gingaproxy.h \
     include/developerview.h \
-    include/util.h
+    include/util.h \
+    include/debugview.h
 
 RESOURCES += \
     application.qrc

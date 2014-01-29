@@ -16,6 +16,7 @@
 #include "qnpliptvtunerdialog.h"
 #include "qnplaplicationdialog.h"
 #include "developerview.h"
+#include "debugview.h"
 
 class QnplMainWindow : public QMainWindow
 {
@@ -75,7 +76,7 @@ public slots:
     void keyPressEvent(QKeyEvent *);
     void resizeEvent(QResizeEvent *event);
 
-    void appendDebugMessage(QString);
+    void spreadGingaMessage(QString);
     void startSession ();
 
 private slots:
@@ -178,6 +179,7 @@ private:
 
     GingaProxy *_gingaProxy;
     DeveloperView * _developerView;
+    DebugView * _debugView;
 };
 
 #endif // QNPLMAINWINDOW_H

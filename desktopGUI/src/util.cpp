@@ -109,3 +109,19 @@ QString Util::defaultParameters()
       "--vmode ${SCREENSIZE} --set-exitonend "
       "--disable-multicast --poll-stdin";
 }
+
+GingaMessage Util::parseMessage(QString message)
+{
+  GingaMessage gingaMessage;
+
+  QStringList tokens = message.split("::");
+  if (tokens.count() == 4)
+  {
+    gingaMessage.command = tokens.at(0);
+    gingaMessage.code = tokens.at(1);
+    gingaMessage.messageKey = tokens.at(2);
+    gingaMessage.data = tokens.at(3);
+  }
+
+  return gingaMessage;
+}

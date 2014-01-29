@@ -4,10 +4,18 @@
 #include <QStringList>
 #include <QString>
 
+typedef struct {
+  QString command;
+  QString code;
+  QString messageKey;
+  QString data;
+} GingaMessage;
+
 class Util
 {   
 public:
   static void init ();
+  static GingaMessage parseMessage (QString);
 
   static int SCREEN_HEIGHT;
   static int SCREEN_WIDTH;

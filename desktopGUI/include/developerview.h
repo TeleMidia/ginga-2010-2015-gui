@@ -9,35 +9,35 @@
 
 class DeveloperView : public QDockWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    explicit DeveloperView(QWidget *parent = 0);
-    
-    inline void appendConsoleMessage (QString message)
-    { _console->append(message); }
+  explicit DeveloperView(QWidget *parent = 0);
 
-    inline void clear ()
-    {
-        _history->clear();
-        _console->clear();
-    }
+  inline void appendConsoleMessage (QString message)
+  { _console->append(message); }
 
-    bool eventFilter(QObject *, QEvent *);
+  inline void clear ()
+  {
+    _history->clear();
+    _console->clear();
+  }
+
+  bool eventFilter(QObject *, QEvent *);
 
 signals:
-    void sendCommandRequested (QString);
+  void sendCommandRequested (QString);
 
 private slots:
-    void sendButtonPressed();
-    void changeSendButtonStatus();
+  void sendButtonPressed();
+  void changeSendButtonStatus();
 
 private:
-    QLineEdit *_commandLine;
-    QPushButton *_sendButton;
-    QTextEdit *_history;
-    QTextEdit *_console;
-    QStringList *_commandsSent;
-    int _index;
+  QLineEdit *_commandLine;
+  QPushButton *_sendButton;
+  QTextEdit *_history;
+  QTextEdit *_console;
+  QStringList *_commandsSent;
+  int _index;
 };
 
 #endif // DEVELOPERVIEW_H

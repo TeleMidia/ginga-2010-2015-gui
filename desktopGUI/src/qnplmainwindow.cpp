@@ -300,9 +300,13 @@ void QnplMainWindow::createWidgets()
   _openLine = new QLineEdit(this);
   _openLine->setEnabled(true);
 
-  _developerView = new DeveloperView;
+  _developerView = new DeveloperView(this);
   addDockWidget(Qt::RightDockWidgetArea, _developerView);
   _developerView->setVisible(false);
+
+  _debugView = new DebugView(this);
+  addDockWidget(Qt::LeftDockWidgetArea, _debugView);
+  _debugView->setVisible(false);
 
   _scanProgress = new QProgressDialog ("Scanning channels...", "Abort",
                                        0, 100, this);
@@ -607,8 +611,12 @@ void QnplMainWindow::performPlay()
 
       //_process->setProcessEnvironment(enviroment);
 
-      connect (_process, SIGNAL(started()),
+      connect (_gingaProxy, SIGNAL(gingaStarted()),
                SLOT(removeCarouselData()));
+
+      connect (_gingaProxy, SIGNAL(gingaOutput(QString)),
+               SLOT(spreadGingaMessage(QString)));
+
       setUpProcessConnections(_process);
 
       _view->setFocus();
@@ -644,7 +652,10 @@ void QnplMainWindow::performPause()
 
 void QnplMainWindow::performStop()
 {
+  disconnect (_gingaProxy, SIGNAL(gingaOutput(QString)),
+              this, SLOT(spreadGingaMessage(QString)));
   _view->releaseKeyboard();
+  _debugView->clear();
   if (_timer != NULL)
   {
     _timer->stop();
@@ -881,7 +892,7 @@ void QnplMainWindow::writeTunerOutput(QString p_stdout)
         }
       }
     }
-    appendDebugMessage(line);
+    spreadGingaMessage(line);
   }
 }
 
@@ -894,52 +905,49 @@ void QnplMainWindow::writeScanOutput(QString p_stdout)
     QString line = lines.at(i).trimmed();
     if (line.startsWith(Util::CMD_PREFIX))
     {
-      QStringList tokens = line.split("::");
-      if (tokens.count() == 4){
-        QString command = tokens.at(0);
-        QString status = tokens.at(1);
-        QString entity = tokens.at(2);
-        QString msg = tokens.at(3);
+      GingaMessage message = Util::parseMessage(line);
 
-        if (command == "cmd")
+      if (message.command == "cmd")
+      {
+        if (message.code == "0")
         {
-          if (status == "0")
+          if (message.messageKey == "tunerscanprogress")
           {
-            if (entity == "tunerscanprogress")
+            QString progress = message.data;
+            progress.remove("%");
+            bool ok;
+            int value = progress.toInt(&ok);
+            if (ok)
             {
-              msg.remove("%");
-              bool ok;
-              int value = msg.toInt(&ok);
-              if (ok)
-              {
-                _scanProgress->setValue(value == 0 ? _scanProgress->value() :
-                                                     value);
-                if (value == 100)
-                  emit scanFinished();
-              }
-            }
-            else if (entity == "channelfound")
-            {
-              _scanProgress->setLabelText("Channel found: \'" + msg + "\'.");
+              _scanProgress->setValue(value == 0 ? _scanProgress->value() :
+                                                   value);
+              if (value == 100)
+                emit scanFinished();
             }
           }
-          else if (status == "1")
+          else if (message.messageKey == "channelfound")
           {
-            if (entity == "tuner")
-            {
-              if (msg != "")
-                QMessageBox::warning(this, "Warning", msg, QMessageBox::Ok);
+            _scanProgress->setLabelText("Channel found: \'" + message.data
+                                        + "\'.");
+          }
+        }
+        else if (message.code == "1")
+        {
+          if (message.messageKey == "tuner")
+          {
+            QString warningMsg = message.data;
+            if (warningMsg != "")
+              QMessageBox::warning(this, "Warning", warningMsg, QMessageBox::Ok);
 
-              _scanProgress->close();
-              qint64 bytes = _process->write(Util::GINGA_QUIT.toStdString().
-                                             c_str());
-              qDebug () << bytes;
-            }
+            _scanProgress->close();
+            _gingaProxy->sendCommand(Util::GINGA_QUIT.toStdString().
+                                     c_str());
           }
         }
       }
+
     }
-    appendDebugMessage(line);
+    spreadGingaMessage(line);
   }
 }
 
@@ -1332,6 +1340,9 @@ void QnplMainWindow::keyPressEvent(QKeyEvent *event)
 {
   if (event->key() == Qt::Key_D && (event->modifiers() & Qt::ControlModifier))
     _developerView->setVisible(!_developerView->isVisible());
+  else if (event->key() == Qt::Key_B && (event->modifiers() &
+                                         Qt::ControlModifier))
+    _debugView->setVisible(!_debugView->isVisible());
 }
 
 void QnplMainWindow::setUpProcessConnections(QProcess *process)
@@ -1347,16 +1358,41 @@ void QnplMainWindow::setUpProcessConnections(QProcess *process)
   }
 }
 
-void QnplMainWindow::appendDebugMessage(QString message)
+void QnplMainWindow::spreadGingaMessage(QString message)
 {
   if (! _process) return;
 
   _developerView->appendConsoleMessage(message);
+
+  QStringList lines = message.split("\n");
+
+  for (int i = 0; i < lines.count(); i++)
+  {
+    QString line = lines.at(i).trimmed();
+    if (line.startsWith(Util::CMD_PREFIX))
+    {
+      qDebug () << line;
+      GingaMessage message = Util::parseMessage(line);
+      if (message.command == "cmd" && message.code == "0")
+      {
+        if (message.messageKey == "startApp")
+          _debugView->addObject(message.data);
+        else if (message.messageKey == "start")
+          _debugView->addObject(message.data, 4);
+        else if (message.messageKey == "stopApp")
+          _debugView->removeObject(message.data);
+        else if (message.messageKey == "stop")
+          _debugView->removeObject(message.data, 4);
+      }
+    }
+  }
+
 }
 
 void QnplMainWindow::startSession()
 {
   _developerView->clear();
+  _debugView->clear();
 }
 void QnplMainWindow::enableSeekButton()
 {
