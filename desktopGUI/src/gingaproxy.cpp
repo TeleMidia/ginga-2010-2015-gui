@@ -70,7 +70,7 @@ bool GingaProxy::gingaIsRunning() const
 void GingaProxy::run(QStringList args, bool forceKill)
 {
 //  QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-//  env.insert("LD_LIBRARY_PATH", "/usr/local/lib/lua/5.1/socket:/usr/local/lib/ginga:/usr/local/lib/ginga/adapters:/usr/local/lib/ginga/cm:/usr/local/lib/ginga/mb:/usr/local/lib/ginga/mb/dec:/usr/local/lib/ginga/converters:/usr/local/lib/ginga/dp:/usr/local/lib/ginga/ic:/usr/local/lib/ginga/iocontents:/usr/local/lib/ginga/players:/usr/local/lib:");\
+//  env.insert("LD_LIBRARY_PATH", "/usr/local/lib/lua/5.1/socket:/usr/local/lib/ginga:/usr/local/lib/ginga/adapters:/usr/local/lib/ginga/cm:/usr/local/lib/ginga/mb:/usr/local/lib/ginga/mb/dec:/usr/local/lib/ginga/converters:/usr/local/lib/ginga/dp:/usr/local/lib/ginga/ic:/usr/local/lib/ginga/iocontents:/usr/local/lib/ginga/players:/usr/local/lib:");
 
   if (gingaIsRunning())
   {
@@ -89,6 +89,11 @@ void GingaProxy::run(QStringList args, bool forceKill)
   qDebug() << args;
 
   _process = new QProcess(this);
+  connect(_process, SIGNAL(readyReadStandardOutput()),
+          SLOT(catchGingaOutput()));
+  connect(_process, SIGNAL(readyReadStandardError()),
+          SLOT(catchGingaOutput()));
+
   connect (_process, SIGNAL(started()), this, SIGNAL(gingaStarted()));
   connect (_process, SIGNAL(finished(int, QProcess::ExitStatus)), this,
            SLOT(finished(int,QProcess::ExitStatus)));
@@ -145,5 +150,19 @@ void GingaProxy::destroyProcess()
     _process->close();
     _process->deleteLater();
     _process = NULL;
+  }
+}
+
+void GingaProxy::catchGingaOutput()
+{
+  if (_process)
+  {
+    QString output = _process->readAllStandardOutput();
+    if (output.isEmpty())
+      output = _process->readAllStandardError();
+
+    qDebug () << output;
+    emit gingaOutput(output);
+
   }
 }

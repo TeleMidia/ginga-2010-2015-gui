@@ -74,6 +74,7 @@ public:
 signals:
   void gingaStarted ();
   void gingaFinished(int, QProcess::ExitStatus);
+  void gingaOutput (QString);
 
 public slots:
   void run (QString, bool parentFlag = false,
@@ -85,6 +86,9 @@ public slots:
 
   void finished (int, QProcess::ExitStatus);
   int sendCommand (QString);
+
+private slots:
+  void catchGingaOutput ();
 
 private:
   bool gingaIsRunning () const;

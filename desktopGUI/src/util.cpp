@@ -17,6 +17,7 @@ QString Util::PREFERENCES_ENVIRONMENT = "Environment";
 QString Util::PREFERENCES_GINGA = "Ginga";
 QString Util::PREFERENCES_ADVANCED = "Advanced";
 
+QString Util::GUI_NCL = "--ncl";
 QString Util::GUI_WID = "${WID}";
 QString Util::GUI_FILE = "${FILE}";
 QString Util::GUI_SCREENSIZE = "${SCREENSIZE}";

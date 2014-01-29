@@ -30,6 +30,7 @@ public:
   static QString PREFERENCES_ADVANCED;
 
   //GingaGUI wilcard strings
+  static QString GUI_NCL;
   static QString GUI_WID;
   static QString GUI_FILE;
   static QString GUI_SCREENSIZE;

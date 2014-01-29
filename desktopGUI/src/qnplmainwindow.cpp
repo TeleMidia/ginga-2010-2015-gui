@@ -772,8 +772,9 @@ void QnplMainWindow::playChannel(Channel channel)
       }
     }
 
-    plist.removeAll("${FILE}");
-    plist.replaceInStrings("${WID}", WID);
+    plist.removeAll(Util::GUI_NCL);
+    plist.removeAll(Util::GUI_FILE);
+    plist.replaceInStrings(Util::GUI_WID, WID);
 
     _openLine->setText(channel.number + " - " + channel.name);
 
@@ -801,10 +802,8 @@ void QnplMainWindow::playChannel(Channel channel)
     _process = _gingaProxy->process();
     setUpProcessConnections(_process);
 
-    connect(_process, SIGNAL(readyReadStandardOutput()),
-            SLOT(writeTunerOutput()));
-    connect(_process, SIGNAL(readyReadStandardError()),
-            SLOT(writeTunerOutput()));
+    connect(_gingaProxy, SIGNAL(gingaOutput(QString)),
+            SLOT(writeTunerOutput(QString)));
 
     _isPlayingChannel = false;
 
@@ -837,15 +836,13 @@ void QnplMainWindow::stopTuning()
   }
 }
 
-void QnplMainWindow::writeTunerOutput()
+void QnplMainWindow::writeTunerOutput(QString p_stdout)
 {
-  QString p_stdout = _process->readAllStandardOutput();
   QStringList lines = p_stdout.split("\n");
 
   for (int i = 0; i < lines.count(); i++)
   {
     QString line = lines.at(i).trimmed();
-    qDebug () << line;
     if (line.startsWith(Util::CMD_PREFIX))
     {
       QStringList tokens = line.split("::");
@@ -869,7 +866,8 @@ void QnplMainWindow::writeTunerOutput()
           }
           else if (status == "1")
           {
-            _timer->stop();
+            if (_timer)
+              _timer->stop();
 
             if (msg != "")
               QMessageBox::warning(this, "Warning", msg, QMessageBox::Ok);
@@ -887,11 +885,8 @@ void QnplMainWindow::writeTunerOutput()
   }
 }
 
-void QnplMainWindow::writeScanOutput()
+void QnplMainWindow::writeScanOutput(QString p_stdout)
 {
-  QString p_stdout = _process->readAllStandardOutput();
-  qDebug() << p_stdout;
-
   QStringList lines = p_stdout.split("\n");
 
   for (int i = 0; i < lines.count(); i++)
@@ -906,24 +901,32 @@ void QnplMainWindow::writeScanOutput()
         QString entity = tokens.at(2);
         QString msg = tokens.at(3);
 
-        if (command == "cmd"){
-          if (status == "0"){
-            if (entity == "tunerscanprogress"){
+        if (command == "cmd")
+        {
+          if (status == "0")
+          {
+            if (entity == "tunerscanprogress")
+            {
               msg.remove("%");
               bool ok;
               int value = msg.toInt(&ok);
-              if (ok){
-                _scanProgress->setValue(value);
+              if (ok)
+              {
+                _scanProgress->setValue(value == 0 ? _scanProgress->value() :
+                                                     value);
                 if (value == 100)
                   emit scanFinished();
               }
             }
-            else if (entity == "channelfound"){
+            else if (entity == "channelfound")
+            {
               _scanProgress->setLabelText("Channel found: \'" + msg + "\'.");
             }
           }
-          else if (status == "1"){
-            if (entity == "tuner"){
+          else if (status == "1")
+          {
+            if (entity == "tuner")
+            {
               if (msg != "")
                 QMessageBox::warning(this, "Warning", msg, QMessageBox::Ok);
 
@@ -1200,10 +1203,10 @@ void QnplMainWindow::resizeEvent(QResizeEvent* event)
 
   _view->setSceneRect (0,0, w, h);
 
-  _animTuning->setPos(0, -h_span);
+  _animTuning->setPos(0, 0);
 
-  _movie->setScaledSize(QSize (w + w_span, h + h_span));
-  _gifLabel->setFixedSize (w + w_span, h + h_span);
+  _movie->setScaledSize(_view->size());
+  _gifLabel->setFixedSize (_view->size());
 
   _settings->setValue(Util::V_SCREENSIZE,
                       QString::number(width())+ "x" +QString::number(height()));
@@ -1250,15 +1253,18 @@ void QnplMainWindow::scan()
 
   removeCarouselData();
 
-  connect(_process, SIGNAL(readyReadStandardOutput()),
-          SLOT(writeScanOutput()));
-  connect(_process, SIGNAL(readyReadStandardError()),
-          SLOT(writeScanOutput()));
+  setUpProcessConnections(_process);
 
-  connect(_gingaProxy, SIGNAL(gingaStarted()),
-          _scanProgress, SLOT(exec()));
-  connect(_gingaProxy, SIGNAL(gingaFinished(int,QProcess::ExitStatus)),
-            this, SLOT(finishScan(int)));
+  connect(_gingaProxy, SIGNAL(gingaOutput(QString)),
+          this, SLOT(writeScanOutput(QString)));
+
+  connect(_gingaProxy, SIGNAL(gingaOutput(QString)),
+          this, SLOT(writeTunerOutput(QString)));
+
+  connect(_gingaProxy, SIGNAL(gingaFinished(int, QProcess::ExitStatus)),
+          this, SLOT(finishScan(int)));
+
+  _scanProgress->open();
 }
 
 void QnplMainWindow::finishScan(int code)
@@ -1276,11 +1282,6 @@ void QnplMainWindow::finishScan(int code)
 
 void QnplMainWindow::sendKillMessage()
 {
-  disconnect(_process, SIGNAL(readyReadStandardOutput()),
-             this, SLOT(writeScanOutput()));
-  disconnect(_process, SIGNAL(readyReadStandardError()),
-             this, SLOT(writeScanOutput()));
-
   qDebug () << _gingaProxy->sendCommand(Util::GINGA_QUIT.toStdString().c_str());
 
   emit scanFinished();

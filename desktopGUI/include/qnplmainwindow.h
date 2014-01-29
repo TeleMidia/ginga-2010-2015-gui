@@ -62,12 +62,12 @@ public slots:
 
     void notifyKey(QString key);
 
-    void writeScanOutput ();
+    void writeScanOutput (QString);
 
     void scan ();
     void playChannel (Channel channel);
     void showErrorDialog(QProcess::ProcessError);
-    void writeTunerOutput ();
+    void writeTunerOutput (QString p_stdout);
     void sendKillMessage ();
     void stopTuning();
     void removeCarouselData();

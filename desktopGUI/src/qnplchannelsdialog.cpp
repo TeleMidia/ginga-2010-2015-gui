@@ -50,8 +50,6 @@ Channel QnplChannelsDialog::previousChannel()
 void QnplChannelsDialog::loadGingaChannels()
 {
     QString channelsFile = QDir::tempPath() + "/ginga/channels.txt";
-    qDebug () << "Channels file: " + channelsFile;
-
     channels.clear();
 
     if (QFile::exists(channelsFile)){
