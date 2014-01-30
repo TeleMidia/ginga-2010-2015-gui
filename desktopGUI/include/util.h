@@ -16,6 +16,7 @@ class Util
 public:
   static void init ();
   static GingaMessage parseMessage (QString);
+  static QString secondsToString (int);
 
   static int SCREEN_HEIGHT;
   static int SCREEN_WIDTH;

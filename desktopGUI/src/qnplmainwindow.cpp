@@ -306,7 +306,7 @@ void QnplMainWindow::createWidgets()
 
   _debugView = new DebugView(this);
   addDockWidget(Qt::LeftDockWidgetArea, _debugView);
-  _debugView->setVisible(false);
+  //_debugView->setVisible(false);
 
   _scanProgress = new QProgressDialog ("Scanning channels...", "Abort",
                                        0, 100, this);
@@ -655,7 +655,7 @@ void QnplMainWindow::performStop()
   disconnect (_gingaProxy, SIGNAL(gingaOutput(QString)),
               this, SLOT(spreadGingaMessage(QString)));
   _view->releaseKeyboard();
-  _debugView->clear();
+  _debugView->stopSession();
   if (_timer != NULL)
   {
     _timer->stop();
@@ -868,8 +868,8 @@ void QnplMainWindow::writeTunerOutput(QString p_stdout)
         {
           if (status == "0")
           {
-            if (entity == "start" && msg == "?mAV?")
-            {//cmd::0::start::?mAV?
+            if (entity == "tuned" && msg == "?mAV?")
+            {//cmd::0::tuned::?mAV?
               _isPlayingChannel = true;
               _animTuning->setVisible(false);
               _tuneApplicationChannelAction->setEnabled(true);
@@ -1376,13 +1376,16 @@ void QnplMainWindow::spreadGingaMessage(QString message)
       if (message.command == "cmd" && message.code == "0")
       {
         if (message.messageKey == "startApp")
-          _debugView->addObject(message.data);
+        {
+          _debugView->startSession();
+          _debugView->startObject(message.data);
+        }
         else if (message.messageKey == "start")
-          _debugView->addObject(message.data, 4);
+          _debugView->startObject(message.data);
         else if (message.messageKey == "stopApp")
-          _debugView->removeObject(message.data);
+          _debugView->stopObject(message.data);
         else if (message.messageKey == "stop")
-          _debugView->removeObject(message.data, 4);
+          _debugView->stopObject(message.data);
       }
     }
   }
@@ -1392,7 +1395,7 @@ void QnplMainWindow::spreadGingaMessage(QString message)
 void QnplMainWindow::startSession()
 {
   _developerView->clear();
-  _debugView->clear();
+  _debugView->startSession();
 }
 void QnplMainWindow::enableSeekButton()
 {

@@ -125,3 +125,30 @@ GingaMessage Util::parseMessage(QString message)
 
   return gingaMessage;
 }
+
+QString Util::secondsToString(int seconds)
+{
+  QString currentTime = "";
+
+  int min = seconds / 60;
+  seconds %= 60;
+
+  if (min > 59)
+  {
+    int hours = min / 60;
+    min %= 60;
+    currentTime = QString::number(hours) + ":";
+  }
+
+  if (min < 10)
+    currentTime += "0" + QString::number(min) + ":";
+  else
+    currentTime += QString::number(min) + ":";
+
+  if (seconds < 10)
+    currentTime += "0" + QString::number(seconds);
+  else
+    currentTime += QString::number(seconds);
+
+  return currentTime;
+}

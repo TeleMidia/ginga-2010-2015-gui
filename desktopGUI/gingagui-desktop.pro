@@ -38,7 +38,8 @@ SOURCES += \
     src/gingaproxy.cpp \
     src/developerview.cpp \
     src/util.cpp \
-    src/debugview.cpp
+    src/debugview.cpp \
+    src/debugobjectitem.cpp
 
 HEADERS += \
     include/qnplmainwindow.h \
@@ -53,7 +54,8 @@ HEADERS += \
     include/gingaproxy.h \
     include/developerview.h \
     include/util.h \
-    include/debugview.h
+    include/debugview.h \
+    include/debugobjectitem.h
 
 RESOURCES += \
     application.qrc
