@@ -300,11 +300,16 @@ void QnplMainWindow::createWidgets()
   _openLine = new QLineEdit(this);
   _openLine->setEnabled(true);
 
+  _view = new QnplView(this);
+  _view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  _view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  _view->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+
   _developerView = new DeveloperView(this);
   addDockWidget(Qt::RightDockWidgetArea, _developerView);
   _developerView->setVisible(false);
 
-  _debugView = new DebugView(this);
+  _debugView = new DebugView(_view, this);
   addDockWidget(Qt::LeftDockWidgetArea, _debugView);
   //_debugView->setVisible(false);
 
@@ -313,11 +318,6 @@ void QnplMainWindow::createWidgets()
   _scanProgress->setWindowFlags(Qt::Dialog | Qt::Desktop);
   _scanProgress->setWindowTitle("Scanning");
   _scanProgress->setWindowIcon(windowIcon());
-
-  _view = new QnplView(this);
-  _view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  _view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  _view->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
   _gifLabel = new QLabel();
   _movie = new QMovie(":backgrounds/anim-tuning");
@@ -1363,6 +1363,7 @@ void QnplMainWindow::spreadGingaMessage(QString message)
   if (! _process) return;
 
   _developerView->appendConsoleMessage(message);
+
 
   QStringList lines = message.split("\n");
 

@@ -34,6 +34,8 @@ desktop.ini
 *~
 
 *.pro.user
+*.user.*
+
 
 tst_core
 callgrind*
