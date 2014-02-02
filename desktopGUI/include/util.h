@@ -3,12 +3,14 @@
 
 #include <QStringList>
 #include <QString>
+#include <QVector>
 
 typedef struct {
   QString command;
   QString code;
   QString messageKey;
-  QString data;
+  QVector <QString> data;
+
 } GingaMessage;
 
 class Util
@@ -56,6 +58,10 @@ public:
   static QString V_SCREENSIZE;
   static QString V_PASSIVE;
   static QString V_DEVICE_PORT;
+
+  //Ginga constants
+  static QString G_ON_BEGIN;
+  static QString G_ON_END;
 
   //GingaGui variables values
   static QString TRUE_;

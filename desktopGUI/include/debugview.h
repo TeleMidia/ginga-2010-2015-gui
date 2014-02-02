@@ -17,8 +17,8 @@ class DebugView : public QDockWidget
 public:
   explicit DebugView(QGraphicsView *gingaView, QWidget *parent = 0);
 
-  void startObject (QString);
-  void stopObject (QString);
+  void startObject (const QVector <QString> &);
+  void stopObject (const QVector <QString> &);
   void startSession ();
   void stopSession ();
 

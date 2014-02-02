@@ -913,7 +913,7 @@ void QnplMainWindow::writeScanOutput(QString p_stdout)
         {
           if (message.messageKey == "tunerscanprogress")
           {
-            QString progress = message.data;
+            QString progress = message.data.at(0);
             progress.remove("%");
             bool ok;
             int value = progress.toInt(&ok);
@@ -927,7 +927,7 @@ void QnplMainWindow::writeScanOutput(QString p_stdout)
           }
           else if (message.messageKey == "channelfound")
           {
-            _scanProgress->setLabelText("Channel found: \'" + message.data
+            _scanProgress->setLabelText("Channel found: \'" + message.data.at(0)
                                         + "\'.");
           }
         }
@@ -935,7 +935,7 @@ void QnplMainWindow::writeScanOutput(QString p_stdout)
         {
           if (message.messageKey == "tuner")
           {
-            QString warningMsg = message.data;
+            QString warningMsg = message.data.at(0);
             if (warningMsg != "")
               QMessageBox::warning(this, "Warning", warningMsg, QMessageBox::Ok);
 

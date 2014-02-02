@@ -33,6 +33,9 @@ QString Util::V_SCREENSIZE = "screensize";
 QString Util::V_PASSIVE = "passive_running";
 QString Util::V_DEVICE_PORT = "device_port";
 
+QString Util::G_ON_BEGIN = "onBegin";
+QString Util::G_ON_END = "onEnd";
+
 QString Util::TRUE_ = "true";
 QString Util::FALSE_ = "false";
 QString Util::WIDE = "wide";
@@ -115,12 +118,14 @@ GingaMessage Util::parseMessage(QString message)
   GingaMessage gingaMessage;
 
   QStringList tokens = message.split("::");
-  if (tokens.count() == 4)
+  if (tokens.count() > 3)
   {
     gingaMessage.command = tokens.at(0);
     gingaMessage.code = tokens.at(1);
     gingaMessage.messageKey = tokens.at(2);
-    gingaMessage.data = tokens.at(3);
+
+    for (int i = 3; i < tokens.size(); i++)
+        gingaMessage.data.push_back(tokens.at(i));
   }
 
   return gingaMessage;

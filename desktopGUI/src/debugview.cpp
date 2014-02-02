@@ -105,12 +105,43 @@ DebugView::DebugView(QGraphicsView* gingaView, QWidget *parent) :
 
 }
 
-void DebugView::startObject(QString object)
+void DebugView::startObject(const QVector <QString> &data)
 {
-  DebugObjectItem *objectItem = new DebugObjectItem(_globalTime);
-  objectItem->setPos(_currentX, _currentY - (_VERTICAL_JUMP - _ITEM_HEIGHT)/2);
+  qDebug () << data;
 
+  QString object = data.at(0);
+  DebugObjectItem *objectItem = new DebugObjectItem(object, _globalTime);
+
+  objectItem->setStartPos(_currentX);
+  objectItem->setY(_currentY - (_VERTICAL_JUMP - _ITEM_HEIGHT)/2);
   objectItem->setHeight(_ITEM_HEIGHT);
+
+  if (data.size() == 4)
+  {
+    QString role = data.at(1);
+    QString refObject = data.at(2);
+    int specTime = data.at(3).toInt();
+
+    DebugObjectItem *refObjectItem = _items.value(refObject, 0);
+    if (refObjectItem)
+    {
+      specTime /= 1000;
+
+      qDebug () << objectItem->x() << " " <<
+                   refObjectItem->x() + specTime * _INCREMENT;
+
+      if (role == Util::G_ON_BEGIN)
+        objectItem->setSpectPos(refObjectItem->x() + specTime * _INCREMENT);
+      else if (role == Util::G_ON_END)
+        objectItem->setSpectPos(specTime == -1 ? refObjectItem->x() +
+                                                 refObjectItem->width()
+                                               :
+                                                 refObjectItem->x() +
+                                                 refObjectItem->width() +
+                                                 specTime * _INCREMENT );
+    }
+  }
+
 
   _scene->addItem(objectItem);
 
@@ -129,8 +160,12 @@ void DebugView::startObject(QString object)
   _currentY += _VERTICAL_JUMP;
 }
 
-void DebugView::stopObject(QString object)
+void DebugView::stopObject(const QVector <QString> & data)
 {
+  qDebug () << data;
+
+  QString object = data.at(0);
+
   DebugObjectItem *currentItem = _items.value(object);
   currentItem->stop();
 }
@@ -165,8 +200,6 @@ void DebugView::updateTimeline()
       QString htmlImgHover = QString("<img src=\"data:image/png;base64,%1\">").
           arg(QString(buffer.data().toBase64()));
       snapshotLabel->setToolTip(htmlImgHover);
-
-
 
       QWidget *snapshot = new QWidget;
       snapshot->setLayout(snapshotLayout);
