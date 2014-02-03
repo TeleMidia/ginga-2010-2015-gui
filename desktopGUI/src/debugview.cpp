@@ -110,7 +110,8 @@ void DebugView::startObject(const QVector <QString> &data)
   qDebug () << data;
 
   QString object = data.at(0);
-  DebugObjectItem *objectItem = new DebugObjectItem(object, _globalTime);
+  DebugObjectItem *objectItem = new DebugObjectItem(object, _globalTime,
+                                                    _INCREMENT);
 
   objectItem->setStartPos(_currentX);
   objectItem->setY(_currentY - (_VERTICAL_JUMP - _ITEM_HEIGHT)/2);
@@ -130,10 +131,12 @@ void DebugView::startObject(const QVector <QString> &data)
       qDebug () << objectItem->x() << " " <<
                    refObjectItem->x() + specTime * _INCREMENT;
 
+      int diffIncrement = specTime * _INCREMENT;
+
       if (role == Util::G_ON_BEGIN)
-        objectItem->setSpectPos(refObjectItem->x() + specTime * _INCREMENT);
+        objectItem->setSpecStartPos(refObjectItem->x() + diffIncrement);
       else if (role == Util::G_ON_END)
-        objectItem->setSpectPos(specTime == -1 ? refObjectItem->x() +
+        objectItem->setSpecStartPos(specTime == -1 ? refObjectItem->x() +
                                                  refObjectItem->width()
                                                :
                                                  refObjectItem->x() +
@@ -141,7 +144,6 @@ void DebugView::startObject(const QVector <QString> &data)
                                                  specTime * _INCREMENT );
     }
   }
-
 
   _scene->addItem(objectItem);
 
@@ -164,9 +166,39 @@ void DebugView::stopObject(const QVector <QString> & data)
 {
   qDebug () << data;
 
+
   QString object = data.at(0);
 
   DebugObjectItem *currentItem = _items.value(object);
+
+  if (data.size() == 4)
+  {
+    QString role = data.at(1);
+    QString refObject = data.at(2);
+    int specTime = data.at(3).toInt();
+
+    DebugObjectItem *refObjectItem = _items.value(refObject, 0);
+    if (refObjectItem)
+    {
+      if (specTime != -1)
+        specTime /= 1000;
+
+      qDebug () << "stop specTime: " << specTime;
+
+      int posIncrement = specTime * _INCREMENT;
+
+      if (role == Util::G_ON_BEGIN)
+        currentItem->setSpecStopPos(refObjectItem->x() + posIncrement);
+      else if (role == Util::G_ON_END)
+        currentItem->setSpecStopPos(specTime == -1 ? refObjectItem->x() +
+                                                 refObjectItem->width()
+                                               :
+                                                 refObjectItem->x() +
+                                                 refObjectItem->width() +
+                                                 specTime * _INCREMENT );
+    }
+  }
+
   currentItem->stop();
 }
 
@@ -219,7 +251,7 @@ void DebugView::updateTimeline()
     DebugObjectItem *item = iterator.value();
     if (item->isRunning())
     {
-      item->setWidth(item->width() + _INCREMENT);
+      item->incrementWidth(_INCREMENT);
     }
 
   }
@@ -244,6 +276,8 @@ void DebugView::startSession()
       delete item;
     }
   }
+
+  _scene->update();
 
   _currentX = 0;
   _currentY = _VERTICAL_JUMP - _ITEM_HEIGHT;

@@ -3,18 +3,18 @@
 
 #include <QGraphicsRectItem>
 #include <QTimer>
+#include <QRect>
 
 class DebugObjectItem : public QObject, public QGraphicsRectItem
 {
   Q_OBJECT
 public:
-  explicit DebugObjectItem(QString object, int seconds,
+  explicit DebugObjectItem(const QString &object, int seconds, const int &increment,
                            QGraphicsScene *sceneParent = 0);
-  inline void setWidth (qreal width)
-  { setRect(0, 0, width, rect().height()); }
 
-  inline void setHeight (qreal height)
-  { setRect(0, 0, rect().width(), height); }
+  void incrementWidth (const qreal &width);
+
+  void setHeight (const qreal &height);
 
   inline qreal width () const
   { return rect().width(); }
@@ -31,18 +31,9 @@ public:
   inline int stopTime () const
   { return _stopTime; }
 
-  inline void setSpectPos (int specPos)
-  {
-    _specPos = specPos;
-    setX(_specPos);
-  }
-
-  inline void setStartPos (int pos)
-  {
-    _realStartPos = pos;
-    _specPos = pos;
-    setX(_realStartPos);
-  }
+  void setSpecStopPos (const int &specPos);
+  void setSpecStartPos (const int &specPos);
+  void setStartPos (const int &pos);
 
   void stop ();
 
@@ -54,7 +45,12 @@ private slots:
   { ++ _seconds; }
 
 private:
-  QString _object;
+  const QString _object;
+  const int _increment;
+
+  QRect _diffRectBegin;
+  QRect _realDuration;
+  QRect _diffRectEnd;
 
   bool _isRunning;
 
@@ -62,7 +58,8 @@ private:
   int _seconds;
   int _startTime;
   int _stopTime;
-  int _specPos;
+  int _specStartPos;
+  int _specStopPos;
 
   QTimer *_timer;
 };
