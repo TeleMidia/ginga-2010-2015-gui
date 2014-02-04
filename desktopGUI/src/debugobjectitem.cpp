@@ -165,7 +165,7 @@ void DebugObjectItem::setSpecStopPos(const int &specPos)
 {
   _specStopPos = specPos;
 
-  qreal diff = _specStopPos - (_realDuration.x() + _realDuration.width());
+  qreal diff = _specStopPos - (x() + _realDuration.x() + _realDuration.width());
 
   if (diff)
   {

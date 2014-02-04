@@ -113,8 +113,13 @@ void DebugView::startObject(const QVector <QString> &data)
   DebugObjectItem *objectItem = new DebugObjectItem(object, _globalTime,
                                                     _INCREMENT);
 
+
+  DebugObjectItem *retrievedItem = _items.value(object, 0);
+
   objectItem->setStartPos(_currentX);
-  objectItem->setY(_currentY - (_VERTICAL_JUMP - _ITEM_HEIGHT)/2);
+  objectItem->setY( retrievedItem ? retrievedItem->y() :
+                                    _currentY - (_VERTICAL_JUMP -
+                                                 _ITEM_HEIGHT)/2);
   objectItem->setHeight(_ITEM_HEIGHT);
 
   if (data.size() == 4)
@@ -127,9 +132,6 @@ void DebugView::startObject(const QVector <QString> &data)
     if (refObjectItem)
     {
       specTime /= 1000;
-
-      qDebug () << objectItem->x() << " " <<
-                   refObjectItem->x() + specTime * _INCREMENT;
 
       int diffIncrement = specTime * _INCREMENT;
 
@@ -147,29 +149,34 @@ void DebugView::startObject(const QVector <QString> &data)
 
   _scene->addItem(objectItem);
 
-  QGridLayout *layout = (QGridLayout *) _labelsWidget->layout();
+  if (!retrievedItem)
+  {
+    QGridLayout *layout = (QGridLayout *) _labelsWidget->layout();
+    QLabel *itemLabel = new QLabel(object);
 
-  QLabel *itemLabel = new QLabel(object);
+    int row = _items.count();
 
-  int row = _items.count();
+    layout->addWidget(itemLabel, row, 0,
+                      Qt::AlignRight | Qt::AlignTop);
 
-  layout->addWidget(itemLabel, row, 0,
-                    Qt::AlignRight | Qt::AlignTop);
+    layout->setRowMinimumHeight(row, _VERTICAL_JUMP);
 
-  layout->setRowMinimumHeight(row, _VERTICAL_JUMP);
+    _currentY += _VERTICAL_JUMP;
+  }
 
-  _items.insertMulti(object, objectItem);
-  _currentY += _VERTICAL_JUMP;
+  _items.insert(object, objectItem);
 }
 
 void DebugView::stopObject(const QVector <QString> & data)
 {
   qDebug () << data;
 
-
   QString object = data.at(0);
 
   DebugObjectItem *currentItem = _items.value(object);
+  if (!currentItem) return;
+
+  currentItem->stop();
 
   if (data.size() == 4)
   {
@@ -180,26 +187,28 @@ void DebugView::stopObject(const QVector <QString> & data)
     DebugObjectItem *refObjectItem = _items.value(refObject, 0);
     if (refObjectItem)
     {
+      int posIncrement = 0;
+
       if (specTime != -1)
+      {
         specTime /= 1000;
+        posIncrement = specTime * _INCREMENT;
+      }
 
-      qDebug () << "stop specTime: " << specTime;
-
-      int posIncrement = specTime * _INCREMENT;
+      int refObjectItemX = refObjectItem->x() +
+          refObjectItem->realDurationRectX();
 
       if (role == Util::G_ON_BEGIN)
-        currentItem->setSpecStopPos(refObjectItem->x() + posIncrement);
+        currentItem->setSpecStopPos(refObjectItemX + posIncrement);
       else if (role == Util::G_ON_END)
-        currentItem->setSpecStopPos(specTime == -1 ? refObjectItem->x() +
-                                                 refObjectItem->width()
-                                               :
-                                                 refObjectItem->x() +
-                                                 refObjectItem->width() +
-                                                 specTime * _INCREMENT );
+        currentItem->setSpecStopPos(specTime == -1 ? refObjectItemX +
+                                                     refObjectItem->
+                                                     realDurationRectWidth()
+                                                   :
+                                                     refObjectItemX +
+                                                     posIncrement);
     }
   }
-
-  currentItem->stop();
 }
 
 void DebugView::updateTimeline()

@@ -31,6 +31,12 @@ public:
   inline int stopTime () const
   { return _stopTime; }
 
+  inline int realDurationRectX () const
+  { return _realDuration.x(); }
+
+  inline int realDurationRectWidth () const
+  { return _realDuration.width(); }
+
   void setSpecStopPos (const int &specPos);
   void setSpecStartPos (const int &specPos);
   void setStartPos (const int &pos);
