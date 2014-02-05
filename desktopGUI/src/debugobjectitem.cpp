@@ -82,7 +82,7 @@ void DebugObjectItem::paint(QPainter *painter,
     painter->drawText(textX + _realDuration.x(), (height() + fm.height()) / 2,
                       time);
 
-  if (_diffRectBegin.width() > 0)
+  if (fm.width(time) < _diffRectBegin.width() )
   {//Drawing a text indicating the delay time on beginning.
     time = Util::secondsToString( _diffRectBegin.width() / _increment);
 

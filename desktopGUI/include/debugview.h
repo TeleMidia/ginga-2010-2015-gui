@@ -17,14 +17,17 @@ class DebugView : public QDockWidget
 public:
   explicit DebugView(QGraphicsView *gingaView, QWidget *parent = 0);
 
-  void startObject (const QVector <QString> &);
-  void stopObject (const QVector <QString> &);
+  void startObject (const QVector <QString> &, const bool &snapshot = true);
+  void stopObject (const QVector <QString> &, const bool &snapshot = true);
   void startSession ();
   void stopSession ();
 
+  bool eventFilter(QObject *, QEvent *);
+
 public slots:
   void updateTimeline();
-  void setSnapshotInterval (int);
+  void clearSession ();
+  void takeSnapshot ();
 
 private:
   void clearWidgetLayout (QWidget *);
@@ -35,6 +38,9 @@ private:
   QGraphicsView *_gingaView;
 
   QGraphicsLineItem *_currentTimeLineItem;
+  QGraphicsLineItem *_selectedSnapshotLineItem;
+  QGraphicsRectItem *_selectedSnapshotRectItem;
+
   QGraphicsScene *_scene;
   QMap <QString, DebugObjectItem*> _items;
   QTimer *_timer;
@@ -42,13 +48,11 @@ private:
   int _currentX;
   int _currentY;
   int _globalTime;
-  int _snapshotInterval;
 
+  const char * _LABEL_INSTANT;
   const qreal _INCREMENT;
   const qreal _ITEM_HEIGHT;
   const qreal _VERTICAL_JUMP;
-  const int _MIN_SNAPSHOT_INTERVAL;
 };
 
 #endif // DEBUGVIEW_H
-

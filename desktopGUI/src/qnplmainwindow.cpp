@@ -38,24 +38,24 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
     QFile gingaContextFile (":config/context");
     if (gingaContextFile.open(QIODevice::ReadOnly))
     {
-     QString context = QString (gingaContextFile.readAll());
+      QString context = QString (gingaContextFile.readAll());
 
-     QDir dir;
-     dir.setCurrent(iniPath);
-     dir.mkdir("ginga");
+      QDir dir;
+      dir.setCurrent(iniPath);
+      dir.mkdir("ginga");
 
-     QFile tempGingaContextFile (iniPath + "/ginga/contexts.ini");
+      QFile tempGingaContextFile (iniPath + "/ginga/contexts.ini");
 
-     if (tempGingaContextFile.open(QIODevice::WriteOnly))
-     {
-       tempGingaContextFile.write(context.toStdString().c_str());
-       tempGingaContextFile.close();
+      if (tempGingaContextFile.open(QIODevice::WriteOnly))
+      {
+        tempGingaContextFile.write(context.toStdString().c_str());
+        tempGingaContextFile.close();
 
-       _settings->setValue(Util::V_CONTEXT_FILE,
-                           tempGingaContextFile.fileName());
-       _settings->sync();
-     }
-     gingaContextFile.close();
+        _settings->setValue(Util::V_CONTEXT_FILE,
+                            tempGingaContextFile.fileName());
+        _settings->sync();
+      }
+      gingaContextFile.close();
     }
   }
 
@@ -1280,9 +1280,9 @@ void QnplMainWindow::finishScan(int code)
   qDebug () << "code::" << code;
   _scanProgress->done(code);
   disconnect(_gingaProxy, SIGNAL(gingaStarted()),
-          _scanProgress, SLOT(exec()));
+             _scanProgress, SLOT(exec()));
   disconnect(_gingaProxy, SIGNAL(gingaFinished(int, QProcess::ExitStatus)),
-          this, SLOT(finishScan(int)));
+             this, SLOT(finishScan(int)));
 
   qDebug() <<  "finishScan()::finished";
 }
@@ -1379,7 +1379,7 @@ void QnplMainWindow::spreadGingaMessage(QString message)
         if (message.messageKey == "startApp")
         {
           _debugView->startSession();
-          _debugView->startObject(message.data);
+          _debugView->startObject(message.data, false);
         }
         else if (message.messageKey == "start")
           _debugView->startObject(message.data);
@@ -1390,14 +1390,14 @@ void QnplMainWindow::spreadGingaMessage(QString message)
       }
     }
   }
-
 }
 
 void QnplMainWindow::startSession()
 {
-  _developerView->clear();
-  _debugView->startSession();
+  _developerView->clearSession();
+  _debugView->clearSession();
 }
+
 void QnplMainWindow::enableSeekButton()
 {
   _seekButton->setEnabled(_seekPlayTime->text() != "::");

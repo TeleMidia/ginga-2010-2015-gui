@@ -16,7 +16,7 @@ public:
   inline void appendConsoleMessage (QString message)
   { _console->append(message); }
 
-  inline void clear ()
+  inline void clearSession ()
   {
     _history->clear();
     _console->clear();

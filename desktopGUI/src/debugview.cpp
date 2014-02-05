@@ -7,7 +7,6 @@
 #include <QGridLayout>
 #include <QPixmap>
 #include <QGraphicsProxyWidget>
-#include <QSpinBox>
 #include <QBuffer>
 
 #include "util.h"
@@ -16,9 +15,8 @@
 
 DebugView::DebugView(QGraphicsView* gingaView, QWidget *parent) :
   QDockWidget("Debug View", parent), _INCREMENT(10), _ITEM_HEIGHT (20),
-  _VERTICAL_JUMP(25), _MIN_SNAPSHOT_INTERVAL (5)
-{
-  _snapshotInterval = _MIN_SNAPSHOT_INTERVAL;
+  _VERTICAL_JUMP(25), _LABEL_INSTANT("instant")
+{  
   _gingaView = gingaView;
 
   QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -51,35 +49,25 @@ DebugView::DebugView(QGraphicsView* gingaView, QWidget *parent) :
   _snapshotsWidget->setLayout(new QHBoxLayout);
   _snapshotsWidget->setStyleSheet("background-color:white;");
   _snapshotsWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  _snapshotsWidget->installEventFilter(this);
 
   QGraphicsScene *snapshotScene = new QGraphicsScene(0, 0,
                                                      _scene->width(), 150,
                                                      this);
 
   snapshotScene->addWidget(_snapshotsWidget)->setPos(0, 0);
+  snapshotScene->installEventFilter(this);
 
   QGraphicsView *snapshotView = new QGraphicsView(snapshotScene);
   snapshotView->centerOn(0, 0);
-  snapshotView->setMinimumHeight(snapshotScene->height());
+  snapshotView->setFixedHeight(snapshotScene->height());
   snapshotView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-  QLabel *snapshotIntervalLabel = new QLabel ("Snapshot interval:");
-  QSpinBox *snapshotSpinBox = new QSpinBox;
-  snapshotSpinBox->setMinimum(_MIN_SNAPSHOT_INTERVAL);
-  snapshotSpinBox->setValue(_snapshotInterval);
-
-  QVBoxLayout *snapshotIntervalLayout = new QVBoxLayout;
-  snapshotIntervalLayout->addWidget(snapshotIntervalLabel, 0, Qt::AlignLeft);
-  snapshotIntervalLayout->addWidget(snapshotSpinBox, 0, Qt::AlignLeft);
-
-  QWidget *snapshotChangeWidget = new QWidget;
-  snapshotChangeWidget->setLayout(snapshotIntervalLayout);
 
   mainLayout->addWidget(new QLabel ("Media objects:"));
   mainLayout->addLayout(timelineLayout);
   mainLayout->addWidget(new QLabel ("Snapshots:"));
   mainLayout->addWidget(snapshotView);
-  mainLayout->addWidget(snapshotChangeWidget);
 
   QWidget *debugWidget = new QWidget (this);
   debugWidget->setLayout(mainLayout);
@@ -90,11 +78,20 @@ DebugView::DebugView(QGraphicsView* gingaView, QWidget *parent) :
   connect (_timer, SIGNAL(timeout()), this,
            SLOT (updateTimeline()));
 
-  connect (snapshotSpinBox, SIGNAL(valueChanged(int)),
-           SLOT(setSnapshotInterval(int)));
-
   _currentTimeLineItem = _scene->addLine(0, 0, 0, _scene->height());
   _currentTimeLineItem->setZValue(2);
+
+  _selectedSnapshotLineItem = _scene->addLine(0, 0, 0, _scene->height());
+  _selectedSnapshotLineItem->setZValue(2);
+
+  _selectedSnapshotRectItem = snapshotScene->addRect(0, 0, 100, 150);
+  _selectedSnapshotRectItem->setZValue(2);
+  _selectedSnapshotRectItem->hide();
+
+  QPen pen (Qt::blue);
+  pen.setWidth(2);
+  _selectedSnapshotLineItem->setPen(pen);
+  _selectedSnapshotLineItem->hide();
 
   for (int i = 0; i < SCENE_HEIGHT; i++)
   {
@@ -105,7 +102,7 @@ DebugView::DebugView(QGraphicsView* gingaView, QWidget *parent) :
 
 }
 
-void DebugView::startObject(const QVector <QString> &data)
+void DebugView::startObject(const QVector <QString> &data, const bool &snapshot)
 {
   qDebug () << data;
 
@@ -165,9 +162,13 @@ void DebugView::startObject(const QVector <QString> &data)
   }
 
   _items.insert(object, objectItem);
+
+  qDebug () << "startObject " << snapshot;
+  if (snapshot)
+    takeSnapshot();
 }
 
-void DebugView::stopObject(const QVector <QString> & data)
+void DebugView::stopObject(const QVector <QString> & data, const bool &snapshot)
 {
   qDebug () << data;
 
@@ -209,48 +210,51 @@ void DebugView::stopObject(const QVector <QString> & data)
                                                      posIncrement);
     }
   }
+
+  if (snapshot)
+    takeSnapshot();
+}
+
+void DebugView::takeSnapshot()
+{
+  QPixmap snapshotPixmap = QPixmap::grabWindow(_gingaView->winId());
+  if (!snapshotPixmap.isNull())
+  {
+    QLabel *snapshotLabel = new QLabel;
+    snapshotLabel->setSizePolicy(QSizePolicy::Expanding,
+                                 QSizePolicy::Expanding);
+
+    QLabel *snapshotTime = new QLabel(Util::secondsToString(_globalTime));
+
+    QVBoxLayout *snapshotLayout = new QVBoxLayout;
+    snapshotLayout->addWidget(snapshotLabel);
+    snapshotLayout->addWidget(snapshotTime, 0, Qt::AlignCenter);
+
+    QPixmap p = snapshotPixmap.scaledToWidth(100);
+    snapshotLabel->setPixmap(p);
+    snapshotLabel->setFixedSize(p.size());
+    snapshotLabel->setStyleSheet("background-color:white;");
+
+    QByteArray byteArray;
+    QBuffer buffer(&byteArray);
+    buffer.open(QIODevice::WriteOnly);
+    snapshotPixmap .scaledToHeight(250).toImage().save(&buffer, "PNG");
+
+    QString htmlImgHover = QString("<img src=\"data:image/png;base64,%1\">").
+        arg(QString(buffer.data().toBase64()));
+    snapshotLabel->setToolTip(htmlImgHover);
+
+    QWidget *snapshot = new QWidget;
+    snapshot->setLayout(snapshotLayout);
+    snapshot->setProperty(_LABEL_INSTANT, QVariant(_globalTime));
+
+    QHBoxLayout *layout = (QHBoxLayout *) _snapshotsWidget->layout();
+    layout->addWidget(snapshot, 0, Qt::AlignLeft);
+  }
 }
 
 void DebugView::updateTimeline()
 {
-  if (!(_globalTime % _snapshotInterval))
-  {
-    QPixmap snapshotPixmap = QPixmap::grabWindow(_gingaView->winId());
-    if (!snapshotPixmap.isNull())
-    {
-      QLabel *snapshotLabel = new QLabel;
-      snapshotLabel->setSizePolicy(QSizePolicy::Expanding,
-                                   QSizePolicy::Expanding);
-
-      QLabel *snapshotTime = new QLabel(Util::secondsToString(_globalTime));
-
-      QVBoxLayout *snapshotLayout = new QVBoxLayout;
-      snapshotLayout->addWidget(snapshotLabel);
-      snapshotLayout->addWidget(snapshotTime, 0, Qt::AlignCenter);
-
-      QPixmap p = snapshotPixmap.scaledToWidth(100);
-      snapshotLabel->setPixmap(p);
-      snapshotLabel->setFixedSize(p.size());
-      snapshotLabel->setStyleSheet("background-color:white;");
-
-      QByteArray byteArray;
-      QBuffer buffer(&byteArray);
-      buffer.open(QIODevice::WriteOnly);
-      p.scaledToHeight(250).toImage().save(&buffer, "PNG");
-
-      QString htmlImgHover = QString("<img src=\"data:image/png;base64,%1\">").
-          arg(QString(buffer.data().toBase64()));
-      snapshotLabel->setToolTip(htmlImgHover);
-
-      QWidget *snapshot = new QWidget;
-      snapshot->setLayout(snapshotLayout);
-
-      QHBoxLayout *layout = (QHBoxLayout *) _snapshotsWidget->layout();
-      layout->addWidget(snapshot, 0, Qt::AlignLeft);
-
-    }
-  }
-
   ++ _globalTime;
 
   QMapIterator <QString, DebugObjectItem *> iterator (_items);
@@ -273,6 +277,11 @@ void DebugView::updateTimeline()
 void DebugView::startSession()
 {
   _timer->start(1000);
+  clearSession();
+}
+
+void DebugView::clearSession()
+{
   _globalTime = 0;
 
   QList <QGraphicsItem *> items = _scene->items();
@@ -300,6 +309,9 @@ void DebugView::startSession()
 
   _labelsWidget->adjustSize();
   _snapshotsWidget->adjustSize();
+
+  _selectedSnapshotLineItem->hide();
+  _selectedSnapshotRectItem->hide();
 }
 
 void DebugView::clearWidgetLayout(QWidget *widget)
@@ -317,8 +329,50 @@ void DebugView::stopSession()
   _timer->stop();
 }
 
-void DebugView::setSnapshotInterval(int value)
+bool DebugView::eventFilter(QObject *obj, QEvent *event)
 {
-  if (value >= _MIN_SNAPSHOT_INTERVAL)
-    _snapshotInterval = value;
+  if (event->type() == QEvent::MouseButtonPress)
+  {
+    QMouseEvent *mouseEvent = (QMouseEvent *) event;
+
+    QWidget *widget = qobject_cast <QWidget *> (obj);
+    if (widget)
+    {
+      QWidget *selectedSnapshot = widget->childAt(mouseEvent->pos());
+
+      if (selectedSnapshot)
+      {
+        selectedSnapshot = qobject_cast <QWidget *>
+            (selectedSnapshot->parent());
+        bool ok;
+        int time = selectedSnapshot->property(_LABEL_INSTANT).toInt(&ok);
+
+        if (ok)
+        {
+          _selectedSnapshotLineItem->show();
+          _selectedSnapshotLineItem->setX(time * _INCREMENT);
+
+          _selectedSnapshotRectItem->setPos(selectedSnapshot->x(), 10);
+          _selectedSnapshotRectItem->setRect(0, 0, selectedSnapshot->width(),
+                                          selectedSnapshot->height());
+
+          _selectedSnapshotRectItem->show();
+
+          QGraphicsView *view = _scene->views().at(0);
+          view->centerOn(_selectedSnapshotLineItem->x(), 0);
+        }
+        else
+        {
+          _selectedSnapshotLineItem->hide();
+          _selectedSnapshotRectItem->hide();
+        }
+      }
+    }
+    event->accept();
+    return true;
+  }
+  else if (event->type() == QEvent::GraphicsSceneMousePress)
+    _selectedSnapshotLineItem->hide();
+
+  return QDockWidget::eventFilter(obj, event);
 }
