@@ -25,10 +25,13 @@ public:
   inline bool isRunning () const
   { return _isRunning; }
 
-  inline int startTime () const
+  inline int getStartTime () const
   { return _startTime; }
 
-  inline int stopTime () const
+  inline void stopTimer ()
+  { _timer->stop(); }
+
+  inline int getStopTime () const
   { return _stopTime; }
 
   inline int realDurationRectX () const
@@ -36,6 +39,15 @@ public:
 
   inline int realDurationRectWidth () const
   { return _realDuration.width(); }
+
+  inline int diffRectBeginWidth () const
+  { return _diffRectBegin.width(); }
+
+  inline int diffRectEndWidth () const
+  { return _diffRectEnd.width(); }
+
+  inline QString object () const
+  { return _object; }
 
   void setSpecStopPos (const int &specPos);
   void setSpecStartPos (const int &specPos);

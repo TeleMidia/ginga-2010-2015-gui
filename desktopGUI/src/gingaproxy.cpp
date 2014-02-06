@@ -9,9 +9,24 @@
 
 size_t getPeakRSS(Q_PID);
 
+
 #if defined(_WIN32)
 #include <windows.h>
 #include <psapi.h>
+
+typedef struct _PROCESS_MEMORY_COUNTERS_EX {
+  DWORD  cb;
+  DWORD  PageFaultCount;
+  SIZE_T PeakWorkingSetSize;
+  SIZE_T WorkingSetSize;
+  SIZE_T QuotaPeakPagedPoolUsage;
+  SIZE_T QuotaPagedPoolUsage;
+  SIZE_T QuotaPeakNonPagedPoolUsage;
+  SIZE_T QuotaNonPagedPoolUsage;
+  SIZE_T PagefileUsage;
+  SIZE_T PeakPagefileUsage;
+  SIZE_T PrivateUsage;
+}PROCESS_MEMORY_COUNTERS_EX;
 
 #elif defined(__unix__) || defined(__unix) || defined(unix) || (defined(__APPLE__) && defined(__MACH__))
 #include <unistd.h>
@@ -191,6 +206,8 @@ void GingaProxy::catchGingaOutput()
     if (output.isEmpty())
       output = _process->readAllStandardError();
 
+    //qDebug () << (getPeakRSS (_process->pid()) / DIV );
+
     emit gingaOutput(output);
   }
 }
@@ -204,9 +221,10 @@ size_t getPeakRSS(Q_PID pid)
 {
 #if defined(_WIN32)
     /* Windows -------------------------------------------------- */
-    PROCESS_MEMORY_COUNTERS info;
-    GetProcessMemoryInfo( pid->hProcess, &info, sizeof(info) );
-    return (size_t)info.WorkingSetSize;
+    PROCESS_MEMORY_COUNTERS_EX info;
+    GetProcessMemoryInfo( pid->hProcess, (PROCESS_MEMORY_COUNTERS *) &info,
+                          sizeof(info));
+    return (size_t)info.PrivateUsage;
 
 #elif (defined(_AIX) || defined(__TOS__AIX__)) || (defined(__sun__) || defined(__sun) || defined(sun) && (defined(__SVR4) || defined(__svr4__)))
     /* AIX and Solaris ------------------------------------------ */

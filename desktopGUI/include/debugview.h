@@ -28,12 +28,15 @@ public slots:
   void updateTimeline();
   void clearSession ();
   void takeSnapshot ();
+  void showReportWidget (const bool &);
+  void analyzeExecution ();
 
-private:
+private:  
   void clearWidgetLayout (QWidget *);
 
   QWidget *_labelsWidget;
   QWidget *_snapshotsWidget;
+  QWidget *_reportWidget;
 
   QGraphicsView *_gingaView;
 

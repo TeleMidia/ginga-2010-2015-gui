@@ -1,5 +1,7 @@
 #include "include/debugview.h"
 
+#include <QPushButton>
+#include <QTextEdit>
 #include <QLabel>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -26,10 +28,10 @@ DebugView::DebugView(QGraphicsView* gingaView, QWidget *parent) :
   _scene->setSceneRect(0, 0, SCENE_WIDTH,
                        SCENE_HEIGHT);
 
-  QGraphicsView * view = new QGraphicsView(_scene);
-  view->centerOn(0, 0);
-  view->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-  view->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+  QGraphicsView * viewr = new QGraphicsView(_scene);
+  viewr->centerOn(0, 0);
+  viewr->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+  viewr->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
   _labelsWidget = new QWidget;
   _labelsWidget->setMinimumWidth(100);
@@ -43,7 +45,7 @@ DebugView::DebugView(QGraphicsView* gingaView, QWidget *parent) :
 
   QHBoxLayout *timelineLayout = new QHBoxLayout;
   timelineLayout->addWidget(_labelsWidget, 0, Qt::AlignTop);
-  timelineLayout->addWidget(view);
+  timelineLayout->addWidget(viewr);
 
   _snapshotsWidget = new QWidget;
   _snapshotsWidget->setLayout(new QHBoxLayout);
@@ -63,11 +65,30 @@ DebugView::DebugView(QGraphicsView* gingaView, QWidget *parent) :
   snapshotView->setFixedHeight(snapshotScene->height());
   snapshotView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+  QPushButton *viewReportButton = new QPushButton ("&View Execution Report");
+  viewReportButton->setCheckable(true);
+  viewReportButton->setDefault(true);
+  viewReportButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+
+  QTextEdit *reportTextEdit = new QTextEdit;
+  reportTextEdit->setReadOnly(true);
+
+  QVBoxLayout *reportLayout = new QVBoxLayout;
+  reportLayout->addWidget(new QLabel ("Execution Report:"));
+  reportLayout->addWidget(reportTextEdit);
+
+  _reportWidget = new QWidget;
+  _reportWidget->setLayout(reportLayout);
+  _reportWidget->setSizePolicy(QSizePolicy::MinimumExpanding,
+                               QSizePolicy::MinimumExpanding);
+  _reportWidget->hide();
 
   mainLayout->addWidget(new QLabel ("Media objects:"));
   mainLayout->addLayout(timelineLayout);
   mainLayout->addWidget(new QLabel ("Snapshots:"));
   mainLayout->addWidget(snapshotView);
+  mainLayout->addWidget(viewReportButton);
+  mainLayout->addWidget(_reportWidget);
 
   QWidget *debugWidget = new QWidget (this);
   debugWidget->setLayout(mainLayout);
@@ -100,6 +121,8 @@ DebugView::DebugView(QGraphicsView* gingaView, QWidget *parent) :
                     _VERTICAL_JUMP, QPen(color), QBrush (color));
   }
 
+  connect(viewReportButton, SIGNAL(toggled(bool)),
+          SLOT(showReportWidget(bool)));
 }
 
 void DebugView::startObject(const QVector <QString> &data, const bool &snapshot)
@@ -266,7 +289,6 @@ void DebugView::updateTimeline()
     {
       item->incrementWidth(_INCREMENT);
     }
-
   }
   _currentX += _INCREMENT;
   _currentTimeLineItem->setX(_currentX);
@@ -282,8 +304,6 @@ void DebugView::startSession()
 
 void DebugView::clearSession()
 {
-  _globalTime = 0;
-
   QList <QGraphicsItem *> items = _scene->items();
   foreach (QGraphicsItem *item, items)
   {
@@ -312,6 +332,8 @@ void DebugView::clearSession()
 
   _selectedSnapshotLineItem->hide();
   _selectedSnapshotRectItem->hide();
+
+  ((QTextEdit *)(_reportWidget->findChild<QTextEdit *> ()))->clear();
 }
 
 void DebugView::clearWidgetLayout(QWidget *widget)
@@ -327,6 +349,23 @@ void DebugView::clearWidgetLayout(QWidget *widget)
 void DebugView::stopSession()
 {
   _timer->stop();
+
+  QMapIterator <QString, DebugObjectItem *> iterator (_items);
+  while (iterator.hasNext())
+  {
+    iterator.next();
+    DebugObjectItem *item = iterator.value();
+    item->stopTimer();
+  }
+
+  /*
+   * _globalTime diferent than 0 indicates that
+   * there was a started session before this call.
+   */
+  if (_globalTime)
+    analyzeExecution();
+
+  _globalTime = 0;
 }
 
 bool DebugView::eventFilter(QObject *obj, QEvent *event)
@@ -375,4 +414,70 @@ bool DebugView::eventFilter(QObject *obj, QEvent *event)
     _selectedSnapshotLineItem->hide();
 
   return QDockWidget::eventFilter(obj, event);
+}
+
+void DebugView::showReportWidget(const bool &checked)
+{
+  _reportWidget->setVisible(checked);
+}
+
+void DebugView::analyzeExecution()
+{
+  QTextEdit *reportTextEdit = _reportWidget->findChild <QTextEdit *>();
+  if (!reportTextEdit) return;
+
+
+  QString reportSeparator = "============================================";
+  QList <QString> objectsInExecution;
+  QList <DebugObjectItem *> objectsBeginDelayed;
+
+  QMapIterator <QString, DebugObjectItem *> iterator (_items);
+  while (iterator.hasNext())
+  {
+    iterator.next();
+    QString object = iterator.key();
+    DebugObjectItem *item = iterator.value();
+
+    if (item->isRunning())
+      objectsInExecution.append(object);
+
+    if (item->diffRectBeginWidth())
+      objectsBeginDelayed.append(item);
+  }
+
+  QString warningTemplate = "<font color=\"red\">%1</font>";
+
+  QString str = "";
+  if (objectsInExecution.count() == 0)
+    str += "All objects were stopped before the application end.";
+  else
+  {
+    reportTextEdit->append(warningTemplate.arg("Objects in execution on "
+                                               "application end:"));
+
+    for (int i = 0; i < objectsInExecution.size(); i++)
+      if (i == 0)
+        str += warningTemplate.arg(objectsInExecution.at(i));
+      else
+        str += warningTemplate.arg(", " + objectsInExecution.at(i));
+  }
+
+  reportTextEdit->append(str);
+  reportTextEdit->append(reportSeparator);
+
+  str = "";
+  if (objectsBeginDelayed.count() == 0)
+    reportTextEdit->append("No object started with delay.");
+  else
+  {
+    reportTextEdit->append(warningTemplate.arg("Objects with delay in "
+                                               "beginning:"));
+    foreach (DebugObjectItem *item, objectsBeginDelayed)
+    {
+      str = warningTemplate.arg(item->object() +
+                                " : " + Util::secondsToString(
+                                  item->diffRectBeginWidth()/_INCREMENT));
+      reportTextEdit->append(str);
+    }
+  }
 }
