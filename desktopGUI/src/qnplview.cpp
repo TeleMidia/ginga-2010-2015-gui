@@ -25,8 +25,11 @@ QnplScene* QnplView::getScene()
 
 void QnplView::keyPressEvent(QKeyEvent *event)
 {
+  qDebug () << event->key();
+
   if (!(event->modifiers() & Qt::ControlModifier || event->modifiers() &
-        Qt::AltModifier)){
+        Qt::AltModifier))
+  {
 
     if (event->key() - Qt::Key_0 >= 0 && event->key() - Qt::Key_0 <= 9)
     {
@@ -79,13 +82,17 @@ void QnplView::keyPressEvent(QKeyEvent *event)
     {
       emit selected(Util::GINGA_KEY_PREFIX + "SPACE");
     }
-    else if (event->key() == Qt::Key_Backspace)
+    else if (event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Back)
     {
       emit selected(Util::GINGA_KEY_PREFIX + "BACKSPACE");
     }
     else if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
     {
       emit selected(Util::GINGA_KEY_PREFIX + "RETURN");
+    }
+    else if (event->key() == Qt::Key_Escape)
+    {
+      emit selected(Util::GINGA_QUIT);
     }
   }
   QGraphicsView::keyPressEvent(event);
