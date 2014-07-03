@@ -14,15 +14,15 @@ int main(int argc, char *argv[])
 {
     if (argc < 2)
     {
-        qDebug() << "Please specify the path of the first page.";
-        exit (0);
+        printf("Please inform the path of the first page.\n");
+        return -1;
     }
     QString path = QString::fromAscii(argv[1]);
     QFileInfo fileInfo (path);
     if (!fileInfo.exists())
     {
-        qDebug() << "Please specify a valid file.";
-        exit (0);
+        printf ("Please inform a valid file.\n");
+        return -1;
     }
 
     QDir::setCurrent(fileInfo.path());

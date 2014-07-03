@@ -55,7 +55,7 @@ UserAccountPage::UserAccountPage(Page *parentPage, QString language, QWidget *pa
 
     _itemsScrollArea->setWidget(scrollWidget);
 
-    _imageLabel->setPixmap(QPixmap("/usr/local/lib/ginga/gui/files/img/usermgmt.png"));
+    _imageLabel->setPixmap(QPixmap("../img/usermgmt.png"));
 }
 
 void UserAccountPage::updateValues()

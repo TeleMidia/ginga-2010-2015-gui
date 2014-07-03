@@ -14,7 +14,7 @@ UserPreferences::UserPreferences(Page * parentPage, QString language, QWidget *p
 {
     QVBoxLayout *mainLayout = new QVBoxLayout;
 
-    QSettings settings ( ":/settings/values", QSettings::IniFormat, this);
+    QSettings settings ( ":settings/values", QSettings::IniFormat, this);
     QStringList keys = settings.allKeys();
     keys.sort();
     foreach (QString key, keys){
@@ -28,8 +28,8 @@ UserPreferences::UserPreferences(Page * parentPage, QString language, QWidget *p
 
             int spaceIndex = value.indexOf(" ");
             if (spaceIndex != -1){
-                QString joker = value.left(spaceIndex);
-                if (joker == "INTEGER"){
+                QString wilcard = value.left(spaceIndex);
+                if (wilcard == "INTEGER"){
                     int parenthesesIndex = value.indexOf("(");
                     if (parenthesesIndex != -1){
                         value.remove(")");
@@ -43,7 +43,7 @@ UserPreferences::UserPreferences(Page * parentPage, QString language, QWidget *p
                             for (int i = begin; i <= end; i++)
                                 options << QString::number(i);
                         }
-			    }
+                    }
                 }
             }
         }
@@ -75,7 +75,6 @@ UserPreferences::UserPreferences(Page * parentPage, QString language, QWidget *p
     mainLayout->addSpacing(50);
     mainLayout->addWidget(_changeValues);
 
-
     QWidget *scrollWidget = new QWidget;
     scrollWidget->setLayout(mainLayout);
 
@@ -87,7 +86,7 @@ UserPreferences::UserPreferences(Page * parentPage, QString language, QWidget *p
 
     _itemsScrollArea->setWidget(scrollWidget);
 
-    _imageLabel->setPixmap(QPixmap("/usr/local/lib/ginga/gui/files/img/usermgmt.png"));
+    _imageLabel->setPixmap(QPixmap("../img/usermgmt.png"));
 }
 
 void UserPreferences::updateValues()

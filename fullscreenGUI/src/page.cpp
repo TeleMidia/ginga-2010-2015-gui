@@ -13,7 +13,8 @@
 
 #include "mainwindow.h"
 
-Page::Page(Page *parentPage, GingaPage *gingaPage, QString title, QString description, QString language, QList<MenuItem *> items, QWidget *parent) :
+Page::Page(Page *parentPage, GingaPage *gingaPage, QString title,
+           QString description, QString language, QList<MenuItem *> items, QWidget *parent) :
     QWidget(parent)
 {
     _itemsLayout = new QVBoxLayout;
@@ -228,7 +229,8 @@ bool Page::eventFilter(QObject *obj, QEvent *event)
             else if (keyEvent->key() == Qt::Key_Down){
                 focusNextChild();
             }
-            else if (keyEvent->key() == Qt::Key_Left || keyEvent->key() == Qt::Key_Backspace){
+            else if (keyEvent->key() == Qt::Key_Left || keyEvent->key() == Qt::Key_Backspace
+                     || keyEvent->key() == Qt::Key_Back){
 
                 emit parentPageRequested (_parentPage);
             }
@@ -244,7 +246,8 @@ bool Page::eventFilter(QObject *obj, QEvent *event)
 
 void Page::keyPressEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_Left || event->key() == Qt::Key_Return)
+    if (event->key() == Qt::Key_Left || event->key() == Qt::Key_Return
+            || event->key() == Qt::Key_Back)
         emit parentPageRequested(_parentPage);
 
     QWidget::keyPressEvent(event);
