@@ -33,7 +33,11 @@ bool GingaProxy::run(QString nclFile, WId wid)
 
     _process = new QProcess(this);
 
-    if (nclFile.endsWith(".ts"))
+    if (nclFile.startsWith("ip:"))
+    {
+      _args << "--set-tuner" << nclFile;
+    }
+    else if (nclFile.endsWith(".ts"))
     {
       _args << "--set-tuner" << QString ("file:" + nclFile);
     }

@@ -48,7 +48,8 @@ bool MenuItem::eventFilter(QObject *obj, QEvent *event)
         if( ((QKeyEvent *)event)->key() == Qt::Key_Enter || ((QKeyEvent *)event)->key() == Qt::Key_Return
                 || ((QKeyEvent *)event)->key() == Qt::Key_Right){
             QFileInfo fileInfo (_link);
-            if (fileInfo.suffix() == "ncl" || fileInfo.suffix() == "ts")
+            if (fileInfo.suffix() == "ncl" || fileInfo.suffix() == "ts" ||
+                fileInfo.fileName().startsWith("ip:"))
                 emit gingaRequested (_link);
 
             else
