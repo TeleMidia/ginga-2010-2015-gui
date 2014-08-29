@@ -39,8 +39,7 @@ typedef struct _PROCESS_MEMORY_COUNTERS_EX {
 #include <fcntl.h>
 #include <procfs.h>
 
-#elif defined(__linux__) || defined(__linux) || defined(linux) ||
-defined(__gnu_linux__)
+#elif defined(__linux__) || defined(__linux) || defined(linux) || defined(__gnu_linux__)
 #include <stdio.h>
 
 #endif
