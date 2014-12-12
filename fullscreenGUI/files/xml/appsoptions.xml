@@ -6,17 +6,11 @@
             <link>appsoptions.xml</link>
             <description>Choose the application source.</description>
             <language>en</language>
-            <item enable="false">
+<!--            <item enable="false">
                 <title>TV channel</title>
-		<description>Play aplications from a broadcast frequency channel.</description>
+				<description>Play aplications from a broadcast frequency channel.</description>
                 <link></link>
                 <enclosure url="../img/antenna.png" type="image/png" />
-            </item>
-            <item>
-                <title>Local Storage</title>
-                <description>Play applications included in this Ginga Box. This content were jointly created by TeleMidia Lab Team and many partners.</description>
-                <link>localapps.xml</link>
-                <enclosure url="../img/hd.png" type="image/png" />
             </item>
 	    <item>
                 <title>USB Storage</title>
@@ -30,7 +24,7 @@
                 <link>nocontentserver.xml</link>
                 <enclosure url="../img/network.png" type="image/png" />
             </item>
-<!--            <item>
+            <item>
                 <title>A Multi-Device Domain</title>
                 <description>Play an NCL application acting as an exhibition device associated to another Base Device. Your machine will be registered in a Multi-Device domain as a Class 1 (passive) device. This feature is in Beta stage, so unexpected results may arise.</description>
                 <link>exec:///system/mdpassive</link>
@@ -42,5 +36,11 @@
                 <link>udpcontent.xml</link>
                 <enclosure url="../img/usbstorage.png" type="image/png" />
             </item>-->
+            <item>
+                <title>Local Storage</title>
+                <description>Play applications included in this Ginga Box. This content were jointly created by TeleMidia Lab Team and many partners.</description>
+                <link>localapps.xml</link>
+                <enclosure url="../img/hd.png" type="image/png" />
+            </item>			
         </channel>
 </rss>

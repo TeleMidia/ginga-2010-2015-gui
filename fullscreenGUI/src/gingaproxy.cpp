@@ -38,10 +38,11 @@ bool GingaProxy::run(QString nclFile, WId wid)
     unsigned long long ullWid = (unsigned long long) QApplication::activeWindow()->winId();
 
     if (ullWid != 0){
-        _args << "--parent" << ":0.0," + QString::number(ullWid) + ",0,0," + QString::number(SCREEN_WIDTH) + "," + QString::number(SCREEN_HEIGHT);
+        _args << "--wid" << QString::number(ullWid);
     }
     _args << "--poll-stdin";
 
+    qDebug() << _binaryPath;
     qDebug() << _args;
 
     connect (_process, SIGNAL(started()), this, SIGNAL(gingaStarted()));

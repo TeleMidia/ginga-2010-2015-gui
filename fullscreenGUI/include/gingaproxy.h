@@ -10,7 +10,8 @@ class GingaProxy : public QObject
 {
     Q_OBJECT
 public:
-    inline static GingaProxy * getInstance (QString binaryPath = "", QWidget *parent = 0)
+    inline static GingaProxy * getInstance (const QString &binaryPath = "",
+                                            QWidget *parent = 0)
     {
         if (!_instance)
             _instance = new GingaProxy (binaryPath, parent);

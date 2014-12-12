@@ -6,35 +6,95 @@
     <link>cdcontent.xml</link>
     <description>Ginga Live CD contains demo applications to introduce some NCL features even if you are not online at the moment. These applications were developed by the TeleMidia Lab and can also be found in The NCL Club.</description>
     <language>en</language>
-    <item>
+<!--    <item>
       <title>Africa's World Cup 2010</title>
-      <description></description>
+      <description>The NCL application "Brazil 2014 Bis" uses multiple devices and was presented during the World Cup 2010 in South Africa. It shows videos of past editions of the FIFA World Cup and allows two mobile devices with service "NCL Active class" interact with TV device.</description>
       <link>C:/Users/Ginga/workspace/minipc-apps/africa2010/africa2010.ncl</link>
       <enclosure url="C:/Users/Ginga/workspace/minipc-apps/africa2010/preview.png" type="image/png"/>
-    </item>
+    </item>-->
     <item>
       <title>Brasil 4K</title>
-      <description></description>
+      <description>The project "Brazil 4D" offer a interactive contente to make social inclusion with poor families in the city of João Pessoa. Four content were offered: employment opportunities; health education; welfare support information; and financial management information.</description>
       <link>C:/Users/Ginga/workspace/minipc-apps/portal_ebc/main.ncl</link>
-      <enclosure url="C:/Users/Ginga/workspace/minipc-apps/africa2010/preview.png" type="image/png"/>
+      <enclosure url="C:/Users/Ginga/workspace/minipc-apps/portal_ebc/preview.png" type="image/png"/>
     </item>
-    <item>
+<!--	<item>
+      <title>Cusco</title>
+      <description>Interactive documentary about Cusco (Peru).</description>
+      <link>C:/Users/Ginga/workspace/minipc-apps/mestizo/mestizo.ncl</link>
+      <enclosure url="C:/Users/Ginga/workspace/minipc-apps/mestizo/preview.png" type="image/png"/>
+    </item>-->
+	<item>
+      <title>Formula 1</title>
+      <description>This is an interactive application which presents some additional content about pilots and race.</description>
+      <link>C:/Users/Ginga/workspace/minipc-apps/formula1/formula1.ncl</link>
+      <enclosure url="C:/Users/Ginga/workspace/minipc-apps/formula1/preview.png" type="image/png"/>
+    </item>
+	<item>
       <title>Garrincha and the First "João"</title>
       <description>O Primeiro Joao (The First John) is a festival winning animation created by Andre Castelao under the coordination of Claudia Bolshaw and Marcos Magalhaes. The animation is inspired by an homonym chronicle about Garrincha written by Gerson Soares. This interactive application was developed by TeleMidia Lab for NCL learning purposes.</description>
-      <link>C:/Users/Ginga/workspace/minipc-apps/primeirojoao/11nclua.ncl</link>
-      <enclosure url="C:/Users/Ginga/workspace/minipc-apps/primeirojoao/preview.png" type="image/png"/>
+      <link>C:/Users/Ginga/workspace/minipc-apps/GarrinchaArgentina_11-10-2013/GarrinchaFinal.ncl</link>
+      <enclosure url="C:/Users/Ginga/workspace/minipc-apps/GarrinchaArgentina_11-10-2013/preview.png" type="image/png"/>
     </item>
-    <item>
-      <title>Ginga Hero</title>
-      <description>Ginga Hero is a musical game based on commercial greatest success games like GuitarHero and RockBand.</description>
-      <link>C:/Users/Ginga/workspace/minipc-apps/gingahero-final/main.ncl</link>
-      <enclosure url="C:/Users/Ginga/workspace/minipc-apps/gingahero-final/preview.png" type="image/png"/>
+	<item>
+      <title>Horse race</title>
+      <description>This is a horse race game.</description>
+      <link>C:/Users/Ginga/workspace/minipc-apps/hrace/hrace.ncl</link>
+      <enclosure url="C:/Users/Ginga/workspace/minipc-apps/hrace/preview.png" type="image/png"/>
     </item>
+	<item>
+      <title>Music App</title>
+      <description>This is a Music App.</description>
+      <link>C:/Users/Ginga/workspace/minipc-apps/MusicApp/views/home.ncl</link>
+      <enclosure url="C:/Users/Ginga/workspace/minipc-apps/MusicApp/preview.png" type="image/png"/>
+    </item>
+<!--	<item>
+      <title>Latin America Tourism</title>
+      <description>Meet some sights of Latin America.</description>
+      <link>C:/Users/Ginga/workspace/minipc-apps/latinamerica/latinamerica.ncl</link>
+      <enclosure url="C:/Users/Ginga/workspace/minipc-apps/latinamerica/preview.png" type="image/png"/>
+    </item>-->
+	<item>
+      <title>Pizza Hell</title>
+      <description>Pizza Hell is an interactive advertisement.</description>
+      <link>C:/Users/Ginga/workspace/minipc-apps/Deliver_Me_To_Hell/deliver_me_to_hell.ncl</link>
+      <enclosure url="C:/Users/Ginga/workspace/minipc-apps/Deliver_Me_To_Hell/preview.jpg" type="image/png"/>
+    </item>
+<!--	<item>
+      <title>Route of the Day</title>
+      <description>Route of the Day is a non-linear program which invites the viewer to create his/her own history narrative line. Since the beginning, until the end, it is possible choose the next route to visit.</description>
+      <link>C:/Users/Ginga/workspace/minipc-apps/Deliver_Me_To_Hell/main.ncl</link>
+      <enclosure url="C:/Users/Ginga/workspace/minipc-apps/RoteiroDoDia/preview.jpg" type="image/png"/>
+    </item>-->
     <item>
-      <title>Proview Advertisements</title>
-      <description>"Proview Advertisements" is the first advertisement series created by Proview Produções to illustrate their vision about the interactive space that advertisers and companies can explore with Ginga-NCL.</description>
-      <link>C:/Users/Ginga/workspace/minipc-apps/STC05/STC05.ncl</link>
-      <enclosure url="C:/Users/Ginga/workspace/minipc-apps/ComerciaisProview/preview.png" type="image/png"/>
+      <title>The Matrix</title>
+      <description>The Matrix is a short NCL application that illustrates causal synchronisms.</description>
+      <link>C:/Users/Ginga/workspace/minipc-apps/matrix/matrix.ncl</link>
+	  <enclosure url="C:/Users/Ginga/workspace/minipc-apps/matrix/preview.png" type="image/png"/>
+    </item>
+	<item>
+      <title>The Princess Kidnapping</title>
+      <description>The Princess Kidnapping is an interactive narrative based on fairy tales which has been adapted to a modern comedy fairy tales.</description>
+      <link>C:/Users/Ginga/workspace/minipc-apps/ThePrincessKidnaping/ThePrincessKidnaping.ncl</link>
+      <enclosure url="C:/Users/Ginga/workspace/minipc-apps/ThePrincessKidnaping/preview.png" type="image/png"/>
+    </item>
+	<item>
+      <title>Tic Tac Toe</title>
+      <description>Tic-tac-toe, also spelled tick tack toe, and alternatively called noughts and crosses, hugs and kisses, and many other names, is a pencil-and-paper game for two players, O and X, who take turns marking the spaces in a 3×3 grid, usually X going first. The player who succeeds in placing three respective marks in a horizontal, vertical or diagonal row wins the game.</description>
+      <link>C:/Users/Ginga/workspace/minipc-apps/velha/main.ncl</link>
+      <enclosure url="C:/Users/Ginga/workspace/minipc-apps/velha/preview.png" type="image/png"/>
+    </item>
+	<item>
+      <title>Viva Mais Peso</title>
+      <description>Viva Mais Peso helps people to find out their ideal weight.</description>
+      <link>C:/Users/Ginga/workspace/minipc-apps/peso/peso.ncl</link>
+      <enclosure url="C:/Users/Ginga/workspace/minipc-apps/peso/preview.png" type="image/png"/>
+    </item>
+	<item>
+      <title>Viva Mais Pratos</title>
+      <description>Viva Mais Pratos is one of the first Brazilian TV show produced with focus on viewer interactivity.</description>
+      <link>C:/Users/Ginga/workspace/minipc-apps/VivaMaisPratos/main.ncl</link>
+      <enclosure url="C:/Users/Ginga/workspace/minipc-apps/VivaMaisPratos/preview.png" type="image/png"/>
     </item>
   </channel>
 </rss>

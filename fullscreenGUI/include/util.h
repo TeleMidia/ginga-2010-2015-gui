@@ -5,18 +5,32 @@
 extern int SCREEN_HEIGHT;
 extern int SCREEN_WIDTH;
 
-const QString GINGA_PATH = "/usr/bin/ginga"; //Ginga's binary path
+const QString TELEMIDIA_ID = "telemidia";
 
-const QString USER_ACCOUNT_PATH = "/usr/etc/ginga/files/contextmanager/users.ini"; //Users' file info
+const QString TELEMIDIA_DOMAIN = "telemidia.puc-rio.br";
 
-const QString USER_PREFERENCES_PATH = "/usr/etc/ginga/files/contextmanager/contexts.ini"; //Ginga's global variables
+const QString APP_NAME = "gingagui";
 
-const QString USB_XML_FILE = "/var/run/gingagui/usb.xml"; //USB default xml file
+const QString USER_ACCOUNT_FILE = "gingauser_file"; //Users' file info
 
-const QString USB_XML_PARENT_DIR = "/var/run/gingagui/"; //USB default xml parent directory
+const QString USER_PREFERENCES_FILE = "gingaconfig_file"; //Ginga's global variables
 
-const QString USB_JOKER = "/usr/local/lib/ginga/gui/files/xml/dyncontent.xml#mnt-usb"; //USB Joker
+const QString USB_XML_FILE = //USB default xml file
+#if defined _linux_
+    "/var/run/gingagui/usb.xml";
+#elif defined __WIN32__
+    "C:/tmp/gingagui/usb.xml";
+#endif
 
-const QString GINGA_KEY_PREFIX = "SDLK_";
+const QString USB_XML_PARENT_DIR = //USB default xml parent directory
+#if defined _linux_
+    "/var/run/gingagui/usb.xml";
+#elif defined __WIN32__
+    "C:/tmp/gingagui";
+#endif
+
+const QString USB_WILCARD = "/usr/local/lib/ginga/gui/files/xml/dyncontent.xml#mnt-usb"; //USB Wilcard
+
+const QString GINGA_KEY_PREFIX = "GIEK:";
 
 #endif // UTIL_H

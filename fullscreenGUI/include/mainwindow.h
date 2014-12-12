@@ -14,51 +14,48 @@
 
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
-    
-public:
-    explicit MainWindow(QString mainPage, QWidget *parent = 0);
-    inline WId gingaViewWId () const
-    { return _gingaPage->viewWId(); }
-
-    ~MainWindow();
+  Q_OBJECT
 
 public:
-    void keyPressEvent(QKeyEvent *);
+  explicit MainWindow(QString mainPage, QWidget *parent = 0);
+  inline WId gingaViewWId () const
+  { return _gingaPage->viewWId(); }
+
+  ~MainWindow();
+
+public:
+  void keyPressEvent(QKeyEvent *);
 
 signals:
-    void keyPressed (QString);
+  void keyPressed (QString);
 
 public slots:
-    void changePage (MenuItem *);
-    void changePage (Page *);
-    void showGingaView ();
-    void hideGingaView ();
-    void analyzeDir (QString);
+  void changePage (MenuItem *);
+  void changePage (Page *);
+  void showGingaView ();
+  void hideGingaView ();
+  void analyzeDir (QString);
 
 private:
-    Page * parsePage (QString);
-    void setUpPage (QString, Page *);
+  Page * parsePage (QString);
+  void setUpPage (QString, Page *);
 
-    QStackedLayout *_stackedLayout;
+  QString _execPath;
 
-    QMap <QString, Page*> _pages;
+  QStackedLayout *_stackedLayout;
 
-    QWidget *_lastPage;
+  QMap <QString, Page*> _pages;
 
-    Page * _usbPage;
+  QWidget *_lastPage;
 
-    Page * _ipPage;
+  Page * _usbPage;
+  Page * _ipPage;
+  Page * _mainPage;
 
-    Page * _mainPage;
-
-    GingaProxy * _gingaProxy;
-
-    GingaPage *_gingaPage;
-
-    QWidget *_loadingPage;
-
-    QFileSystemWatcher *_usbPathWatcher;
+  GingaProxy * _gingaProxy;
+  GingaPage *_gingaPage;
+  QWidget *_loadingPage;
+  QFileSystemWatcher *_usbPathWatcher;
 };
 
 #endif // MAINWINDOW_H

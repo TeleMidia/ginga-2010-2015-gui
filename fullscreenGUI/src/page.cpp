@@ -13,8 +13,10 @@
 
 #include "mainwindow.h"
 
-Page::Page(Page *parentPage, GingaPage *gingaPage, QString title, QString description, QString language, QList<MenuItem *> items, QWidget *parent) :
-    QWidget(parent)
+Page::Page(Page *parentPage, GingaPage *gingaPage, const QString &execPath,
+           QString title, QString description, QString language,
+           QList<MenuItem *> items, QWidget *parent) :
+    QWidget(parent), _execPath (execPath)
 {
     _itemsLayout = new QVBoxLayout;
 
@@ -40,7 +42,8 @@ Page::Page(Page *parentPage, GingaPage *gingaPage, QString title, QString descri
     _imageLabel->setPixmap(QPixmap(imagePath));
 }
 
-Page::Page (Page *parentPage, QString title, QString description, QString language, QWidget *parent)
+Page::Page (Page *parentPage, QString title, QString description,
+            QString language, QWidget *parent)
     : QWidget (parent)
 {
     _parentPage = parentPage;
@@ -107,7 +110,7 @@ void Page::setupLayout(Page *parentPage, GingaPage *gingaPage, QString title, QS
     _gingaPage = gingaPage;
     _parentPage = parentPage;
 
-    _gingaProxy = GingaProxy::getInstance(GINGA_PATH);
+    _gingaProxy = GingaProxy::getInstance(_execPath);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     setLayout(mainLayout);
@@ -228,7 +231,8 @@ bool Page::eventFilter(QObject *obj, QEvent *event)
             else if (keyEvent->key() == Qt::Key_Down){
                 focusNextChild();
             }
-            else if (keyEvent->key() == Qt::Key_Left || keyEvent->key() == Qt::Key_Backspace){
+            else if (keyEvent->key() == Qt::Key_Left || keyEvent->key() == Qt::Key_Backspace
+                     || keyEvent->key() == Qt::Key_Back){
 
                 emit parentPageRequested (_parentPage);
             }
@@ -244,7 +248,8 @@ bool Page::eventFilter(QObject *obj, QEvent *event)
 
 void Page::keyPressEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_Left || event->key() == Qt::Key_Return)
+    if (event->key() == Qt::Key_Left || event->key() == Qt::Key_Return
+            || event->key() == Qt::Key_Back)
         emit parentPageRequested(_parentPage);
 
     QWidget::keyPressEvent(event);

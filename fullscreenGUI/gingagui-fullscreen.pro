@@ -11,12 +11,16 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = gingagui
 TEMPLATE = app
 
-target.path = /usr/local/bin
+INSTALLS += target
 
-xmls.path = /usr/local/lib/ginga/gui/files/xml
-xmls.files += files/xml/*
 
-INSTALLS += target xmls
+unix {
+   target.path = /usr/local/bin
+   xmls.path = /usr/local/lib/ginga/gui/files/xml
+   xmls.files += files/xml/*
+
+   INSTALLS += xmls
+}
 
 INCLUDEPATH += include\
 
@@ -49,7 +53,6 @@ HEADERS  += include/mainwindow.h \
     include/userpreferences.h \
     include/ippage.h
 
-FORMS    += mainwindow.ui
 
 RESOURCES += \
     Resources.qrc

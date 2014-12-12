@@ -311,7 +311,7 @@ void QnplMainWindow::createWidgets()
 
   _debugView = new DebugView(_view, this);
   addDockWidget(Qt::LeftDockWidgetArea, _debugView);
-  //_debugView->setVisible(false);
+  _debugView->setVisible(false);
 
   _scanProgress = new QProgressDialog ("Scanning channels...", "Abort",
                                        0, 100, this);
