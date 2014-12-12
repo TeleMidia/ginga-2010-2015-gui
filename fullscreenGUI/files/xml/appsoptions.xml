@@ -13,12 +13,6 @@
                 <enclosure url="../img/antenna.png" type="image/png" />
             </item>
 	    <item>
-                <title>USB Storage</title>
-                <description>Play applications included in a USB mass storage device. This is the option if you want to test your own NCL applications.</description>
-                <link>dyncontent.xml#mnt-usb</link>
-                <enclosure url="../img/usbstorage.png" type="image/png" />
-            </item>
-	    <item>
                 <title>IP Network</title>
                 <description>Play applications included in a content server located in network.</description>
                 <link>nocontentserver.xml</link>
@@ -41,6 +35,12 @@
                 <description>Play applications included in this Ginga Box. This content were jointly created by TeleMidia Lab Team and many partners.</description>
                 <link>localapps.xml</link>
                 <enclosure url="../img/hd.png" type="image/png" />
+            </item>
+			<item>
+                <title>USB Storage</title>
+                <description>Play applications included in a USB mass storage device. This is the option if you want to test your own NCL applications.</description>
+                <link>dyncontent.xml#mnt-usb</link>
+                <enclosure url="../img/usbstorage.png" type="image/png" />
             </item>			
         </channel>
 </rss>

@@ -12,7 +12,9 @@ class PageXmlParser
 public:
     explicit PageXmlParser(QString path);
 
-    QString title () const { return _title; }
+    QString title () const
+    { return _title != "" ? _title :
+                            "NCL applications in this USB Drive:"; }
     QString description () const { return _description; }
     QString language () const { return _language; }
     QList <MenuItem *> items() const { return _items; }
