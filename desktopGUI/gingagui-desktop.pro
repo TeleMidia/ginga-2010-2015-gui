@@ -23,11 +23,6 @@ QT += \
 
 INCLUDEPATH += include\
 
-#if defined(_WIN32)
-LIBS += -lpsapi
-#endif
-
-
 SOURCES += \
     src/main.cpp \
     src/qnplmainwindow.cpp \

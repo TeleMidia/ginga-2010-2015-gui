@@ -33,7 +33,16 @@ bool GingaProxy::run(QString nclFile, WId wid)
 
     _process = new QProcess(this);
 
-    _args << "--ncl" << nclFile;
+    if (nclFile.startsWith("ip:"))
+    {
+      _args << "--set-tuner" << nclFile;
+    }
+    else if (nclFile.endsWith(".ts"))
+    {
+      _args << "--set-tuner" << QString ("file:" + nclFile);
+    }
+    else
+      _args << "--ncl" << nclFile;
 
     unsigned long long ullWid = (unsigned long long) QApplication::activeWindow()->winId();
 

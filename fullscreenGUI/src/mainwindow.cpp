@@ -367,9 +367,9 @@ void MainWindow::analyzeDir(QString dir)
 
     if (!parser->hasError())
     {
-      _stackedLayout->setCurrentWidget (_usbPage);
-      focusNextChild();
+      _stackedLayout->setCurrentWidget (_usbPage);      
     }
+    focusNextChild();
 
     delete parser;
     _lastPage = 0;
