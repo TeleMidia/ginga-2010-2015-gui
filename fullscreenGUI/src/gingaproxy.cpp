@@ -30,42 +30,51 @@ bool GingaProxy::run(QString nclFile, WId wid)
         if (state == QProcess::NotRunning)
             delete _process;
     }
+    QStringList args;
 
     _process = new QProcess(this);
 
     if (nclFile.startsWith("ip:"))
     {
-      _args << "--set-tuner" << nclFile;
+      args << "--set-tuner" << nclFile;
     }
     else if (nclFile.endsWith(".ts"))
     {
-      _args << "--set-tuner" << QString ("file:" + nclFile);
+      args << "--set-tuner" << QString ("file:" + nclFile);
     }
     else
-      _args << "--ncl" << nclFile;
+      args << "--ncl" << nclFile;
 
     unsigned long long ullWid = (unsigned long long) QApplication::activeWindow()->winId();
+            //wid;
 
-    if (ullWid != 0){
-        _args << "--wid" << QString::number(ullWid);
+    if (ullWid != 0)
+    {
+#if __linux__
+        /* --parent :display,winId,x,y,w,h */
+        args << "--parent" << ":0.0," + QString::number(ullWid) + ",0,0,"
+             + QString::number(QApplication::activeWindow()->width()) + "," +
+             QString::number(QApplication::activeWindow()->height());
+#else
+        args << "--wid" << QString::number(ullWid);
+#endif
     }
-    _args << "--poll-stdin";
+
+    args << "--poll-stdin";
 
     qDebug() << _binaryPath;
-    qDebug() << _args;
+    qDebug() << args;
 
     connect (_process, SIGNAL(started()), this, SIGNAL(gingaStarted()));
     connect (_process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(finished(int,QProcess::ExitStatus)));
 
-    _process->start(_binaryPath, _args);
+    _process->start(_binaryPath, args);
 
     return true;
 }
 
 void GingaProxy::finished(int code, QProcess::ExitStatus status)
 {
-    _args.clear();
-
     if (_process){
 
         qDebug () << _process->state();

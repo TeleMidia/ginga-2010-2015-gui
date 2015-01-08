@@ -16,15 +16,15 @@ const QString USER_ACCOUNT_FILE = "gingauser_file"; //Users' file info
 const QString USER_PREFERENCES_FILE = "gingaconfig_file"; //Ginga's global variables
 
 const QString USB_XML_FILE = //USB default xml file
-#if defined _linux_
+#if defined __linux__
     "/var/run/gingagui/usb.xml";
 #elif defined __WIN32__
     "C:/tmp/gingagui/usb.xml";
 #endif
 
 const QString USB_XML_PARENT_DIR = //USB default xml parent directory
-#if defined _linux_
-    "/var/run/gingagui/usb.xml";
+#if defined __linux__
+    "/var/run/gingagui";
 #elif defined __WIN32__
     "C:/tmp/gingagui";
 #endif

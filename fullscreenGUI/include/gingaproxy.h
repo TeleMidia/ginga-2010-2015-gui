@@ -57,7 +57,6 @@ private:
 
     QProcess *_process;
     QString _binaryPath;
-    QStringList _args;
 };
 
 #endif // GINGAPROXY_H

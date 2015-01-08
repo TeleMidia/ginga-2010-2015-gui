@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 
 #include <QDebug>
 #include <QFile>
@@ -7,6 +6,7 @@
 #include <QProcess>
 #include <QMovie>
 #include <QSettings>
+#include <QEventLoop>
 
 #include "pagexmlparser.h"
 #include "useraccountpage.h"
@@ -19,6 +19,11 @@ MainWindow::MainWindow(QString mainPage, QWidget *parent) :
   QSettings settigs (QSettings::IniFormat, QSettings::UserScope,
                      TELEMIDIA_ID, APP_NAME, this);
   _execPath = settigs.value("location").toString();
+
+#if __linux__
+  if (_execPath == "")
+      _execPath = "ginga";
+#endif
 
   _usbPage = 0;
   _ipPage = 0;
@@ -71,7 +76,7 @@ MainWindow::MainWindow(QString mainPage, QWidget *parent) :
 
   _usbPathWatcher->addPath(USB_XML_PARENT_DIR);
 
-#if _linux_
+#if __linux__
   QStringList args;
   args << "/mnt" << USB_XML_FILE;
   QProcess::execute("gingagui-minipc-walk", args);
@@ -158,7 +163,7 @@ void MainWindow::changePage(MenuItem *item)
           delete process;
 
           if (lastToken == "trydhcp"){
-#if _linux_
+#if __linux__
             process = new QProcess(this);
 
             process->start("getip");
