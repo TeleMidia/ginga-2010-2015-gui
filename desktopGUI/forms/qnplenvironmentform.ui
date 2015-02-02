@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>399</width>
-    <height>283</height>
+    <height>295</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -37,7 +37,7 @@
        </widget>
       </item>
       <item row="0" column="2">
-       <widget class="QComboBox" name="comboBox">
+       <widget class="QComboBox" name="languageBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -91,7 +91,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox_2">
+       <widget class="QComboBox" name="screensizeBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -105,10 +105,55 @@
         </item>
         <item>
          <property name="text">
+          <string>320x180 (16:9)</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>:/icon/tv</normaloff>:/icon/tv</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>320x240 (4:3)</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>:/icon/tv</normaloff>:/icon/tv</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>320x288 (4:3)</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>:/icon/mobile</normaloff>:/icon/mobile</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
           <string>640x480 (4:3)</string>
          </property>
          <property name="icon">
-          <iconset resource="../application.qrc">
+          <iconset>
+           <normaloff>:/icon/tv</normaloff>:/icon/tv</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>720x480 (4:3)</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>:/icon/tv</normaloff>:/icon/tv</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>720x576 (4:3)</string>
+         </property>
+         <property name="icon">
+          <iconset>
            <normaloff>:/icon/tv</normaloff>:/icon/tv</iconset>
          </property>
         </item>
@@ -117,7 +162,7 @@
           <string>800x600 (4:3)</string>
          </property>
          <property name="icon">
-          <iconset resource="../application.qrc">
+          <iconset>
            <normaloff>:/icon/tv</normaloff>:/icon/tv</iconset>
          </property>
         </item>
@@ -126,17 +171,8 @@
           <string>1024x768 (4:3)</string>
          </property>
          <property name="icon">
-          <iconset resource="../application.qrc">
-           <normaloff>:/icon/tv</normaloff>:/icon/tv</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>854x480 (16:9)</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../application.qrc">
-           <normaloff>:/icon/tv</normaloff>:/icon/tv</iconset>
+          <iconset>
+           <normaloff>:/icon/mobile</normaloff>:/icon/mobile</iconset>
          </property>
         </item>
         <item>
@@ -144,8 +180,8 @@
           <string>1280x720 (16:9)</string>
          </property>
          <property name="icon">
-          <iconset resource="../application.qrc">
-           <normaloff>:/icon/tv</normaloff>:/icon/tv</iconset>
+          <iconset>
+           <normaloff>:/icon/mobile</normaloff>:/icon/mobile</iconset>
          </property>
         </item>
         <item>
@@ -153,52 +189,7 @@
           <string>1920x1080 (16:9)</string>
          </property>
          <property name="icon">
-          <iconset resource="../application.qrc">
-           <normaloff>:/icon/tv</normaloff>:/icon/tv</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>320x400 (4:5)</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../application.qrc">
-           <normaloff>:/icon/mobile</normaloff>:/icon/mobile</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>400x320 (5:4)</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../application.qrc">
-           <normaloff>:/icon/mobile</normaloff>:/icon/mobile</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>320x180 (16:9)</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../application.qrc">
-           <normaloff>:/icon/mobile</normaloff>:/icon/mobile</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>320x240 (4:3)</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../application.qrc">
-           <normaloff>:/icon/mobile</normaloff>:/icon/mobile</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>240x320 (3:4)</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../application.qrc">
+          <iconset>
            <normaloff>:/icon/mobile</normaloff>:/icon/mobile</iconset>
          </property>
         </item>
@@ -214,7 +205,7 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QCheckBox" name="checkBox">
+       <widget class="QCheckBox" name="autoplayButton">
         <property name="toolTip">
          <string>Automatically start the presentation when a document is opened</string>
         </property>
@@ -224,7 +215,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="checkBox_2">
+       <widget class="QCheckBox" name="logButton">
         <property name="text">
          <string>Log</string>
         </property>
@@ -248,8 +239,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../application.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

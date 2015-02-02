@@ -32,6 +32,9 @@ QString Util::V_AUTOPLAY = "autoplay";
 QString Util::V_SCREENSIZE = "screensize";
 QString Util::V_PASSIVE = "passive_running";
 QString Util::V_DEVICE_PORT = "device_port";
+QString Util::V_ENABLE_LOG = "enablelog";
+QString Util::V_LANG = "lang";
+QString Util::V_EMBEDDED = "embedded";
 
 QString Util::G_ON_BEGIN = "onBegin";
 QString Util::G_ON_END = "onEnd";

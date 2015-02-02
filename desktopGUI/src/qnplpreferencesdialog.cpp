@@ -97,21 +97,27 @@ void QnplPreferencesDialog::init(QSettings* settings)
   _generalPane->show();
   _runPane->hide();
 
+  for (int i = 0; i < _generalForm.screensizeBox->count(); i++)
+  {
+    QString itemText = _generalForm.screensizeBox->itemText(i);
+    _screenSizeMap [itemText.split(" ").at(0)] = i;
+  }
+
   loadSettings();
 }
 
 void QnplPreferencesDialog::loadSettings()
 {
   if (_settings->value("enablelog").toString() == "true")
-    _generalForm.checkBox_2->setChecked(true);
+    _generalForm.logButton->setChecked(true);
   else
-    _generalForm.checkBox_2->setChecked(false);
+    _generalForm.logButton->setChecked(false);
 
 
   if (_settings->value(Util::V_AUTOPLAY).toString() == "true"){
-    _generalForm.checkBox->setChecked(true);
+    _generalForm.autoplayButton->setChecked(true);
   }else{
-    _generalForm.checkBox->setChecked(false);
+    _generalForm.autoplayButton->setChecked(false);
   }
 
   _runForm.executableEdit->setText(_settings->value(Util::V_LOCATION).
@@ -120,37 +126,18 @@ void QnplPreferencesDialog::loadSettings()
   _runForm.contextFileLocation->setText(_settings->value(Util::V_CONTEXT_FILE).
                                         toString());
 
-  if (_settings->value(Util::V_SCREENSIZE).toString() == "640x480")
-    _generalForm.comboBox_2->setCurrentIndex(1);
-  else if (_settings->value(Util::V_SCREENSIZE).toString() == "800x600")
-    _generalForm.comboBox_2->setCurrentIndex(2);
-  else if (_settings->value(Util::V_SCREENSIZE).toString() == "1024x768")
-    _generalForm.comboBox_2->setCurrentIndex(3);
-  else if (_settings->value(Util::V_SCREENSIZE).toString() == "854x480")
-    _generalForm.comboBox_2->setCurrentIndex(4);
-  else if (_settings->value(Util::V_SCREENSIZE).toString() == "1280x720")
-    _generalForm.comboBox_2->setCurrentIndex(5);
-  else if (_settings->value(Util::V_SCREENSIZE).toString() == "1920x1080")
-    _generalForm.comboBox_2->setCurrentIndex(6);
-  else if (_settings->value(Util::V_SCREENSIZE).toString() == "320x400")
-    _generalForm.comboBox_2->setCurrentIndex(7); //(!)index 6 is an empty option
-  else if (_settings->value(Util::V_SCREENSIZE).toString() == "400x320")
-    _generalForm.comboBox_2->setCurrentIndex(8);
-  else if (_settings->value(Util::V_SCREENSIZE).toString() == "320x180")
-    _generalForm.comboBox_2->setCurrentIndex(9);
-  else if (_settings->value(Util::V_SCREENSIZE).toString() == "320x240")
-    _generalForm.comboBox_2->setCurrentIndex(10);
-  else if (_settings->value(Util::V_SCREENSIZE).toString() == "240x320")
-    _generalForm.comboBox_2->setCurrentIndex(11);
-  else
-    _generalForm.comboBox_2->setCurrentIndex(0);
+
+  int index = _screenSizeMap.value(
+                _settings->value(Util::V_SCREENSIZE).toString(), 0);
+
+  _generalForm.screensizeBox->setCurrentIndex(index);
 
   if (_settings->value("lang").toString() == "en")
-    _generalForm.comboBox->setCurrentIndex(0);
+    _generalForm.languageBox->setCurrentIndex(0);
   else if (_settings->value("lang").toString() == "pt_br")
-    _generalForm.comboBox->setCurrentIndex(1);
+    _generalForm.languageBox->setCurrentIndex(1);
   else if (_settings->value("lang").toString() == "en")
-    _generalForm.comboBox->setCurrentIndex(2);
+    _generalForm.languageBox->setCurrentIndex(2);
 
   _runForm.argsEdit->setText(_settings->value(Util::V_PARAMETERS,
                                               Util::defaultParameters())
@@ -169,6 +156,11 @@ void QnplPreferencesDialog::loadSettings()
       _runForm.standardRadioButton->setChecked(true);
   }
 
+  if (_settings->value("embedded").toString() == "true")
+      _runForm.embeddedButton->setChecked(true);
+  else
+      _runForm.embeddedButton->setChecked(false);
+
   loadGingaPreferences();
 }
 
@@ -176,63 +168,30 @@ void QnplPreferencesDialog::saveSettings()
 {
   qDebug() << "Saving settings...";
 
-  if (_generalForm.checkBox->isChecked())
+  if (_generalForm.autoplayButton->isChecked())
     _settings->setValue(Util::V_AUTOPLAY, true);
   else
     _settings->setValue(Util::V_AUTOPLAY, false);
 
-  if (_generalForm.checkBox_2->isChecked())
-    _settings->setValue("enablelog", true);
+  if (_generalForm.logButton->isChecked())
+    _settings->setValue(Util::V_ENABLE_LOG, true);
   else
-    _settings->setValue("enablelog", false);
+    _settings->setValue(Util::V_ENABLE_LOG, false);
 
-  switch (_generalForm.comboBox_2->currentIndex())
-  {
-    case 1:
-      _settings->setValue(Util::V_SCREENSIZE, "640x480");
-      break;
-    case 2:
-      _settings->setValue(Util::V_SCREENSIZE,"800x600");
-      break;
-    case 3:
-      _settings->setValue(Util::V_SCREENSIZE,"1024x768");
-      break;
-    case 4:
-      _settings->setValue(Util::V_SCREENSIZE,"854x480");
-      break;
-    case 5:
-      _settings->setValue(Util::V_SCREENSIZE,"1280x720");
-      break;
-    case 6:
-      _settings->setValue(Util::V_SCREENSIZE,"1920x1080");
-      break;
-    case 7:
-      _settings->setValue(Util::V_SCREENSIZE,"320x400");
-      break;
-    case 8:
-      _settings->setValue(Util::V_SCREENSIZE,"400x320");
-      break;
-    case 9:
-      _settings->setValue(Util::V_SCREENSIZE,"320x180");
-      break;
-    case 10:
-      _settings->setValue(Util::V_SCREENSIZE,"320x240");
-      break;
-    case 11:
-      _settings->setValue(Util::V_SCREENSIZE,"240x320");
-      break;
-  }
+  _settings->setValue(Util::V_SCREENSIZE,
+                      _generalForm.screensizeBox->currentText().
+                      split(" ").at(0));
 
-  switch (_generalForm.comboBox->currentIndex())
+  switch (_generalForm.languageBox->currentIndex())
   {
     case 0:
-      _settings->setValue("lang","en");
+      _settings->setValue(Util::V_LANG,"en");
       break;
     case 1:
-      _settings->setValue("lang","pt_br");
+      _settings->setValue(Util::V_LANG,"pt_br");
       break;
     case 2:
-      _settings->setValue("lang","es");
+      _settings->setValue(Util::V_LANG,"es");
       break;
   }
 
@@ -252,6 +211,9 @@ void QnplPreferencesDialog::saveSettings()
   }
 
   _settings->setValue(Util::V_ASPECT_RATIO, aspectRatio);
+
+  _settings->setValue(Util::V_EMBEDDED, _runForm.embeddedButton->isChecked()?
+                        "true" : "false");
 
   _settings->sync();
 
@@ -295,7 +257,8 @@ void QnplPreferencesDialog::loadGingaPreferences()
 
       QTextStream* stream = new QTextStream(file);
 
-      QRegExp rx; rx.setPattern("(.*)=(.*)");
+      QRegExp rx;
+      rx.setPattern("(.*)=(.*)");
 
       while(!stream->atEnd())
       {

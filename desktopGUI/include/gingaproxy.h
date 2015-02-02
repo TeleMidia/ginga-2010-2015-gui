@@ -65,15 +65,19 @@ public:
   inline void killProcess ()
   {
     if (_process && _process->state() == QProcess::Running)
+    {
       _process->kill();
+      destroyProcess();
+    }
   }
-
-  void terminateProcess ();
+  bool gingaIsRunning () const;
 
 
 signals:
   void gingaStarted ();
   void gingaFinished(int, QProcess::ExitStatus);
+  void gingaFinished();
+  void gingaError(QProcess::ProcessError);
   void gingaOutput (QString);
 
 public slots:
@@ -91,7 +95,7 @@ private slots:
   void catchGingaOutput ();
 
 private:
-  bool gingaIsRunning () const;
+  void terminateProcess ();
   void destroyProcess ();
 
   explicit GingaProxy(QString binaryPath, QObject *parent = 0);

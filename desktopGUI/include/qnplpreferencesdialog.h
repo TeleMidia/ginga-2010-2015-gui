@@ -38,6 +38,8 @@ private:
     void loadGingaPreferences();
     void saveGingaPreferences();
 
+    QMap <QString, int> _screenSizeMap;
+
     QWidget* _generalPane;
     QWidget* _runPane;
 

@@ -58,6 +58,9 @@ public:
   static QString V_SCREENSIZE;
   static QString V_PASSIVE;
   static QString V_DEVICE_PORT;
+  static QString V_ENABLE_LOG;
+  static QString V_LANG;
+  static QString V_EMBEDDED;
 
   //Ginga constants
   static QString G_ON_BEGIN;

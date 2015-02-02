@@ -20,166 +20,164 @@
 
 class QnplMainWindow : public QMainWindow
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    QnplMainWindow(QWidget* parent = 0);
-    ~QnplMainWindow();
+  QnplMainWindow(QWidget* parent = 0);
+  ~QnplMainWindow();
 
-    void load(QString _location);
+  void load(QString _location);
 
 signals:
-    void scanFinished ();
+  void scanFinished ();
 
 public slots:
-    void performOpen();
-    void performOpen(QAction* action);
-    void performClear();
-    void performClose();
-    void performQuit();
+  void performOpen();
+  void performOpen(QAction* action);
+  void performClear();
+  void performClose();
+  void performQuit();
 
-    void playNextChannel();
-    void playPreviousChannel();
+  void playNextChannel();
+  void playPreviousChannel();
 
-    void performDevice();
+  void performDevice();
 
-    void performPreferences();
-    void performChannels();
-    void performIptv();
-    void performAplication();
+  void performPreferences();
+  void performChannels();
+  void performIptv();
+  void performAplication();
 
-    void performBug();
-    void performAbout();
+  void performBug();
+  void performAbout();
 
-    void performPlay();
-    void performPause();
-    void performStop();
-    void performSeek();
-    void performRun();
-    void performRunAsPassive();
-    void performRunAsActive();
+  void performPlay();
+  void performPause();
+  void performStop();
+  void performSeek();
+  void performRun();
+  void performRunAsPassive();
+  void performRunAsActive();
 
-    void performCloseWindow(int, QProcess::ExitStatus);
+  void performCloseWindow();
 
-    void notifyKey(QString key);
 
-    void writeScanOutput (QString);
+  void writeScanOutput (QString);
 
-    void scan ();
-    void playChannel (Channel channel);
-    void showErrorDialog(QProcess::ProcessError);
-    void writeTunerOutput (QString p_stdout);
-    void sendKillMessage ();
-    void stopTuning();
-    void removeCarouselData();
+  void scan ();
+  void playChannel (Channel channel);
+  void showErrorDialog(QProcess::ProcessError);
+  void writeTunerOutput (QString p_stdout);
+  void sendKillMessage ();
+  void stopTuning();
+  void removeCarouselData();
 
-    void keyPressEvent(QKeyEvent *);
-    void resizeEvent(QResizeEvent *event);
+  void keyPressEvent(QKeyEvent *);
+  void resizeEvent(QResizeEvent *event);
 
-    void spreadGingaMessage(QString);
-    void startSession ();
+  void spreadGingaMessage(QString);
+  void startSession ();
 
 private slots:
-    void enableSeekButton ();
-    void finishScan (int code);
+  void enableSeekButton ();
+  void finishScan (int code);
 
 private:
-    void createMenus();
-    void createRecent();
-    void createActions();
-    void createWidgets();
-    void createDialogs();
-    void createToolbars();
-    void createConnections();
-    void removePath (QString);
-    void setUpProcessConnections (QProcess *);
+  void createMenus();
+  void createRecent();
+  void createActions();
+  void createWidgets();
+  void createDialogs();
+  void createToolbars();
+  void createConnections();
+  void removePath (QString);
 
-    inline QString viewWID () {
-        QString WID = "";
+  inline QString viewWID () {
+    QString WID = "";
 
-        foreach (QObject* ob, _view->children()) {
-            QWidget* w = qobject_cast<QWidget*>(ob);
+    foreach (QObject* ob, _view->children()) {
+      QWidget* w = qobject_cast<QWidget*>(ob);
 
-            if (w)
-            {
-                WID =  hwndToString(w->winId());
-            }
-        }
-        return WID;
+      if (w)
+      {
+        WID =  hwndToString(w->winId());
+      }
     }
+    return WID;
+  }
 
-    QString hwndToString(WId winid);
+  QString hwndToString(WId winid);
 
-    bool _isPlayingChannel;
-    bool _isPaused;    
+  bool _isPlayingChannel;
+  bool _isPaused;
 
-    QString _appName;
+  QString _appName;
 
-    QMenu* _fileMenu;
-    QMenu* _recentMenu;
-    QMenu* _deviceMenu;
-    QMenu* _toolsMenu;
-    QMenu* _helpMenu;
+  QMenu* _fileMenu;
+  QMenu* _recentMenu;
+  QMenu* _deviceMenu;
+  QMenu* _toolsMenu;
+  QMenu* _helpMenu;
 
-    QAction* _openAction;
-    QAction* _tuneApplicationChannelAction;
-    QAction* _tuneIPTVChannellAction;
-    QAction* _tuneBroadcastChannelAction;
-    QAction* _quitAction;
-    QAction* _clearAction;
-    QAction* _baseAction;
-    QAction* _passiveAction;
-    QAction* _activeAction;
-    QAction* _preferencesAction;
-    QAction* _bugAction;
-    QAction* _aboutAction;
+  QAction* _openAction;
+  QAction* _tuneApplicationChannelAction;
+  QAction* _tuneIPTVChannellAction;
+  QAction* _tuneBroadcastChannelAction;
+  QAction* _quitAction;
+  QAction* _clearAction;
+  QAction* _baseAction;
+  QAction* _passiveAction;
+  QAction* _activeAction;
+  QAction* _preferencesAction;
+  QAction* _bugAction;
+  QAction* _aboutAction;
 
-    QActionGroup* _deviceGroup;
+  QActionGroup* _deviceGroup;
 
-    QToolBar* _toolbar;
-    QToolBar* _openToolbar;
+  QToolBar* _toolbar;
+  QToolBar* _openToolbar;
 
-    QLineEdit* _openLine;
+  QLineEdit* _openLine;
 
-    QPushButton* _playButton;
-    QPushButton* _stopButton;
-    QPushButton* _pauseButton;
-    QPushButton* _openButton;
-    QPushButton* _nextButton;
-    QPushButton* _previousButton;
-    QPushButton* _refreshButton;
-    QPushButton* _channelsButton;
-    QPushButton* _seekButton;
+  QPushButton* _playButton;
+  QPushButton* _stopButton;
+  QPushButton* _pauseButton;
+  QPushButton* _openButton;
+  QPushButton* _nextButton;
+  QPushButton* _previousButton;
+  QPushButton* _refreshButton;
+  QPushButton* _channelsButton;
+  QPushButton* _seekButton;
 
-    QLineEdit* _seekPlayTime;
+  QLineEdit* _seekPlayTime;
 
-    QString _location;
+  QString _location;
 
-    QProcess* _process;
+  QProcess* _process;
 
-    bool _passiveIsRunning;
-    bool _isChannel;
+  bool _passiveIsRunning;
+  bool _isChannel;
 
-    QnplView* _view;
-    QSettings* _settings;
+  QnplView* _view;
+  QSettings* _settings;
 
-    QnplPreferencesDialog* _preferencesDialog;
-    QnplAboutDialog* _aboutDialog;
-    QnplChannelsDialog * _channelDialog;
-    QnplIPTVTunerDialog * _iptvDialog;
-    QnplAplicationDialog * _aplication;
+  QnplPreferencesDialog* _preferencesDialog;
+  QnplAboutDialog* _aboutDialog;
+  QnplChannelsDialog * _channelDialog;
+  QnplIPTVTunerDialog * _iptvDialog;
+  QnplAplicationDialog * _aplication;
 
-    QProgressDialog *_scanProgress;
+  QProgressDialog *_scanProgress;
 
-    Channel _lastChannel;
-    QGraphicsProxyWidget *_animTuning;
-    QMovie *_movie;
-    QLabel *_gifLabel;
-    QTimer *_timer;
+  Channel _lastChannel;
+  QGraphicsProxyWidget *_animTuning;
+  QMovie *_movie;
+  QLabel *_gifLabel;
+  QTimer *_timer;
 
-    GingaProxy *_gingaProxy;
-    DeveloperView * _developerView;
-    DebugView * _debugView;
+  GingaProxy *_gingaProxy;
+  DeveloperView * _developerView;
+  DebugView * _debugView;
 };
 
 #endif // QNPLMAINWINDOW_H

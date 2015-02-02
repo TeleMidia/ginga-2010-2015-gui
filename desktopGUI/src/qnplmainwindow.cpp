@@ -68,6 +68,17 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
   _passiveIsRunning = false;
   _location = "";
 
+  connect(_gingaProxy, SIGNAL(gingaFinished(int,QProcess::ExitStatus)),
+          SLOT(performCloseWindow()));
+  connect(_gingaProxy, SIGNAL(gingaFinished(int,QProcess::ExitStatus)),
+          SLOT(performStop()));
+  connect(_gingaProxy, SIGNAL(gingaError(QProcess::ProcessError)),
+          SLOT(showErrorDialog(QProcess::ProcessError)));
+  connect(_gingaProxy, SIGNAL(gingaStarted()),
+          SLOT(removeCarouselData()));
+  connect (_gingaProxy, SIGNAL(gingaOutput(QString)),
+           SLOT(spreadGingaMessage(QString)));
+
   createActions();
   createMenus();
   createRecent();
@@ -526,9 +537,6 @@ void QnplMainWindow::performPlay()
   {
     _lastChannel.setNull();
 
-    /*QProcessEnvironment enviroment = QProcessEnvironment::systemEnvironment();
-    enviroment.insert("LD_LIBRARY_PATH","/usr/local/lib/lua/5.1/socket:/usr/local/lib/ginga:/usr/local/lib/ginga/adapters:/usr/local/lib/ginga/cm:/usr/local/lib/ginga/mb:/usr/local/lib/ginga/mb/dec:/usr/local/lib/ginga/converters:/usr/local/lib/ginga/dp:/usr/local/lib/ginga/ic:/usr/local/lib/ginga/iocontents:/usr/local/lib/ginga/players:/usr/local/lib:")*/;
-
     QStringList parameters;
 
     _playButton->setEnabled(false);
@@ -562,20 +570,30 @@ void QnplMainWindow::performPlay()
       if (!contextFilePath.isEmpty())
         parameters << "--context-dir" << contextFilePath;
 
-      QString WID = "";
-
-      foreach (QObject* ob, _view->children())
+      if (_settings->value(Util::V_EMBEDDED).toString() == "true")
       {
-        QWidget* w = qobject_cast<QWidget*>(ob);
-
-        if (w)
+        QString winId = "";
+        foreach (QObject* ob, _view->children())
         {
-          WID =  hwndToString(w->winId());
+          QWidget* w = qobject_cast<QWidget*>(ob);
+
+          if (w)
+          {
+            winId =  hwndToString(w->winId());
+          }
         }
+#ifdef __linux
+        parameters << "--parent";
+        parameters << ":0.0," + winId + ",0,0,"
+                      + QString::number(_view->width()) + ","
+                      + QString::number(_view->height());
+
+        setFixedSize(size());
+#elif defined __WIN32
+        parameters << "--wid";
+        parameters << winId;
+#endif
       }
-
-      parameters.replaceInStrings(Util::GUI_WID, WID);
-
       if (_location.endsWith(".ncl"))
         parameters.replaceInStrings(Util::GUI_FILE, _location);
 
@@ -606,18 +624,16 @@ void QnplMainWindow::performPlay()
       _gingaProxy->setBinaryPath(_settings->value(Util::V_LOCATION).toString());
       _gingaProxy->run(parameters);
 
-      _process = _gingaProxy->process();
-      if (!_process) return;
+//      _process = _gingaProxy->process();
+//      if (!_process) return;
 
-      //_process->setProcessEnvironment(enviroment);
+//      connect (_gingaProxy, SIGNAL(gingaStarted()),
+//               SLOT(removeCarouselData()));
 
-      connect (_gingaProxy, SIGNAL(gingaStarted()),
-               SLOT(removeCarouselData()));
+//      connect (_gingaProxy, SIGNAL(gingaOutput(QString)),
+//               SLOT(spreadGingaMessage(QString)));
 
-      connect (_gingaProxy, SIGNAL(gingaOutput(QString)),
-               SLOT(spreadGingaMessage(QString)));
-
-      setUpProcessConnections(_process);
+//      setUpProcessConnections(_process);
 
       _view->setFocus();
     }
@@ -652,8 +668,6 @@ void QnplMainWindow::performPause()
 
 void QnplMainWindow::performStop()
 {
-  disconnect (_gingaProxy, SIGNAL(gingaOutput(QString)),
-              this, SLOT(spreadGingaMessage(QString)));
   _view->releaseKeyboard();
   _debugView->stopSession();
   if (_timer != NULL)
@@ -664,11 +678,10 @@ void QnplMainWindow::performStop()
     _timer = NULL;
   }
 
+  _gingaProxy->stop();
+
   if (_process != NULL)
-  {
     _animTuning->setVisible(false);
-    _gingaProxy->terminateProcess();
-  }
 
   if (_passiveIsRunning)
   {
@@ -707,6 +720,10 @@ void QnplMainWindow::performStop()
   _view->update();
 
   removeCarouselData();
+
+#ifdef __linux
+  setFixedSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+#endif
 }
 
 void QnplMainWindow::performSeek()
@@ -811,7 +828,6 @@ void QnplMainWindow::playChannel(Channel channel)
     _gingaProxy->run(plist);
 
     _process = _gingaProxy->process();
-    setUpProcessConnections(_process);
 
     connect(_gingaProxy, SIGNAL(gingaOutput(QString)),
             SLOT(writeTunerOutput(QString)));
@@ -1024,7 +1040,6 @@ void QnplMainWindow::performRunAsPassive()
   _gingaProxy->run(plist);
 
   _process = _gingaProxy->process();
-  setUpProcessConnections(_process);
 
   qDebug() << _settings->value(Util::V_LOCATION).toString() << plist;
 
@@ -1078,7 +1093,6 @@ void QnplMainWindow::performRunAsActive()
   _gingaProxy->run(plist);
 
   _process = _gingaProxy->process();
-  setUpProcessConnections(_process);
 
   qDebug() << _settings->value(Util::V_LOCATION).toString() << plist;
 
@@ -1099,7 +1113,7 @@ void QnplMainWindow::performRunAsActive()
   _view->setFocus();
 }
 
-void QnplMainWindow::performCloseWindow(int, QProcess::ExitStatus)
+void QnplMainWindow::performCloseWindow()
 {
   if (_animTuning->isVisible())
   {
@@ -1114,16 +1128,6 @@ void QnplMainWindow::performCloseWindow(int, QProcess::ExitStatus)
                          " channel. Please, check your antenna and try again.",
                          QMessageBox::Ok);
 
-  }
-  performStop();
-}
-
-void QnplMainWindow::notifyKey(QString key)
-{
-  if (_process != NULL)
-  {
-    qDebug() << "Writing:" << key;
-    //        process->write(QString(key+"\n").toStdString().c_str());
   }
 }
 
@@ -1180,7 +1184,8 @@ QString QnplMainWindow::hwndToString(WId winid)
 
 void QnplMainWindow::resizeEvent(QResizeEvent* event)
 {
-  qDebug () << "resizing";
+  if (_gingaProxy->gingaIsRunning())
+    return;
 
   QString aspectRatio = _settings->value(Util::V_ASPECT_RATIO, "").toString();
 
@@ -1257,11 +1262,7 @@ void QnplMainWindow::scan()
   _gingaProxy->run(plist);
   _scanProgress->setValue(1);
 
-  _process = _gingaProxy->process();
-
   removeCarouselData();
-
-  setUpProcessConnections(_process);
 
   connect(_gingaProxy, SIGNAL(gingaOutput(QString)),
           this, SLOT(writeScanOutput(QString)));
@@ -1345,25 +1346,9 @@ void QnplMainWindow::keyPressEvent(QKeyEvent *event)
     _debugView->setVisible(!_debugView->isVisible());
 }
 
-void QnplMainWindow::setUpProcessConnections(QProcess *process)
-{
-  if (process)
-  {
-    connect(process, SIGNAL(finished(int,QProcess::ExitStatus)),
-            SLOT(performCloseWindow(int, QProcess::ExitStatus)));
-    connect(process, SIGNAL(error(QProcess::ProcessError)),
-            SLOT(showErrorDialog(QProcess::ProcessError)));
-    connect(process, SIGNAL(started()),
-            SLOT(removeCarouselData()));
-  }
-}
-
 void QnplMainWindow::spreadGingaMessage(QString message)
 {
-  if (! _process) return;
-
   _developerView->appendConsoleMessage(message);
-
 
   QStringList lines = message.split("\n");
 

@@ -9,7 +9,6 @@
 
 size_t getPeakRSS(Q_PID);
 
-
 #if defined(_WIN32)
 #include <windows.h>
 #include <psapi.h>
@@ -113,9 +112,6 @@ bool GingaProxy::gingaIsRunning() const
 
 void GingaProxy::run(QStringList args, bool forceKill)
 {
-//  QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-//  env.insert("LD_LIBRARY_PATH", "/usr/local/lib/lua/5.1/socket:/usr/local/lib/ginga:/usr/local/lib/ginga/adapters:/usr/local/lib/ginga/cm:/usr/local/lib/ginga/mb:/usr/local/lib/ginga/mb/dec:/usr/local/lib/ginga/converters:/usr/local/lib/ginga/dp:/usr/local/lib/ginga/ic:/usr/local/lib/ginga/iocontents:/usr/local/lib/ginga/players:/usr/local/lib:");
-
   if (gingaIsRunning())
   {
     qDebug () << "Ginga is already running.";
@@ -130,8 +126,6 @@ void GingaProxy::run(QStringList args, bool forceKill)
       return;
   }
 
-  qDebug() << args;
-
   _process = new QProcess(this);
   connect(_process, SIGNAL(readyReadStandardOutput()),
           SLOT(catchGingaOutput()));
@@ -139,6 +133,8 @@ void GingaProxy::run(QStringList args, bool forceKill)
           SLOT(catchGingaOutput()));
 
   connect (_process, SIGNAL(started()), this, SIGNAL(gingaStarted()));
+  connect (_process, SIGNAL(error(QProcess::ProcessError)),
+           this, SIGNAL(gingaError(QProcess::ProcessError)));
   connect (_process, SIGNAL(finished(int, QProcess::ExitStatus)), this,
            SLOT(finished(int,QProcess::ExitStatus)));
 
@@ -181,9 +177,11 @@ void GingaProxy::terminateProcess()
   {
     disconnect(_process);
 
+    _process->closeReadChannel(_process->readChannel());
+    _process->closeWriteChannel();
     _process->terminate();
-
     destroyProcess();
+    emit gingaFinished();
   }
 }
 
@@ -191,7 +189,6 @@ void GingaProxy::destroyProcess()
 {
   if (_process)
   {
-    _process->close();
     _process->deleteLater();
     _process = NULL;
   }
@@ -206,7 +203,6 @@ void GingaProxy::catchGingaOutput()
       output = _process->readAllStandardError();
 
     //qDebug () << (getPeakRSS (_process->pid()) / DIV );
-
     emit gingaOutput(output);
   }
 }
@@ -254,3 +250,4 @@ size_t getPeakRSS(Q_PID pid)
     return (size_t)0L;          /* Unsupported. */
 #endif
 }
+
