@@ -909,9 +909,12 @@ void QnplMainWindow::writeTunerOutput(QString p_stdout)
               QMessageBox::warning(this, "Warning", msg, QMessageBox::Ok);
 
             _animTuning->setVisible(false);
-            qint64 bytes = _process->write(Util::GINGA_QUIT.toStdString().
-                                           c_str());
-            qDebug () << bytes;
+            if (_process)
+            {
+              qint64 bytes = _process->write(Util::GINGA_QUIT.toStdString().
+                                             c_str());
+              qDebug () << bytes;
+            }
             performStop();
           }
         }
@@ -1261,11 +1264,20 @@ void QnplMainWindow::scan()
 
   QStringList plist;
   plist << "--set-tuner" << "sbtvdt:scan";
+
+#if __linux
+  plist << "--parent";
+  plist << ":0.0," + hwndToString(_view->winId()) + ",0,0,"
+            + QString::number(_view->width()) + ","
+            + QString::number(_view->height());
+#elif defined __WIN32
   plist << "--wid" << hwndToString(_scanProgress->winId());
-  plist << "--poll-stdin";
+#endif
 
   if (_settings->value("enablelog").toBool())
     plist << "--enable-log" << "file";
+
+  qDebug () << plist;
 
   _gingaProxy->setBinaryPath(_settings->value(Util::V_LOCATION).toString());
   _gingaProxy->run(plist);
