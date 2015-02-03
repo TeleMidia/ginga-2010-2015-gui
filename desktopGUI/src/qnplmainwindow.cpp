@@ -581,7 +581,7 @@ void QnplMainWindow::performPlay()
 
       if (_settings->value(Util::V_EMBEDDED).toString() == "true")
       {
-        QString winId = hwndToString(_view->winId());
+        QString winId = hwndToString(_view->focusWidget()->winId());
 #ifdef __linux
         parameters << "--parent";
         parameters << ":0.0," + winId + ",0,0,"
