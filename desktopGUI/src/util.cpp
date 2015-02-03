@@ -111,8 +111,7 @@ QStringList Util::split(QString parameters)
 
 QString Util::defaultParameters()
 {
-  return "--ncl ${FILE} --wid ${WID} "
-      "--vmode ${SCREENSIZE} --set-exitonend "
+  return "--ncl ${FILE} --vmode ${SCREENSIZE} --set-exitonend "
       "--disable-multicast --poll-stdin";
 }
 

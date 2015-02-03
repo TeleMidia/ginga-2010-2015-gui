@@ -564,6 +564,15 @@ void QnplMainWindow::performPlay()
     {
       parameters = Util::split(_settings->value(Util::V_PARAMETERS).toString());
 
+      int index = parameters.indexOf("--wid");
+      if (index != -1)
+      {
+        if (index + 1 < parameters.size() )
+          parameters.removeAt(index + 1);
+
+        parameters.removeAt(index);
+      }
+
       QFileInfo fileInfo (_settings->value(Util::V_CONTEXT_FILE).toString());
       QString contextFilePath = fileInfo.absoluteDir().path();
 
