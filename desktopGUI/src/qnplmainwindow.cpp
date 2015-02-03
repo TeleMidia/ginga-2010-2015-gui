@@ -581,16 +581,7 @@ void QnplMainWindow::performPlay()
 
       if (_settings->value(Util::V_EMBEDDED).toString() == "true")
       {
-        QString winId = "";
-        foreach (QObject* ob, _view->children())
-        {
-          QWidget* w = qobject_cast<QWidget*>(ob);
-
-          if (w)
-          {
-            winId =  hwndToString(w->winId());
-          }
-        }
+        QString winId = hwndToString(_view->winId());
 #ifdef __linux
         parameters << "--parent";
         parameters << ":0.0," + winId + ",0,0,"
