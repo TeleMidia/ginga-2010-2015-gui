@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ version="2.0">
+        <channel>
+            <title>Wellcome to Ginga GUI:</title>
+            <link>main.xml</link>
+            <language>en</language>
+<!--             <item enable="false">
+                <title>Watch TV</title>
+                <description>Play NCL aplications included in this Ginga Live CD. This content were jointly created by TeleMidia Lab Team and many partners.</description>
+                <link>dyncontent.xml#list-channels</link>
+                <enclosure url="../img/livecd.png" type="image/png" />
+            </item>
+            <item>
+                <title>A Multi-Device Domain</title>
+                <description>Play an NCL application acting as an exhibition device associated to another Base Device. Your machine will be registered in a Multi-Device domain as a Class 1 (passive) device. This feature is in Beta stage, so unexpected results may arise.</description>
+                <link>exec:///system/mdpassive</link>
+                <enclosure url="/usr/local/lib/ginga/gui/files/img/multidev.png" type="image/png" />
+            </item>
+            <item>
+                <title>A UDP Media Server</title>
+                <description>Play an NCL application made available in an MPEG-2 Transport Stream from a UDP Media Server. This feature is in Beta stage, so unexpected results may arise.</description>
+                <link>/usr/local/lib/ginga/gui/files/xml/udpcontent.xml</link>
+                <enclosure url="/usr/local/lib/ginga/gui/files/img/usbstorage.png" type="image/png" />
+            </item>-->
+            <item>
+                <title>Play Application</title>
+                <description>Play NCL applications stored in a storage device.</description>
+                <link>appsoptions.xml</link>
+                <enclosure url="../img/usbstorage.png" type="image/png" />
+            </item>
+
+            <item><title></title></item>
+            <item>
+                <title>Settings</title>
+                <description>Configure some system settings.</description>
+                <link>settings.xml</link>
+                <enclosure url="/usr/local/lib/ginga/gui/files/img/settings.png" type="image/png" />
+            </item>
+            <item>
+                <title>Shutdown</title>
+                <description>Shut your computer down.</description>
+                <link>exec://shutdown.exe /s /t 00</link>
+                <enclosure url="../img/shutdown.png" type="image/png" />
+            </item>
+        </channel>
+</rss>

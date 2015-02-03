@@ -108,24 +108,17 @@ void QnplPreferencesDialog::init(QSettings* settings)
 
 void QnplPreferencesDialog::loadSettings()
 {
-  if (_settings->value("enablelog").toString() == "true")
-    _generalForm.logButton->setChecked(true);
-  else
-    _generalForm.logButton->setChecked(false);
+  _generalForm.logButton->setChecked(
+        _settings->value("enablelog", "true").toString() == "true");
 
-
-  if (_settings->value(Util::V_AUTOPLAY).toString() == "true"){
-    _generalForm.autoplayButton->setChecked(true);
-  }else{
-    _generalForm.autoplayButton->setChecked(false);
-  }
+  _generalForm.autoplayButton->setChecked(
+        _settings->value(Util::V_AUTOPLAY, "true").toString() == "true");
 
   _runForm.executableEdit->setText(_settings->value(Util::V_LOCATION).
                                    toString());
 
   _runForm.contextFileLocation->setText(_settings->value(Util::V_CONTEXT_FILE).
                                         toString());
-
 
   int index = _screenSizeMap.value(
                 _settings->value(Util::V_SCREENSIZE).toString(), 0);
@@ -156,10 +149,8 @@ void QnplPreferencesDialog::loadSettings()
       _runForm.standardRadioButton->setChecked(true);
   }
 
-  if (_settings->value("embedded").toString() == "true")
-      _runForm.embeddedButton->setChecked(true);
-  else
-      _runForm.embeddedButton->setChecked(false);
+  _runForm.embeddedButton->setChecked(
+        _settings->value("embedded", "true").toString() == "true");
 
   loadGingaPreferences();
 }
