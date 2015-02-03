@@ -169,7 +169,8 @@ void QnplPreferencesDialog::saveSettings()
   else
     _settings->setValue(Util::V_ENABLE_LOG, false);
 
-  _settings->setValue(Util::V_SCREENSIZE,
+  if (_generalForm.screensizeBox->currentIndex() != 0)
+    _settings->setValue(Util::V_SCREENSIZE,
                       _generalForm.screensizeBox->currentText().
                       split(" ").at(0));
 
