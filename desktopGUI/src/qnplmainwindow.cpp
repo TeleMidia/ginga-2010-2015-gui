@@ -776,6 +776,16 @@ void QnplMainWindow::playChannel(Channel channel)
     QStringList plist;
 
     plist << Util::split(_settings->value(Util::V_PARAMETERS).toString());
+
+    int index = plist.indexOf("--wid");
+    if (index != -1)
+    {
+      if (index + 1 < plist.size() )
+        plist.removeAt(index + 1);
+
+      plist.removeAt(index);
+    }
+
     plist << "--set-tuner" << "sbtvdt:" + channel.frequency;
     plist << "--poll-stdin";
 
@@ -788,21 +798,36 @@ void QnplMainWindow::playChannel(Channel channel)
 
     plist.replaceInStrings("${SCREENSIZE}",
                            _settings->value(Util::V_SCREENSIZE).toString());
-    QString WID = "";
 
-    foreach (QObject* ob, _view->children())
+    if (_settings->value(Util::V_EMBEDDED).toString() == "true")
     {
-      QWidget* w = qobject_cast<QWidget*>(ob);
+      QString winId = hwndToString(_view->focusWidget()->winId());
+//      foreach (QObject* ob, _view->children())
+//      {
+//        QWidget* w = qobject_cast<QWidget*>(ob);
 
-      if (w)
-      {
-        WID =  hwndToString(w->winId());
-      }
+//        if (w)
+//        {
+//          WID =  hwndToString(w->winId());
+//        }
+//      }
+#ifdef __linux
+        plist<< "--parent";
+        plist << ":0.0," + winId + ",0,0,"
+                  + QString::number(_view->width()) + ","
+                  + QString::number(_view->height());
+
+        setFixedSize(size());
+#elif defined __WIN32
+        plist << "--wid";
+        plist << winId;
+#endif
+
     }
 
     plist.removeAll(Util::GUI_NCL);
     plist.removeAll(Util::GUI_FILE);
-    plist.replaceInStrings(Util::GUI_WID, WID);
+//    plist.replaceInStrings(Util::GUI_WID, WID);
 
     _openLine->setText(channel.number + " - " + channel.name);
 
