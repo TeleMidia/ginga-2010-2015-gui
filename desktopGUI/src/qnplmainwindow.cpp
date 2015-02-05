@@ -143,7 +143,7 @@ void  QnplMainWindow::createActions()
 
   _tuneIPTVChannellAction = new QAction(this);
   _tuneIPTVChannellAction->setEnabled(true);
-  _tuneIPTVChannellAction->setText(tr("Tune IPTV Channel..."));
+  _tuneIPTVChannellAction->setText(tr("Tune IP Channel..."));
 
 
   // quit action
@@ -214,7 +214,7 @@ void  QnplMainWindow::createMenus()
   _fileMenu->addMenu(_recentMenu);
   _fileMenu->addSeparator();
   _fileMenu->addAction(_tuneBroadcastChannelAction);
-  //fileMenu->addAction(tuneIPTVChannellAction);
+  _fileMenu->addAction(_tuneIPTVChannellAction);
   _fileMenu->addAction(_tuneApplicationChannelAction);
   _fileMenu->addSeparator();
   _fileMenu->addAction(_quitAction);
@@ -657,6 +657,8 @@ void QnplMainWindow::performPlay()
   }
   else if (!_lastChannel.isNull())
     playChannel(_lastChannel);
+  else if(_lastIpChannel != "")
+      playIpChannel(_lastIpChannel);
   else
     QMessageBox::information(this, tr ("Information"),
                              tr("Please, open NCL document to play."),
@@ -758,8 +760,126 @@ void QnplMainWindow::performAplication()
 
 void QnplMainWindow::performIptv()
 {
-  _iptvDialog->exec();
-  qDebug() << _iptvDialog->ip();
+    if (_iptvDialog->exec() == QDialog::Accepted)
+    {
+      QString ipChannel = _iptvDialog->ip();
+      if (ipChannel != "")
+      {
+        playIpChannel (ipChannel);
+        _view->setFocus();
+      }
+    }
+}
+
+void QnplMainWindow::playIpChannel(QString ipChannel){
+
+  qDebug() << "playIpChannel " << ipChannel;
+  performStop();
+
+  QStringList plist;
+
+  plist << Util::split(_settings->value(Util::V_PARAMETERS).toString());
+
+  int index = plist.indexOf("--wid");
+  if (index != -1)
+  {
+    if (index + 1 < plist.size() )
+      plist.removeAt(index + 1);
+
+    plist.removeAt(index);
+  }
+
+  plist << "--set-tuner" << "ip:" + ipChannel;
+  plist << "--poll-stdin";
+
+  QFileInfo fileInfo (_settings->value(Util::V_CONTEXT_FILE).toString());
+  plist << "--context-dir" << fileInfo.absoluteDir().path();
+
+  if (_settings->value("enablelog").toBool())
+    plist << "--enable-log" << "file";
+
+
+  plist.replaceInStrings("${SCREENSIZE}",
+                         _settings->value(Util::V_SCREENSIZE).toString());
+
+  if (_settings->value(Util::V_EMBEDDED).toString() == "true")
+  {
+    QString winId = hwndToString(_view->focusWidget()->winId());
+//      foreach (QObject* ob, _view->children())
+//      {
+//        QWidget* w = qobject_cast<QWidget*>(ob);
+
+//        if (w)
+//        {
+//          WID =  hwndToString(w->winId());
+//        }
+//      }
+#ifdef __linux
+      plist<< "--parent";
+      plist << ":0.0," + winId + ",0,0,"
+                + QString::number(_view->width()) + ","
+                + QString::number(_view->height());
+
+      setFixedSize(size());
+#elif defined __WIN32
+            foreach (QObject* ob, _view->focusWidget()->children())
+            {
+              QWidget* w = qobject_cast<QWidget*>(ob);
+
+              if (w)
+              {
+                winId =  hwndToString(w->winId());
+              }
+            }
+      plist << "--wid";
+      plist << winId;
+#endif
+
+  }
+
+  plist.removeAll(Util::GUI_NCL);
+  plist.removeAll(Util::GUI_FILE);
+//    plist.replaceInStrings(Util::GUI_WID, WID);
+
+  _openLine->setText(_iptvDialog->ip());
+
+  _playButton->setEnabled(false);
+  _stopButton->setEnabled(true);
+
+  _nextButton->setEnabled(true);
+  _previousButton->setEnabled(true);
+
+  _openButton->setEnabled(false);
+  _openAction->setEnabled(false);
+
+  _openLine->setEnabled(false);
+
+  _recentMenu->setEnabled(false);
+
+  _baseAction->setEnabled(false);
+  _passiveAction->setEnabled(false);
+  _activeAction->setEnabled(false);
+
+  //        process->start(settings->value("location").toString(), plist);
+  _gingaProxy->setBinaryPath(_settings->value("location").toString());
+  _gingaProxy->run(plist);
+
+  _process = _gingaProxy->process();
+
+  connect(_gingaProxy, SIGNAL(gingaOutput(QString)),
+          SLOT(writeTunerOutput(QString)));
+
+  _isPlayingChannel = false;
+
+  _timer = new QTimer (this);
+  connect (_timer, SIGNAL(timeout()),
+           SLOT(stopTuning()));
+  _timer->start(15000);
+
+  _animTuning->setVisible(true);
+  _lastIpChannel = ipChannel;
+  _lastChannel.setNull();
+  _location = "";
 }
 
 void QnplMainWindow::performChannels()

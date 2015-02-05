@@ -66,6 +66,7 @@ public slots:
 
   void scan ();
   void playChannel (Channel channel);
+  void playIpChannel (QString ipChannel);
   void showErrorDialog(QProcess::ProcessError);
   void writeTunerOutput (QString p_stdout);
   void sendKillMessage ();
@@ -170,6 +171,7 @@ private:
   QProgressDialog *_scanProgress;
 
   Channel _lastChannel;
+  QString _lastIpChannel;
   QGraphicsProxyWidget *_animTuning;
   QMovie *_movie;
   QLabel *_gifLabel;
