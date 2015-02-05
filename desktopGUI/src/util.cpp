@@ -2,6 +2,7 @@
 #include <QSettings>
 #include <QDebug>
 #include <QApplication>
+#include "qnplsettings.h"
 
 QString Util::VERSION = "1.0.7";
 QString Util::CMD_PREFIX = "cmd::";
@@ -47,9 +48,7 @@ int Util::DEFAULT_PORT = 22222;
 
 void Util::init()
 {
-  QSettings settings (QSettings::IniFormat, QSettings::SystemScope,
-                      QApplication::organizationName(),
-                      QApplication::applicationName());
+  QnplSettings settings;
 
   VERSION = settings.value("VERSION", "1.0.7").toString();
 

@@ -13,7 +13,7 @@ QnplSettings::QnplSettings()
     }
 
     if (value("screensize").toString() == ""){
-        setValue("screensize", "854x480");
+        setValue("screensize", "640x480");
     }
 
     if (value("location").toString() == ""){
