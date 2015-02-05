@@ -590,6 +590,15 @@ void QnplMainWindow::performPlay()
 
         setFixedSize(size());
 #elif defined __WIN32
+              foreach (QObject* ob, _view->focusWidget()->children())
+              {
+                QWidget* w = qobject_cast<QWidget*>(ob);
+
+                if (w)
+                {
+                  winId =  hwndToString(w->winId());
+                }
+              }
         parameters << "--wid";
         parameters << winId;
 #endif
@@ -819,6 +828,15 @@ void QnplMainWindow::playChannel(Channel channel)
 
         setFixedSize(size());
 #elif defined __WIN32
+              foreach (QObject* ob, _view->focusWidget()->children())
+              {
+                QWidget* w = qobject_cast<QWidget*>(ob);
+
+                if (w)
+                {
+                  winId =  hwndToString(w->winId());
+                }
+              }
         plist << "--wid";
         plist << winId;
 #endif
