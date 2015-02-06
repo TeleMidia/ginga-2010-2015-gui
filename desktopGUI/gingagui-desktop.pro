@@ -6,6 +6,17 @@ TARGET = \
 QT += \
     widgets
 
+unix{
+    target.path = /usr/bin
+    INSTALLS += target
+
+    data_desktop.path = /usr/share/applications/
+    data_desktop.files = ginga.desktop
+    data_icon.path = /usr/share/pixmaps/
+    data_icon.files =  images/icons/icon-gingagui.ico
+    INSTALLS += data_desktop data_icon
+}
+
 #VERSION = \
 #  1.0.6
 
@@ -75,3 +86,6 @@ TRANSLATIONS += \
     translations/en.ts \
     translations/es.ts \
     translations/pt_br.ts
+
+OTHER_FILES += \
+    ginga.desktop
