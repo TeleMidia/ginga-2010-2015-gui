@@ -183,14 +183,14 @@ void  QnplMainWindow::createActions()
   _preferencesAction->setText(tr("Preferences..."));
 
   // bug action
-  _bugAction = new QAction(this);
-  _bugAction->setEnabled(true);
-  _bugAction->setText(tr("Report Bug..."));
+//  _bugAction = new QAction(this);
+//  _bugAction->setEnabled(true);
+//  _bugAction->setText(tr("Report Bug..."));
 
   // about action
-  _aboutAction = new QAction(this);
-  _aboutAction->setEnabled(true);
-  _aboutAction->setText(tr("About"));
+//  _aboutAction = new QAction(this);
+//  _aboutAction->setEnabled(true);
+//  _aboutAction->setText(tr("About"));
 
   // device group
   _deviceGroup = new QActionGroup(this);
@@ -230,10 +230,10 @@ void  QnplMainWindow::createMenus()
   _toolsMenu->addAction(_preferencesAction);
 
   // help menu
-  _helpMenu = menuBar()->addMenu(tr("Help"));
-  _helpMenu->addAction(_bugAction);
-  _helpMenu->addSeparator();
-  _helpMenu->addAction(_aboutAction);
+//  _helpMenu = menuBar()->addMenu(tr("Help"));
+//  _helpMenu->addAction(_bugAction);
+//  _helpMenu->addSeparator();
+//  _helpMenu->addAction(_aboutAction);
 }
 
 void QnplMainWindow::createRecent()
@@ -407,10 +407,10 @@ void  QnplMainWindow::createConnections()
           SLOT(performDevice()));
   connect(_preferencesAction, SIGNAL(triggered()),
           SLOT(performPreferences()));
-  connect(_bugAction, SIGNAL(triggered()),
-          SLOT(performBug()));
-  connect(_aboutAction, SIGNAL(triggered()),
-          SLOT(performAbout()));
+//  connect(_bugAction, SIGNAL(triggered()),
+//          SLOT(performBug()));
+//  connect(_aboutAction, SIGNAL(triggered()),
+//          SLOT(performAbout()));
   connect(_openButton, SIGNAL(clicked()),
           SLOT(performOpen()));
   connect(_channelsButton, SIGNAL(clicked()),
