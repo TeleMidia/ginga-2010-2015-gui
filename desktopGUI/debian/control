@@ -1,0 +1,13 @@
+Source: gingagui
+Section: misc
+Priority: optional
+Maintainer: Rodrigo Costa <rodrigocosta@telemidia.puc-rio.br>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.5
+Homepage: http://www.gingancl.org.br
+
+Package: gingagui
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ginga
+Description: Ginga user interface
+ GingaGui is a user interface to wrapper ginga.
