@@ -52,26 +52,47 @@ void Util::init() {
   QSettings settings(QSettings::IniFormat, QSettings::UserScope, "telemidia",
                      "gingagui");
 
+  // hard codeded settings
+  VERSION = settings.value("VERSION", VERSION).toString();
+  CMD_PREFIX = settings.value("GINGA/CMD_PREFIX", "cmd::").toString();
+  GINGA_KEY_PREFIX = settings.value("GINGA/KEY_PREFIX", "GIEK:").toString();
+  GINGA_CLICK_PREFIX = settings.value("GINGA/CLICK_PREFIX", "GIEC:").toString();
+  GINGA_QUIT =
+      settings.value("GINGA/QUIT", GINGA_KEY_PREFIX + "QUIT\n").toString();
+  GINGA_COMMAND_PREFIX =
+      settings.value("GINGA/COMMAND_PREFIX", "GCMD:").toString();
+  PREFERENCES_ENVIRONMENT =
+      settings.value("GINGA/ENVIRONMENT_LABEL", "Environment").toString();
+  PREFERENCES_GINGA = settings.value("GINGA/GINGA", "Ginga").toString();
+  PREFERENCES_ADVANCED =
+      settings.value("GINGA/ADVANCED", "Advanced").toString();
+  settings.setValue("VERSION", VERSION);
+  settings.setValue("GINGA/CMD_PREFIX", CMD_PREFIX);
+  settings.setValue("GINGA/KEY_PREFIX", GINGA_KEY_PREFIX);
+  settings.setValue("GINGA/CLICK_PREFIX", GINGA_CLICK_PREFIX);
+  settings.setValue("GINGA/QUIT", GINGA_QUIT);
+  settings.setValue("GINGA/COMMAND_PREFIX", GINGA_COMMAND_PREFIX);
+  settings.setValue("GINGA/ENVIRONMENT_LABEL", PREFERENCES_ENVIRONMENT);
+  settings.setValue("GINGA/GINGA", PREFERENCES_GINGA);
+  settings.setValue("GINGA/ADVANCED", PREFERENCES_ADVANCED);
+
+
+  // default settings value
   if (settings.value(V_LANG).toString() == "") {
     settings.setValue(V_LANG, "en");
   }
-
   if (settings.value(V_AUTOPLAY).toString() == "") {
     settings.setValue(V_AUTOPLAY, true);
   }
-
   if (settings.value(V_SCREENSIZE).toString() == "") {
     settings.setValue(V_SCREENSIZE, "800x600");
   }
-
   if (settings.value(V_EMBEDDED).toString() == "") {
     settings.setValue(V_EMBEDDED, "true");
   }
-
   if (settings.value(V_LAST_DIR).toString() == "") {
     settings.setValue(V_LAST_DIR, QDir::homePath());
   }
-
   if (settings.value(V_LOCATION).toString() == "") {
 #ifdef Q_OS_WIN
     settings.setValue(V_LOCATION,
@@ -80,27 +101,21 @@ void Util::init() {
     settings.setValue(V_LOCATION, "/usr/bin/ginga");
 #endif
   }
-
   if (settings.value(V_DEVICE_PORT).toString() == "") {
     settings.setValue(V_DEVICE_PORT, 22222);
   }
-
   if (settings.value(V_PASSIVE).toString() == "") {
     settings.setValue(V_PASSIVE, false);
   }
-
   if (settings.value(V_RUN_AS).toString() == "") {
     settings.setValue(V_RUN_AS, "base");
   }
-
   if (settings.value(V_ENABLE_LOG).toString() == "") {
     settings.setValue(V_ENABLE_LOG, false);
   }
-
   if (settings.value(V_PARAMETERS).toString() == "") {
     settings.setValue(V_PARAMETERS, defaultParameters());
   }
-
 #ifdef Q_OS_WIN
   if (settings.value("gingaconfig_file").toString() == "" ||
       value("version").toInt() < 105) {
@@ -114,40 +129,8 @@ void Util::init() {
   }
 #endif
 
-  VERSION = settings.value("VERSION", VERSION).toString();
-
-  CMD_PREFIX = settings.value("GINGA/CMD_PREFIX", "cmd::").toString();
-
-  GINGA_KEY_PREFIX = settings.value("GINGA/KEY_PREFIX", "GIEK:").toString();
-
-  GINGA_CLICK_PREFIX = settings.value("GINGA/CLICK_PREFIX", "GIEC:").toString();
-
-  GINGA_QUIT =
-      settings.value("GINGA/QUIT", GINGA_KEY_PREFIX + "QUIT\n").toString();
-
-  GINGA_COMMAND_PREFIX =
-      settings.value("GINGA/COMMAND_PREFIX", "GCMD:").toString();
-
-  PREFERENCES_ENVIRONMENT =
-      settings.value("GINGA/ENVIRONMENT_LABEL", "Environment").toString();
-
-  PREFERENCES_GINGA = settings.value("GINGA/GINGA", "Ginga").toString();
-
-  PREFERENCES_ADVANCED =
-      settings.value("GINGA/ADVANCED", "Advanced").toString();
-
-  settings.setValue("VERSION", VERSION);
-  settings.setValue("GINGA/CMD_PREFIX", CMD_PREFIX);
-  settings.setValue("GINGA/KEY_PREFIX", GINGA_KEY_PREFIX);
-  settings.setValue("GINGA/CLICK_PREFIX", GINGA_CLICK_PREFIX);
-  settings.setValue("GINGA/QUIT", GINGA_QUIT);
-  settings.setValue("GINGA/COMMAND_PREFIX", GINGA_COMMAND_PREFIX);
-  settings.setValue("GINGA/ENVIRONMENT_LABEL", PREFERENCES_ENVIRONMENT);
-  settings.setValue("GINGA/GINGA", PREFERENCES_GINGA);
-  settings.setValue("GINGA/ADVANCED", PREFERENCES_ADVANCED);
-
+  // save
   settings.sync();
-
   qDebug() << "settings.allKeys() = " << settings.allKeys();
 }
 
