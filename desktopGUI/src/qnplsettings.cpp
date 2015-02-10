@@ -17,7 +17,11 @@ QnplSettings::QnplSettings()
     }
 
     if (value("location").toString() == ""){
+#ifdef Q_OS_WIN
         setValue("location", QApplication::applicationDirPath()+"/"+"ginga.exe");
+#else
+        setValue("location", "/usr/bin/ginga");
+#endif
     }
 
     if (value("device_port").toString() == ""){
