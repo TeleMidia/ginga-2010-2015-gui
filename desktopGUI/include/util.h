@@ -61,6 +61,8 @@ public:
   static QString V_ENABLE_LOG;
   static QString V_LANG;
   static QString V_EMBEDDED;
+  static QString V_RUN_AS;
+
 
   //Ginga constants
   static QString G_ON_BEGIN;

@@ -5,7 +5,6 @@
 #include <QSettings>
 
 #include "qnplmainwindow.h"
-#include "qnplsettings.h"
 #include "util.h"
 
 int Util::SCREEN_HEIGHT;
@@ -30,7 +29,7 @@ int main(int argc, char *argv[])
 
 
     QSettings settings;
-    QString lang = settings.value("lang").toString();
+    QString lang = settings.value(Util::V_LANG).toString();
 
     qDebug() << lang;
 

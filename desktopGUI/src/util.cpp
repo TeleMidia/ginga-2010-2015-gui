@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QApplication>
 #include "qnplsettings.h"
+#include <QDir>
 
 QString Util::VERSION = "1.0.7";
 QString Util::CMD_PREFIX = "cmd::";
@@ -36,6 +37,7 @@ QString Util::V_DEVICE_PORT = "device_port";
 QString Util::V_ENABLE_LOG = "enablelog";
 QString Util::V_LANG = "lang";
 QString Util::V_EMBEDDED = "embedded";
+QString Util::V_RUN_AS = "run_as";
 
 QString Util::G_ON_BEGIN = "onBegin";
 QString Util::G_ON_END = "onEnd";
@@ -46,11 +48,73 @@ QString Util::WIDE = "wide";
 QString Util::STANDARD = "standard";
 int Util::DEFAULT_PORT = 22222;
 
-void Util::init()
-{
-  QnplSettings settings;
+void Util::init() {
+  QSettings settings(QSettings::IniFormat, QSettings::UserScope, "telemidia",
+                     "gingagui");
 
-  VERSION = settings.value("VERSION", "1.0.7").toString();
+  if (settings.value(V_LANG).toString() == "") {
+    settings.setValue(V_LANG, "en");
+  }
+
+  if (settings.value(V_AUTOPLAY).toString() == "") {
+    settings.setValue(V_AUTOPLAY, true);
+  }
+
+  if (settings.value(V_SCREENSIZE).toString() == "") {
+    settings.setValue(V_SCREENSIZE, "800x600");
+  }
+
+  if (settings.value(V_EMBEDDED).toString() == "") {
+    settings.setValue(V_EMBEDDED, "true");
+  }
+
+  if (settings.value(V_LAST_DIR).toString() == "") {
+    settings.setValue(V_LAST_DIR, QDir::homePath());
+  }
+
+  if (settings.value(V_LOCATION).toString() == "") {
+#ifdef Q_OS_WIN
+    settings.setValue(V_LOCATION,
+                      QApplication::applicationDirPath() + "/" + "ginga.exe");
+#else
+    settings.setValue(V_LOCATION, "/usr/bin/ginga");
+#endif
+  }
+
+  if (settings.value(V_DEVICE_PORT).toString() == "") {
+    settings.setValue(V_DEVICE_PORT, 22222);
+  }
+
+  if (settings.value(V_PASSIVE).toString() == "") {
+    settings.setValue(V_PASSIVE, false);
+  }
+
+  if (settings.value(V_RUN_AS).toString() == "") {
+    settings.setValue(V_RUN_AS, "base");
+  }
+
+  if (settings.value(V_ENABLE_LOG).toString() == "") {
+    settings.setValue(V_ENABLE_LOG, false);
+  }
+
+  if (settings.value(V_PARAMETERS).toString() == "") {
+    settings.setValue(V_PARAMETERS, defaultParameters());
+  }
+
+#ifdef Q_OS_WIN
+  if (settings.value("gingaconfig_file").toString() == "" ||
+      value("version").toInt() < 105) {
+    settings.setValue("gingaconfig_file",
+                      QDir::toNativeSeparators(QDir::homePath()) +
+                          "\\AppData\\Roaming\\telemidia\\ginga\\contexts.ini");
+  }
+#else
+  if (settings.value("gingaconfig_file").toString() == "") {
+    settings.setValue("gingaconfig_file", "");
+  }
+#endif
+
+  VERSION = settings.value("VERSION", VERSION).toString();
 
   CMD_PREFIX = settings.value("GINGA/CMD_PREFIX", "cmd::").toString();
 
@@ -58,19 +122,19 @@ void Util::init()
 
   GINGA_CLICK_PREFIX = settings.value("GINGA/CLICK_PREFIX", "GIEC:").toString();
 
-  GINGA_QUIT = settings.value("GINGA/QUIT",
-                              GINGA_KEY_PREFIX + "QUIT\n").toString();
+  GINGA_QUIT =
+      settings.value("GINGA/QUIT", GINGA_KEY_PREFIX + "QUIT\n").toString();
 
-  GINGA_COMMAND_PREFIX = settings.value("GINGA/COMMAND_PREFIX",
-                                        "GCMD:").toString();
+  GINGA_COMMAND_PREFIX =
+      settings.value("GINGA/COMMAND_PREFIX", "GCMD:").toString();
 
-  PREFERENCES_ENVIRONMENT = settings.value("GINGA/ENVIRONMENT_LABEL",
-                                           "Environment").toString();
+  PREFERENCES_ENVIRONMENT =
+      settings.value("GINGA/ENVIRONMENT_LABEL", "Environment").toString();
 
   PREFERENCES_GINGA = settings.value("GINGA/GINGA", "Ginga").toString();
 
-  PREFERENCES_ADVANCED = settings.value("GINGA/ADVANCED",
-                                        "Advanced").toString();
+  PREFERENCES_ADVANCED =
+      settings.value("GINGA/ADVANCED", "Advanced").toString();
 
   settings.setValue("VERSION", VERSION);
   settings.setValue("GINGA/CMD_PREFIX", CMD_PREFIX);
@@ -84,22 +148,20 @@ void Util::init()
 
   settings.sync();
 
-
-  qDebug () << settings.allKeys();
+  qDebug() << "settings.allKeys() = " << settings.allKeys();
 }
 
-QStringList Util::split(QString parameters)
-{
+QStringList Util::split(QString parameters) {
 
   QStringList plist;
 
   QString ps = parameters;
 
-  QRegExp rx; rx.setPattern("([-${}\\w\\\\:]+|\\\".*\\\")");
+  QRegExp rx;
+  rx.setPattern("([-${}\\w\\\\:]+|\\\".*\\\")");
 
   int pos = 0;
-  while ((pos = rx.indexIn(ps, pos)) != -1)
-  {
+  while ((pos = rx.indexIn(ps, pos)) != -1) {
     plist << rx.cap(1);
 
     pos += rx.matchedLength();
@@ -108,39 +170,34 @@ QStringList Util::split(QString parameters)
   return plist;
 }
 
-QString Util::defaultParameters()
-{
+QString Util::defaultParameters() {
   return "--ncl ${FILE} --vmode ${SCREENSIZE} --set-exitonend "
-      "--disable-multicast --poll-stdin";
+         "--disable-multicast --poll-stdin";
 }
 
-GingaMessage Util::parseMessage(QString message)
-{
+GingaMessage Util::parseMessage(QString message) {
   GingaMessage gingaMessage;
 
   QStringList tokens = message.split("::");
-  if (tokens.count() > 3)
-  {
+  if (tokens.count() > 3) {
     gingaMessage.command = tokens.at(0);
     gingaMessage.code = tokens.at(1);
     gingaMessage.messageKey = tokens.at(2);
 
     for (int i = 3; i < tokens.size(); i++)
-        gingaMessage.data.push_back(tokens.at(i));
+      gingaMessage.data.push_back(tokens.at(i));
   }
 
   return gingaMessage;
 }
 
-QString Util::secondsToString(int seconds)
-{
+QString Util::secondsToString(int seconds) {
   QString currentTime = "";
 
   int min = seconds / 60;
   seconds %= 60;
 
-  if (min > 59)
-  {
+  if (min > 59) {
     int hours = min / 60;
     min %= 60;
     currentTime = QString::number(hours) + ":";
