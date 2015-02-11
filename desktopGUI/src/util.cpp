@@ -118,7 +118,7 @@ void Util::init() {
   }
 #ifdef Q_OS_WIN
   if (settings.value("gingaconfig_file").toString() == "" ||
-      value("version").toInt() < 105) {
+      settings.value("version").toInt() < 105) {
     settings.setValue("gingaconfig_file",
                       QDir::toNativeSeparators(QDir::homePath()) +
                           "\\AppData\\Roaming\\telemidia\\ginga\\contexts.ini");
