@@ -581,8 +581,8 @@ void QnplMainWindow::performPlay()
 
       if (_settings->value(Util::V_EMBEDDED).toString() == "true")
       {
-        QString winId = hwndToString(_view->focusWidget()->winId());
 #ifdef __linux
+        QString winId = hwndToString(_view->focusWidget()->winId());
         parameters << "--parent";
         parameters << ":0.0," + winId + ",0,0,"
                       + QString::number(_view->width()) + ","
@@ -590,17 +590,7 @@ void QnplMainWindow::performPlay()
 
         setFixedSize(size());
 #elif defined __WIN32
-              foreach (QObject* ob, _view->focusWidget()->children())
-              {
-                QWidget* w = qobject_cast<QWidget*>(ob);
-
-                if (w)
-                {
-                  winId =  hwndToString(w->winId());
-                }
-              }
-        parameters << "--wid";
-        parameters << winId;
+        parameters << "--wid" << viewWID();
 #endif
       }
       if (_location.endsWith(".ncl"))
@@ -804,17 +794,8 @@ void QnplMainWindow::playIpChannel(QString ipChannel){
 
   if (_settings->value(Util::V_EMBEDDED).toString() == "true")
   {
-    QString winId = hwndToString(_view->focusWidget()->winId());
-//      foreach (QObject* ob, _view->children())
-//      {
-//        QWidget* w = qobject_cast<QWidget*>(ob);
-
-//        if (w)
-//        {
-//          WID =  hwndToString(w->winId());
-//        }
-//      }
 #ifdef __linux
+      QString winId = hwndToString(_view->focusWidget()->winId());
       plist<< "--parent";
       plist << ":0.0," + winId + ",0,0,"
                 + QString::number(_view->width()) + ","
@@ -822,17 +803,7 @@ void QnplMainWindow::playIpChannel(QString ipChannel){
 
       setFixedSize(size());
 #elif defined __WIN32
-            foreach (QObject* ob, _view->focusWidget()->children())
-            {
-              QWidget* w = qobject_cast<QWidget*>(ob);
-
-              if (w)
-              {
-                winId =  hwndToString(w->winId());
-              }
-            }
-      plist << "--wid";
-      plist << winId;
+      plist << "--wid" << viewWID();
 #endif
 
   }
@@ -930,17 +901,8 @@ void QnplMainWindow::playChannel(Channel channel)
 
     if (_settings->value(Util::V_EMBEDDED).toString() == "true")
     {
-      QString winId = hwndToString(_view->focusWidget()->winId());
-//      foreach (QObject* ob, _view->children())
-//      {
-//        QWidget* w = qobject_cast<QWidget*>(ob);
-
-//        if (w)
-//        {
-//          WID =  hwndToString(w->winId());
-//        }
-//      }
 #ifdef __linux
+        QString winId = hwndToString(_view->focusWidget()->winId());
         plist<< "--parent";
         plist << ":0.0," + winId + ",0,0,"
                   + QString::number(_view->width()) + ","
@@ -948,19 +910,8 @@ void QnplMainWindow::playChannel(Channel channel)
 
         setFixedSize(size());
 #elif defined __WIN32
-              foreach (QObject* ob, _view->focusWidget()->children())
-              {
-                QWidget* w = qobject_cast<QWidget*>(ob);
-
-                if (w)
-                {
-                  winId =  hwndToString(w->winId());
-                }
-              }
-        plist << "--wid";
-        plist << winId;
+        plist << "--wid" << viewWID();
 #endif
-
     }
 
     plist.removeAll(Util::GUI_NCL);
@@ -1425,7 +1376,7 @@ void QnplMainWindow::scan()
             + QString::number(_view->width()) + ","
             + QString::number(_view->height());
 #elif defined __WIN32
-  plist << "--wid" << hwndToString(_scanProgress->winId());
+  plist << "--wid" << viewWID();
 #endif
 
   if (_settings->value("enablelog").toBool())

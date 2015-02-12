@@ -96,7 +96,7 @@ private:
   inline QString viewWID () {
     QString WID = "";
 
-    foreach (QObject* ob, _view->children()) {
+    foreach (QObject* ob, _view->focusWidget()->children()) {
       QWidget* w = qobject_cast<QWidget*>(ob);
 
       if (w)
