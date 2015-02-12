@@ -1140,8 +1140,17 @@ void QnplMainWindow::performRunAsPassive()
   QString context_dir = QFileInfo(conf_location).absoluteDir().path();
 
   QStringList plist;
+#ifdef __linux
+        QString winId = hwndToString(_view->focusWidget()->winId());
+        plist << "--parent";
+        plist << ":0.0," + winId + ",0,0,"
+                      + QString::number(_view->width()) + ","
+                      + QString::number(_view->height());
 
-  plist << "--wid" << viewWID();
+        setFixedSize(size());
+#elif defined __WIN32
+        plist << "--wid" << viewWID();
+#endif
   plist << "--device-class" << "1";
   plist << "--vmode" << _settings->value(Util::V_SCREENSIZE).toString();
   plist << "--context-dir" << context_dir;
@@ -1195,7 +1204,17 @@ void QnplMainWindow::performRunAsActive()
     _settings->setValue(Util::V_DEVICE_PORT, port);
 
   QStringList plist;
-  plist << "--wid" << viewWID();
+#ifdef __linux
+        QString winId = hwndToString(_view->focusWidget()->winId());
+        plist << "--parent";
+        plist << ":0.0," + winId + ",0,0,"
+                      + QString::number(_view->width()) + ","
+                      + QString::number(_view->height());
+
+        setFixedSize(size());
+#elif defined __WIN32
+        plist << "--wid" << viewWID();
+#endif
   plist << "--device-class" << "2";
   plist << "--device-srv-port" << QString::number(port);
   plist << "--vmode" << _settings->value(Util::V_SCREENSIZE).toString();
