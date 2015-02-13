@@ -47,5 +47,5 @@ QnplAboutDialog::~QnplAboutDialog()
 
 void QnplAboutDialog::showMore()
 {
-  QDesktopServices::openUrl(QUrl("http://www.telemidia.puc-rio.br/~edcaraujo/gingagui/"));
+  QDesktopServices::openUrl(QUrl("http://www.gingancl.org.br/en/ferramentas"));
 }

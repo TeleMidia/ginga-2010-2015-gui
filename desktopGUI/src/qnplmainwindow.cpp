@@ -188,9 +188,9 @@ void  QnplMainWindow::createActions()
 //  _bugAction->setText(tr("Report Bug..."));
 
   // about action
-//  _aboutAction = new QAction(this);
-//  _aboutAction->setEnabled(true);
-//  _aboutAction->setText(tr("About"));
+  _aboutAction = new QAction(this);
+  _aboutAction->setEnabled(true);
+  _aboutAction->setText(tr("About"));
 
   // device group
   _deviceGroup = new QActionGroup(this);
@@ -229,11 +229,11 @@ void  QnplMainWindow::createMenus()
   _toolsMenu = menuBar()->addMenu(tr("Tools"));
   _toolsMenu->addAction(_preferencesAction);
 
-  // help menu
-//  _helpMenu = menuBar()->addMenu(tr("Help"));
+//   help menu
+  _helpMenu = menuBar()->addMenu(tr("Help"));
 //  _helpMenu->addAction(_bugAction);
 //  _helpMenu->addSeparator();
-//  _helpMenu->addAction(_aboutAction);
+  _helpMenu->addAction(_aboutAction);
 }
 
 void QnplMainWindow::createRecent()
@@ -409,8 +409,8 @@ void  QnplMainWindow::createConnections()
           SLOT(performPreferences()));
 //  connect(_bugAction, SIGNAL(triggered()),
 //          SLOT(performBug()));
-//  connect(_aboutAction, SIGNAL(triggered()),
-//          SLOT(performAbout()));
+  connect(_aboutAction, SIGNAL(triggered()),
+          SLOT(performAbout()));
   connect(_openButton, SIGNAL(clicked()),
           SLOT(performOpen()));
   connect(_channelsButton, SIGNAL(clicked()),
