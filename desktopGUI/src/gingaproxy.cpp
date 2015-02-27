@@ -156,9 +156,6 @@ void GingaProxy::catchGingaOutput()
   if (_process)
   {
     QString output = _process->readAllStandardOutput();
-//    if (output.isEmpty())
-//      output = _process->readAllStandardError();
-
     emit gingaOutput(output);
   }
 }

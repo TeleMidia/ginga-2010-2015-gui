@@ -61,6 +61,7 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
 
   _gingaProxy = GingaProxy::getInstance();
   _isChannel = false;
+  _isTuning = false;
   _isPaused = false;
   _location = "";
   _process = NULL;
@@ -77,9 +78,7 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
   connect(_gingaProxy, SIGNAL(gingaStarted()),
           SLOT(removeCarouselData()));
   connect (_gingaProxy, SIGNAL(gingaOutput(QString)),
-           SLOT(spreadGingaMessage(QString)));
-  connect(_gingaProxy, SIGNAL(gingaOutput(QString)),
-          this, SLOT(writeTunerOutput(QString)));
+           SLOT(handleGingaOutput(QString)));
   connect(_gingaProxy, SIGNAL(gingaFinished(int, QProcess::ExitStatus)),
           this, SLOT(finishScan(int)));
 
@@ -830,11 +829,8 @@ void QnplMainWindow::playIpChannel(QString ipChannel){
   _gingaProxy->run(plist);
 
   _process = _gingaProxy->process();
-
-  connect(_gingaProxy, SIGNAL(gingaOutput(QString)),
-          SLOT(writeTunerOutput(QString)));
-
   _isPlayingChannel = false;
+  _isTuning = true;
 
   _timer = new QTimer (this);
   connect (_timer, SIGNAL(timeout()),
@@ -936,11 +932,8 @@ void QnplMainWindow::playChannel(Channel channel)
     _gingaProxy->run(plist);
 
     _process = _gingaProxy->process();
-
-    connect(_gingaProxy, SIGNAL(gingaOutput(QString)),
-            SLOT(writeTunerOutput(QString)));
-
     _isPlayingChannel = false;
+    _isTuning = true;
 
     _timer = new QTimer (this);
     connect (_timer, SIGNAL(timeout()),
@@ -995,6 +988,7 @@ void QnplMainWindow::writeTunerOutput(QString p_stdout)
             if (entity == "tuned" && msg == "?mAV?")
             {//cmd::0::tuned::?mAV?
               _isPlayingChannel = true;
+              _isTuning = false;
               _animTuning->setVisible(false);
               _tuneApplicationChannelAction->setEnabled(true);
             }
@@ -1068,7 +1062,6 @@ void QnplMainWindow::writeScanOutput(QString p_stdout)
             _scanProgress->close();
             _gingaProxy->sendCommand(Util::GINGA_QUIT.toStdString().
                                      c_str());
-//            _gingaProxy->stop();
           }
         }
       }
@@ -1401,7 +1394,6 @@ void QnplMainWindow::scan()
   _scanProgress->setValue(1);
 
   removeCarouselData();
-
   _scanProgress->open();
 }
 
@@ -1413,6 +1405,8 @@ void QnplMainWindow::finishScan(int code)
              _scanProgress, SLOT(exec()));
   disconnect(_gingaProxy, SIGNAL(gingaFinished(int, QProcess::ExitStatus)),
              this, SLOT(finishScan(int)));
+  disconnect(_gingaProxy, SIGNAL(gingaOutput(QString)),
+             this, SLOT(writeTunerOutput(QString)));
 
   qDebug() <<  "finishScan()::finished";
 }
@@ -1475,7 +1469,7 @@ void QnplMainWindow::keyPressEvent(QKeyEvent *event)
     _debugView->setVisible(!_debugView->isVisible());
 }
 
-void QnplMainWindow::spreadGingaMessage(QString message)
+void QnplMainWindow::handleGingaOutput(QString message)
 {
   _developerView->appendConsoleMessage(message);
 
@@ -1488,6 +1482,13 @@ void QnplMainWindow::spreadGingaMessage(QString message)
     {
       qDebug () << line;
       GingaMessage message = Util::parseMessage(line);
+
+      if (_scanProgress->isVisible())
+        writeScanOutput(line);
+
+      if (_isTuning)
+        writeTunerOutput(line);
+
       if (message.command == "cmd" && message.code == "0")
       {
         if (message.messageKey == "startApp")

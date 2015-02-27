@@ -76,7 +76,7 @@ public slots:
   void keyPressEvent(QKeyEvent *);
   void resizeEvent(QResizeEvent *event);
 
-  void spreadGingaMessage(QString);
+  void handleGingaOutput(QString);
   void startSession ();
 
 private slots:
@@ -109,6 +109,7 @@ private:
 
   QString hwndToString(WId winid);
 
+  bool _isTuning;
   bool _isPlayingChannel;
   bool _isPaused;
 
