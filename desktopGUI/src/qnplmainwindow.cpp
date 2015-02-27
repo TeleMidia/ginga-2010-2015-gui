@@ -1075,6 +1075,7 @@ void QnplMainWindow::writeScanOutput(QString p_stdout)
             _scanProgress->close();
             _gingaProxy->sendCommand(Util::GINGA_QUIT.toStdString().
                                      c_str());
+//            _gingaProxy->stop();
           }
         }
       }
@@ -1387,7 +1388,7 @@ void QnplMainWindow::scan()
   performStop();
 
   QStringList plist;
-  plist << "--set-tuner" << "sbtvdt:scan";
+  plist << "--set-tuner" << "sbtvdt:scan" << "--poll-stdin";
 
 #if __linux
   plist << "--parent";
@@ -1437,6 +1438,7 @@ void QnplMainWindow::finishScan(int code)
 void QnplMainWindow::sendKillMessage()
 {
   qDebug () << _gingaProxy->sendCommand(Util::GINGA_QUIT.toStdString().c_str());
+//  _gingaProxy->stop();
 
   emit scanFinished();
 }
