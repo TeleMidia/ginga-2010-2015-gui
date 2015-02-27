@@ -536,6 +536,7 @@ void QnplMainWindow::performQuit()
 void QnplMainWindow::performPlay()
 {
   _settings->sync();
+  _view->setFocus();
 
   if (QFile::exists(_location))
   {
