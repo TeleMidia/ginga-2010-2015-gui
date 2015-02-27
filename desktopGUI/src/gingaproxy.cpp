@@ -84,11 +84,11 @@ void GingaProxy::run(QStringList args, bool forceKill)
   }
 
   _process = new QProcess(this);
+  _process->setReadChannel(QProcess::StandardOutput);
+  _process->setReadChannelMode(QProcess::MergedChannels);
+
   connect(_process, SIGNAL(readyReadStandardOutput()),
           SLOT(catchGingaOutput()));
-  connect(_process, SIGNAL(readyReadStandardError()),
-          SLOT(catchGingaOutput()));
-
   connect (_process, SIGNAL(started()), this, SIGNAL(gingaStarted()));
   connect (_process, SIGNAL(error(QProcess::ProcessError)),
            this, SIGNAL(gingaError(QProcess::ProcessError)));
@@ -156,8 +156,8 @@ void GingaProxy::catchGingaOutput()
   if (_process)
   {
     QString output = _process->readAllStandardOutput();
-    if (output.isEmpty())
-      output = _process->readAllStandardError();
+//    if (output.isEmpty())
+//      output = _process->readAllStandardError();
 
     emit gingaOutput(output);
   }

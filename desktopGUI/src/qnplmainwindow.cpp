@@ -78,6 +78,11 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
           SLOT(removeCarouselData()));
   connect (_gingaProxy, SIGNAL(gingaOutput(QString)),
            SLOT(spreadGingaMessage(QString)));
+  connect(_gingaProxy, SIGNAL(gingaOutput(QString)),
+          this, SLOT(writeTunerOutput(QString)));
+  connect(_gingaProxy, SIGNAL(gingaFinished(int, QProcess::ExitStatus)),
+          this, SLOT(finishScan(int)));
+
 
   createActions();
   createMenus();
@@ -623,17 +628,6 @@ void QnplMainWindow::performPlay()
       _gingaProxy->setBinaryPath(_settings->value(Util::V_LOCATION).toString());
       _gingaProxy->run(parameters);
 
-//      _process = _gingaProxy->process();
-//      if (!_process) return;
-
-//      connect (_gingaProxy, SIGNAL(gingaStarted()),
-//               SLOT(removeCarouselData()));
-
-//      connect (_gingaProxy, SIGNAL(gingaOutput(QString)),
-//               SLOT(spreadGingaMessage(QString)));
-
-//      setUpProcessConnections(_process);
-
       _view->setFocus();
     }
     // play as passive device
@@ -1025,7 +1019,6 @@ void QnplMainWindow::writeTunerOutput(QString p_stdout)
         }
       }
     }
-    spreadGingaMessage(line);
   }
 }
 
@@ -1081,7 +1074,6 @@ void QnplMainWindow::writeScanOutput(QString p_stdout)
       }
 
     }
-    spreadGingaMessage(line);
   }
 }
 
@@ -1410,15 +1402,6 @@ void QnplMainWindow::scan()
 
   removeCarouselData();
 
-  connect(_gingaProxy, SIGNAL(gingaOutput(QString)),
-          this, SLOT(writeScanOutput(QString)));
-
-  connect(_gingaProxy, SIGNAL(gingaOutput(QString)),
-          this, SLOT(writeTunerOutput(QString)));
-
-  connect(_gingaProxy, SIGNAL(gingaFinished(int, QProcess::ExitStatus)),
-          this, SLOT(finishScan(int)));
-
   _scanProgress->open();
 }
 
@@ -1438,7 +1421,6 @@ void QnplMainWindow::finishScan(int code)
 void QnplMainWindow::sendKillMessage()
 {
   qDebug () << _gingaProxy->sendCommand(Util::GINGA_QUIT.toStdString().c_str());
-//  _gingaProxy->stop();
 
   emit scanFinished();
 }
