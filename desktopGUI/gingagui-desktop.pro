@@ -88,4 +88,5 @@ TRANSLATIONS += \
     translations/pt_br.ts
 
 OTHER_FILES += \
-    ginga.desktop
+    ginga.desktop \
+    application-x-ncl-NCL.xml
