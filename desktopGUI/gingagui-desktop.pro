@@ -89,4 +89,11 @@ TRANSLATIONS += \
 
 OTHER_FILES += \
     ginga.desktop \
-    application-x-ncl-NCL.xml
+    application-x-ncl-NCL.xml \
+    debian/rules \
+    debian/copyright \
+    debian/compat \
+    debian/changelog \
+    debian/files \
+    debian/control \
+    debian/postinst.ex
