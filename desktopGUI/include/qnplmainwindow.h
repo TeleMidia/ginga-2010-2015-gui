@@ -6,7 +6,7 @@
 #include <QTimer>
 #include <QLineEdit>
 #include <QSettings>
-
+#include <QStackedWidget>
 #include "gingaproxy.h"
 #include "qnplview.h"
 #include "qnplpreferencesdialog.h"
@@ -165,7 +165,7 @@ private:
 
   QnplView* _view;
   QSettings* _settings;
-
+  QStackedWidget *_stackedWidget;
   QnplPreferencesDialog* _preferencesDialog;
   QnplAboutDialog* _aboutDialog;
   QnplChannelsDialog * _channelDialog;

@@ -302,11 +302,6 @@ void QnplMainWindow::createWidgets()
   _openLine = new QLineEdit(this);
   _openLine->setEnabled(true);
 
-  _view = new QnplView(this);
-  _view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  _view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  _view->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-
   _developerView = new DeveloperView(this);
   addDockWidget(Qt::RightDockWidgetArea, _developerView);
   _developerView->setVisible(false);
@@ -321,15 +316,26 @@ void QnplMainWindow::createWidgets()
   _scanProgress->setWindowTitle("Scanning");
   _scanProgress->setWindowIcon(windowIcon());
 
+  _stackedWidget = new QStackedWidget();
+
+  _view = new QnplView(this);
+  _view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  _view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  _view->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+
   _gifLabel = new QLabel();
   _movie = new QMovie(":backgrounds/anim-tuning");
   _gifLabel->setMovie(_movie);
   _movie->start();
-  _animTuning = _view->getScene()->addWidget(_gifLabel);
-  _animTuning->setVisible(false);
-  _gifLabel->setVisible(false);
+  _gifLabel->setVisible(true);
+  _gifLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+  _gifLabel->setContentsMargins(0,0,0,0);
 
-  setCentralWidget(_view);
+  _stackedWidget->addWidget(_view);
+  _stackedWidget->addWidget(_gifLabel);
+  _stackedWidget->setCurrentIndex(0);
+
+  setCentralWidget(_stackedWidget);
 }
 
 void QnplMainWindow::createDialogs()
@@ -688,7 +694,7 @@ void QnplMainWindow::performStop()
   _gingaProxy->stop();
 
   if (_process != NULL)
-    _animTuning->setVisible(false);
+    _stackedWidget->setCurrentIndex(0);
 
   if (_passiveIsRunning)
   {
@@ -850,7 +856,7 @@ void QnplMainWindow::playIpChannel(QString ipChannel){
            SLOT(stopTuning()));
   _timer->start(15000);
 
-  _animTuning->setVisible(true);
+  _stackedWidget->setCurrentIndex(1);
   _lastIpChannel = ipChannel;
   _lastChannel.setNull();
   _location = "";
@@ -953,7 +959,7 @@ void QnplMainWindow::playChannel(Channel channel)
              SLOT(stopTuning()));
     _timer->start(15000);
 
-    _animTuning->setVisible(true);
+    _stackedWidget->setCurrentIndex(1);
 
     _lastChannel = channel;
     _location = "";
@@ -1002,7 +1008,7 @@ void QnplMainWindow::writeTunerOutput(QString p_stdout)
             {//cmd::0::tuned::?mAV?
               _isPlayingChannel = true;
               _isTuning = false;
-              _animTuning->setVisible(false);
+              _stackedWidget->setCurrentIndex(0);
               _tuneApplicationChannelAction->setEnabled(true);
             }
           }
@@ -1014,7 +1020,7 @@ void QnplMainWindow::writeTunerOutput(QString p_stdout)
             if (msg != "")
               QMessageBox::warning(this, "Warning", msg, QMessageBox::Ok);
 
-            _animTuning->setVisible(false);
+            _stackedWidget->setCurrentIndex(0);
             if (_process)
             {
               qint64 bytes = _process->write(Util::GINGA_QUIT.toStdString().
@@ -1250,7 +1256,7 @@ void QnplMainWindow::performRunAsActive()
 
 void QnplMainWindow::performCloseWindow()
 {
-  if (_animTuning->isVisible())
+  if (_stackedWidget->currentIndex() == 1)
   {
     _timer->stop();
     QList <QMessageBox *>list = findChildren <QMessageBox *> ();
@@ -1350,11 +1356,8 @@ void QnplMainWindow::resizeEvent(QResizeEvent* event)
   qreal h = height() - h_span;
 
   _view->setSceneRect (0,0, w, h);
-
-  _animTuning->setPos(0, 0);
-
-  _movie->setScaledSize(_view->size());
-  _gifLabel->setFixedSize (_view->size());
+  _movie->setScaledSize(centralWidget()->size());
+  _gifLabel->setFixedSize (centralWidget()->size());
 
   _settings->setValue(Util::V_SCREENSIZE,
                       QString::number(width())+ "x" +QString::number(height()));
