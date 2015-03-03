@@ -306,6 +306,11 @@ void QnplMainWindow::createWidgets()
   addDockWidget(Qt::RightDockWidgetArea, _developerView);
   _developerView->setVisible(false);
 
+  _view = new QnplView(this);
+  _view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  _view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  _view->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+
   _debugView = new DebugView(_view, this);
   addDockWidget(Qt::LeftDockWidgetArea, _debugView);
   _debugView->setVisible(false);
@@ -316,13 +321,6 @@ void QnplMainWindow::createWidgets()
   _scanProgress->setWindowTitle("Scanning");
   _scanProgress->setWindowIcon(windowIcon());
 
-  _stackedWidget = new QStackedWidget();
-
-  _view = new QnplView(this);
-  _view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  _view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  _view->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-
   _gifLabel = new QLabel();
   _movie = new QMovie(":backgrounds/anim-tuning");
   _gifLabel->setMovie(_movie);
@@ -331,6 +329,7 @@ void QnplMainWindow::createWidgets()
   _gifLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
   _gifLabel->setContentsMargins(0,0,0,0);
 
+  _stackedWidget = new QStackedWidget();
   _stackedWidget->addWidget(_view);
   _stackedWidget->addWidget(_gifLabel);
   _stackedWidget->setCurrentIndex(0);
