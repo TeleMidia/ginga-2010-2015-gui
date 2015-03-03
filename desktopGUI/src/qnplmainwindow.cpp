@@ -78,21 +78,6 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
   createToolbars();
   createConnections();
 
-  connect(_gingaProxy, SIGNAL(gingaFinished(int,QProcess::ExitStatus)),
-          SLOT(performCloseWindow()));
-  connect(_gingaProxy, SIGNAL(gingaFinished(int,QProcess::ExitStatus)),
-          SLOT(performStop()));
-  connect(_gingaProxy, SIGNAL(gingaError(QProcess::ProcessError)),
-          SLOT(showErrorDialog(QProcess::ProcessError)));
-  connect(_gingaProxy, SIGNAL(gingaStarted()),
-          SLOT(removeCarouselData()));
-  connect (_gingaProxy, SIGNAL(gingaOutput(QString)),
-           SLOT(handleGingaOutput(QString)));
-  connect(_gingaProxy, SIGNAL(gingaFinished(int, QProcess::ExitStatus)),
-          this, SLOT(finishScan(int)));
-  connect (_view, SIGNAL (droppedFile(QString)),
-           this, SLOT (load(QString)));
-
   QString size = _settings->value(Util::V_SCREENSIZE, "0x0").toString();
 
   int width = size.section('x',0,0).toInt();
@@ -452,6 +437,24 @@ void  QnplMainWindow::createConnections()
            _gingaProxy, SLOT(sendCommand(QString)));
   connect(_refreshButton, SIGNAL(clicked()),
           SLOT(scan()));
+
+  connect(_gingaProxy, SIGNAL(gingaFinished(int,QProcess::ExitStatus)),
+          SLOT(performCloseWindow()));
+  connect(_gingaProxy, SIGNAL(gingaFinished(int,QProcess::ExitStatus)),
+          SLOT(performStop()));
+  connect(_gingaProxy, SIGNAL(gingaError(QProcess::ProcessError)),
+          SLOT(showErrorDialog(QProcess::ProcessError)));
+  connect(_gingaProxy, SIGNAL(gingaStarted()),
+          SLOT(removeCarouselData()));
+  connect (_gingaProxy, SIGNAL(gingaOutput(QString)),
+           SLOT(handleGingaOutput(QString)));
+  connect(_gingaProxy, SIGNAL(gingaFinished(int, QProcess::ExitStatus)),
+          this, SLOT(finishScan(int)));
+  connect (_view, SIGNAL (droppedFile(QString)),
+           this, SLOT (load(QString)));
+
+  connect (_openLine, SIGNAL (textChanged(QString)),
+           this, SLOT (updateLocation (QString)));
 }
 
 
@@ -474,11 +477,14 @@ void QnplMainWindow::performOpen()
   }
 }
 
-void QnplMainWindow::load(QString location)
+void QnplMainWindow::updateLocation(const QString &location)
 {
-  location = location.replace('/',QDir::separator());
-  location = location.replace('\\',QDir::separator());
+  if (_location != location)
+    _location = location.trimmed();
+}
 
+void QnplMainWindow::load(const QString &location)
+{
   QStringList recents = _settings->value(Util::V_FILES).toStringList();
 
   QStringList newRecents;
@@ -539,6 +545,10 @@ void QnplMainWindow::performPlay()
 {
   _settings->sync();
   _view->setFocus();
+
+  QUrl url (_location);
+  if (url.isValid())
+    _location = url.toLocalFile();
 
   if (QFile::exists(_location))
   {

@@ -30,7 +30,8 @@ signals:
   void scanFinished ();
 
 public slots:
-  void load(QString location);
+  void load (const QString &location);
+  void updateLocation (const QString &location);
 
   void performOpen();
   void performOpen(QAction* action);
