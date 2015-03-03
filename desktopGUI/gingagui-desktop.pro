@@ -38,7 +38,6 @@ SOURCES += \
     src/main.cpp \
     src/qnplmainwindow.cpp \
     src/qnplview.cpp \
-    src/qnplscene.cpp \
     src/qnplsettings.cpp \
     src/qnplpreferencesdialog.cpp \
     src/qnplaboutdialog.cpp \
@@ -54,7 +53,6 @@ SOURCES += \
 HEADERS += \
     include/qnplmainwindow.h \
     include/qnplview.h \
-    include/qnplscene.h \
     include/qnplsettings.h \
     include/qnplpreferencesdialog.h \
     include/qnplaboutdialog.h \

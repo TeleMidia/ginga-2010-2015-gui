@@ -4,8 +4,6 @@
 #include <QGraphicsView>
 #include <QDebug>
 
-#include "qnplscene.h"
-
 class QnplView : public QGraphicsView
 {
   Q_OBJECT
@@ -14,7 +12,7 @@ public:
   QnplView(QWidget* parent = 0);
   ~QnplView();
 
-  QnplScene* getScene();
+  QGraphicsScene* getScene();
 
 signals:
   void selected (QString key);
@@ -30,7 +28,7 @@ protected:
   void dropEvent (QDropEvent *event);
 
 private:
-  QnplScene* scene;
+  QGraphicsScene* scene;
 };
 
 #endif // QNPLVIEW_H

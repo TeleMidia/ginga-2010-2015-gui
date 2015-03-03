@@ -11,7 +11,7 @@ QnplView::QnplView(QWidget* parent)
 {
   setStyleSheet("background: #000000;");
 
-  scene = new QnplScene(this);
+  scene = new QGraphicsScene(this);
   setScene(scene);
 
   setAcceptDrops(true);
@@ -21,7 +21,7 @@ QnplView::~QnplView()
 {
 }
 
-QnplScene* QnplView::getScene()
+QGraphicsScene* QnplView::getScene()
 {
   return scene;
 }
@@ -146,7 +146,7 @@ void QnplView::resizeEvent(QResizeEvent* event)
   qreal w = event->size().width();
   qreal h = event->size().height();
 
-  scene->setSize(w, h);
+  scene->setSceneRect(0,0,w,h);
 
   QGraphicsView::resizeEvent(event);
 }
