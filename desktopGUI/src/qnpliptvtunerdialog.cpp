@@ -6,8 +6,9 @@ QnplIPTVTunerDialog::QnplIPTVTunerDialog(QWidget *parent)
   : QDialog(parent)
 {
   setWindowTitle(tr("IP Address"));
-  // setting
+
   _form.setupUi(this);
+  _form.lineEdit->setInputMask("000.000.000.000");
 }
 
 QnplIPTVTunerDialog::~QnplIPTVTunerDialog()
