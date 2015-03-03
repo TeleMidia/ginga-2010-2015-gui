@@ -17,12 +17,17 @@ public:
   QnplScene* getScene();
 
 signals:
-  void selected(QString key);
+  void selected (QString key);
+  void droppedFile (QString path);
 
 protected:
   void mousePressEvent(QMouseEvent *event);
   void resizeEvent(QResizeEvent* event);
   void keyPressEvent(QKeyEvent *event);
+
+  void dragEnterEvent(QDragEnterEvent * event);
+  void dragMoveEvent (QDragMoveEvent *event);
+  void dropEvent (QDropEvent *event);
 
 private:
   QnplScene* scene;

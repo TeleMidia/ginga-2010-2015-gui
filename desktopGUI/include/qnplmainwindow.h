@@ -26,12 +26,12 @@ public:
   QnplMainWindow(QWidget* parent = 0);
   ~QnplMainWindow();
 
-  void load(QString _location);
-
 signals:
   void scanFinished ();
 
 public slots:
+  void load(QString location);
+
   void performOpen();
   void performOpen(QAction* action);
   void performClear();
@@ -93,10 +93,12 @@ private:
   void createConnections();
   void removePath (QString);
 
-  inline QString viewWID () {
+  inline QString viewWID ()
+  {
     QString WID = "";
 
-    foreach (QObject* ob, _view->focusWidget()->children()) {
+    foreach (QObject* ob, _view->focusWidget()->children())
+    {
       QWidget* w = qobject_cast<QWidget*>(ob);
 
       if (w)

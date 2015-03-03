@@ -69,6 +69,15 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
   _passiveIsRunning = false;
   _location = "";
 
+
+  createActions();
+  createMenus();
+  createRecent();
+  createWidgets();
+  createDialogs();
+  createToolbars();
+  createConnections();
+
   connect(_gingaProxy, SIGNAL(gingaFinished(int,QProcess::ExitStatus)),
           SLOT(performCloseWindow()));
   connect(_gingaProxy, SIGNAL(gingaFinished(int,QProcess::ExitStatus)),
@@ -81,15 +90,8 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
            SLOT(handleGingaOutput(QString)));
   connect(_gingaProxy, SIGNAL(gingaFinished(int, QProcess::ExitStatus)),
           this, SLOT(finishScan(int)));
-
-
-  createActions();
-  createMenus();
-  createRecent();
-  createWidgets();
-  createDialogs();
-  createToolbars();
-  createConnections();
+  connect (_view, SIGNAL (droppedFile(QString)),
+           this, SLOT (load(QString)));
 
   QString size = _settings->value(Util::V_SCREENSIZE, "0x0").toString();
 

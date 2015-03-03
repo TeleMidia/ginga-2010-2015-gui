@@ -2,6 +2,7 @@
 #include <QKeyEvent>
 #include <QResizeEvent>
 #include <QMouseEvent>
+#include <QUrl>
 
 #include "../include/util.h"
 
@@ -12,6 +13,8 @@ QnplView::QnplView(QWidget* parent)
 
   scene = new QnplScene(this);
   setScene(scene);
+
+  setAcceptDrops(true);
 }
 
 QnplView::~QnplView()
@@ -104,6 +107,38 @@ void QnplView::mousePressEvent(QMouseEvent *event)
                 QString::number(event->y()));
 
   QGraphicsView::mousePressEvent(event);
+}
+
+void QnplView::dragEnterEvent(QDragEnterEvent *event)
+{
+  bool isAcceptable = false;
+  if (event->mimeData()->hasUrls() && event->mimeData()->urls().size() == 1)
+  {
+    QUrl url = event->mimeData()->urls().at(0);
+    if (url.toString().endsWith(".ncl"))
+      isAcceptable = true;
+  }
+
+  event->setAccepted(isAcceptable);
+}
+
+void QnplView::dragMoveEvent(QDragMoveEvent *)
+{
+  /*
+   * Do nothing. We just need to avoid this widget to
+   * call the method QGraphicsView::dragMoveEvent(),
+   * once that method blocks our dropEvent function.
+   */
+}
+
+
+void QnplView::dropEvent(QDropEvent *event)
+{
+  foreach (const QUrl &url, event->mimeData()->urls())
+  {
+    const QString fileName = url.toLocalFile();
+    emit droppedFile(fileName);
+  }
 }
 
 void QnplView::resizeEvent(QResizeEvent* event)
