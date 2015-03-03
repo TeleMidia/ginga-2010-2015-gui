@@ -108,8 +108,8 @@
           <string>320x180 (16:9)</string>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>:/icon/tv</normaloff>:/icon/tv</iconset>
+          <iconset resource="../application.qrc">
+           <normaloff>:/icons/mobile</normaloff>:/icons/mobile</iconset>
          </property>
         </item>
         <item>
@@ -117,8 +117,8 @@
           <string>320x240 (4:3)</string>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>:/icon/tv</normaloff>:/icon/tv</iconset>
+          <iconset resource="../application.qrc">
+           <normaloff>:/icons/mobile</normaloff>:/icons/mobile</iconset>
          </property>
         </item>
         <item>
@@ -126,8 +126,8 @@
           <string>320x288 (4:3)</string>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>:/icon/mobile</normaloff>:/icon/mobile</iconset>
+          <iconset resource="../application.qrc">
+           <normaloff>:/icons/mobile</normaloff>:/icons/mobile</iconset>
          </property>
         </item>
         <item>
@@ -135,8 +135,8 @@
           <string>640x480 (4:3)</string>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>:/icon/tv</normaloff>:/icon/tv</iconset>
+          <iconset resource="../application.qrc">
+           <normaloff>:/icons/tv</normaloff>:/icons/tv</iconset>
          </property>
         </item>
         <item>
@@ -144,8 +144,8 @@
           <string>720x480 (4:3)</string>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>:/icon/tv</normaloff>:/icon/tv</iconset>
+          <iconset resource="../application.qrc">
+           <normaloff>:/icons/tv</normaloff>:/icons/tv</iconset>
          </property>
         </item>
         <item>
@@ -153,8 +153,8 @@
           <string>720x576 (4:3)</string>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>:/icon/tv</normaloff>:/icon/tv</iconset>
+          <iconset resource="../application.qrc">
+           <normaloff>:/icons/tv</normaloff>:/icons/tv</iconset>
          </property>
         </item>
         <item>
@@ -162,8 +162,8 @@
           <string>800x600 (4:3)</string>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>:/icon/tv</normaloff>:/icon/tv</iconset>
+          <iconset resource="../application.qrc">
+           <normaloff>:/icons/tv</normaloff>:/icons/tv</iconset>
          </property>
         </item>
         <item>
@@ -171,8 +171,8 @@
           <string>1024x768 (4:3)</string>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>:/icon/mobile</normaloff>:/icon/mobile</iconset>
+          <iconset resource="../application.qrc">
+           <normaloff>:/icons/tv</normaloff>:/icons/tv</iconset>
          </property>
         </item>
         <item>
@@ -180,8 +180,8 @@
           <string>1280x720 (16:9)</string>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>:/icon/mobile</normaloff>:/icon/mobile</iconset>
+          <iconset resource="../application.qrc">
+           <normaloff>:/icons/tv</normaloff>:/icons/tv</iconset>
          </property>
         </item>
         <item>
@@ -189,8 +189,8 @@
           <string>1920x1080 (16:9)</string>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>:/icon/mobile</normaloff>:/icon/mobile</iconset>
+          <iconset resource="../application.qrc">
+           <normaloff>:/icons/tv</normaloff>:/icons/tv</iconset>
          </property>
         </item>
        </widget>
@@ -239,6 +239,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../application.qrc"/>
+ </resources>
  <connections/>
 </ui>
