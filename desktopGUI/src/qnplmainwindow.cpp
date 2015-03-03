@@ -552,7 +552,7 @@ void QnplMainWindow::performPlay()
   _view->setFocus();
 
   QUrl url (_location);
-  if (url.isValid())
+  if (url.isLocalFile())
     _location = url.toLocalFile();
 
   if (QFile::exists(_location))
