@@ -1095,7 +1095,6 @@ void QnplMainWindow::writeScanOutput(QString p_stdout)
 
 void QnplMainWindow::performPreferences()
 {
-
   // Set actual size in settings for be present in settings form
   QString new_size;
   new_size.append(QString::number(_view->width()));
@@ -1112,8 +1111,16 @@ void QnplMainWindow::performPreferences()
   QString sh = ssize.section('x',1,1);
   int w = sw.toInt();
   int h = sh.toInt();
-  _view->setSceneRect(0,0,w,h);
-  resize(w, h);
+
+  _toolbar->setFixedWidth(w);
+  _stackedWidget->setFixedSize(w, h);
+  adjustSize();
+
+  _stackedWidget->setMinimumSize(0, 0);
+  _stackedWidget->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+
+  _toolbar->setMinimumSize(0, 0);
+  _toolbar->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
 }
 
 void QnplMainWindow::performBug()

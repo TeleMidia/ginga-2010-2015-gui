@@ -140,7 +140,6 @@ private:
   QActionGroup* _deviceGroup;
 
   QToolBar* _toolbar;
-  QToolBar* _openToolbar;
 
   QLineEdit* _openLine;
 

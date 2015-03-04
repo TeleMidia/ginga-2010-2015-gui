@@ -56,19 +56,19 @@ void QnplPreferencesDialog::createForms()
 
   QStandardItemModel *model = new QStandardItemModel(2,1);
   QStandardItem *environmentItem = new QStandardItem(
-        tr(Util::PREFERENCES_ENVIRONMENT.toStdString().c_str()));
+                                     tr(Util::PREFERENCES_ENVIRONMENT.toStdString().c_str()));
 
   environmentItem->setEditable(false);
   environmentItem->setIcon(QIcon(":icon/pc"));
 
   QStandardItem *gingaItem = new QStandardItem(
-        tr(Util::PREFERENCES_GINGA.toStdString().c_str()));
+                               tr(Util::PREFERENCES_GINGA.toStdString().c_str()));
 
   gingaItem->setEditable(false);
   gingaItem->setIcon(QIcon(":icon/run"));
 
   QStandardItem *advancedItem = new QStandardItem(
-        tr(Util::PREFERENCES_ADVANCED.toStdString().c_str()));
+                                  tr(Util::PREFERENCES_ADVANCED.toStdString().c_str()));
   advancedItem->setEditable(false);
 
   //gingaItem->setChild(0, advancedItem);
@@ -119,15 +119,16 @@ void QnplPreferencesDialog::loadSettings()
 
   int index = _screenSizeMap.value(
                 _settings->value(Util::V_SCREENSIZE).toString(), 0);
-  if(index ==  0) {
-      QString actual_value;
-      if (_settings->value("lang").toString() == "en")
-          actual_value =  "actual size: ";
-      else if (_settings->value("lang").toString() == "pt_br")
-         actual_value =  "tamanho atual: ";
-     actual_value.append(_settings->value(Util::V_SCREENSIZE).toString());
-      _enviornmentForm.screensizeBox->setItemText(0, actual_value);
-  }
+//  if(index ==  0)
+//  {
+    QString actual_value;
+    if (_settings->value("lang").toString() == "en")
+      actual_value =  "actual size: ";
+    else if (_settings->value("lang").toString() == "pt_br")
+      actual_value =  "tamanho atual: ";
+    actual_value.append(_settings->value(Util::V_SCREENSIZE).toString());
+    _enviornmentForm.screensizeBox->setItemText(0, actual_value);
+//  }
   _enviornmentForm.screensizeBox->setCurrentIndex(index);
 
   qDebug() << "index=" << index << endl;
@@ -141,7 +142,7 @@ void QnplPreferencesDialog::loadSettings()
 
   _runForm.argsEdit->setText(_settings->value(Util::V_PARAMETERS,
                                               Util::defaultParameters())
-                                              .toString());
+                             .toString());
 
   _runForm.contextFileLocation->setText(_settings->value(Util::V_CONTEXT_FILE)
                                         .toString());
@@ -177,8 +178,8 @@ void QnplPreferencesDialog::saveSettings()
     _settings->setValue(Util::V_ENABLE_LOG, false);
 
   _settings->setValue(
-      Util::V_SCREENSIZE,
-      _enviornmentForm.screensizeBox->currentText().split(" ").at(0));
+        Util::V_SCREENSIZE,
+        _enviornmentForm.screensizeBox->currentText().split(" ").at(0));
 
   switch (_enviornmentForm.languageBox->currentIndex())
   {
@@ -388,8 +389,8 @@ void QnplPreferencesDialog::removeVariable()
 {
   int answer =
       QMessageBox::question(this, "Remove Variable", "Are you sure you want to "
-                        "remove this environment variable?",
-                        QMessageBox::Yes, QMessageBox::No);
+                                                     "remove this environment variable?",
+                            QMessageBox::Yes, QMessageBox::No);
 
   if (answer == QMessageBox::No) return;
 
@@ -404,6 +405,6 @@ void QnplPreferencesDialog::removeVariable()
 
 int QnplPreferencesDialog::exec()
 {
-    loadSettings();
-    return QDialog::exec();
+  loadSettings();
+  return QDialog::exec();
 }
