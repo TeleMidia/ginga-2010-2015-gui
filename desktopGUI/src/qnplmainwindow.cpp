@@ -1342,13 +1342,11 @@ void QnplMainWindow::resizeEvent(QResizeEvent* event)
   {
     setFixedHeight(width () * 9 / 16);
     QCoreApplication::processEvents();
-    event->accept();
   }
   else if (aspectRatio == Util::STANDARD)
   {
     setFixedHeight(width() * 3 / 4);
     QCoreApplication::processEvents();
-    event->accept();
   }
   else
   {
@@ -1356,22 +1354,13 @@ void QnplMainWindow::resizeEvent(QResizeEvent* event)
     setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
   }
 
-
-  int w_span = 20;
-  int h_span = 100;
-
-  qreal w = width() - w_span ;
-  qreal h = height() - h_span;
-
-  _view->setSceneRect (0,0, w, h);
   _movie->setScaledSize(centralWidget()->size());
   _gifLabel->setFixedSize (centralWidget()->size());
 
   _settings->setValue(Util::V_SCREENSIZE,
                       QString::number(width())+ "x" +QString::number(height()));
-
-  if (!event->isAccepted())
-    QMainWindow::resizeEvent(event);
+  event->accept();
+  QMainWindow::resizeEvent(event);
 }
 
 void QnplMainWindow::playNextChannel()
