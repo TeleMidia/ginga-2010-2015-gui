@@ -302,36 +302,40 @@ void QnplMainWindow::createWidgets()
   _openLine = new QLineEdit(this);
   _openLine->setEnabled(true);
 
-  _developerView = new DeveloperView(this);
-  addDockWidget(Qt::RightDockWidgetArea, _developerView);
-  _developerView->setVisible(false);
+  _scanProgress =
+      new QProgressDialog("Scanning channels...", "Abort", 0, 100, this);
+  _scanProgress->setWindowFlags(Qt::Dialog | Qt::Desktop);
+  _scanProgress->setWindowTitle("Scanning");
+  _scanProgress->setWindowIcon(windowIcon());
 
-  _view = new QnplView(this);
+  _stackedWidget = new QStackedWidget(this);
+
+  _view = new QnplView(_stackedWidget);
   _view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   _view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   _view->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+
+  _animationView = new QWidget(_stackedWidget);
+  _animationView->setStyleSheet("background: #000000;");
+  _animationView->setContentsMargins(0, 0, 0, 0);
+  _animationView->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+
+  _gifLabel = new QLabel(_animationView);
+  _movie = new QMovie(":backgrounds/anim-tuning");
+  _gifLabel->setMovie(_movie);
+  _movie->start();
+  _gifLabel->setVisible(true);
+
+  _developerView = new DeveloperView(this);
+  addDockWidget(Qt::RightDockWidgetArea, _developerView);
+  _developerView->setVisible(false);
 
   _debugView = new DebugView(_view, this);
   addDockWidget(Qt::LeftDockWidgetArea, _debugView);
   _debugView->setVisible(false);
 
-  _scanProgress = new QProgressDialog ("Scanning channels...", "Abort",
-                                       0, 100, this);
-  _scanProgress->setWindowFlags(Qt::Dialog | Qt::Desktop);
-  _scanProgress->setWindowTitle("Scanning");
-  _scanProgress->setWindowIcon(windowIcon());
-
-  _gifLabel = new QLabel();
-  _movie = new QMovie(":backgrounds/anim-tuning");
-  _gifLabel->setMovie(_movie);
-  _movie->start();
-  _gifLabel->setVisible(true);
-  _gifLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-  _gifLabel->setContentsMargins(0,0,0,0);
-
-  _stackedWidget = new QStackedWidget();
   _stackedWidget->addWidget(_view);
-  _stackedWidget->addWidget(_gifLabel);
+  _stackedWidget->addWidget(_animationView);
   _stackedWidget->setCurrentIndex(0);
 
   setCentralWidget(_stackedWidget);

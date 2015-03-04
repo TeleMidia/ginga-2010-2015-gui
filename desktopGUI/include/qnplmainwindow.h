@@ -164,6 +164,7 @@ private:
   bool _isChannel;
 
   QnplView* _view;
+  QWidget* _animationView;
   QSettings* _settings;
   QStackedWidget *_stackedWidget;
   QnplPreferencesDialog* _preferencesDialog;
