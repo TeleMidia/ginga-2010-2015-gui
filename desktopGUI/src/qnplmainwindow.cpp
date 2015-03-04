@@ -1091,19 +1091,24 @@ void QnplMainWindow::writeScanOutput(QString p_stdout)
 
 void QnplMainWindow::performPreferences()
 {
+
+  // Set actual size in settings for be present in settings form
+  QString new_size;
+  new_size.append(QString::number(_view->width()));
+  new_size.append("x");
+  new_size.append(QString::number(_view->height()));
+  qDebug() << "new_size=" << new_size << endl;
+  _settings->setValue(Util::V_SCREENSIZE,new_size);
   _settings->sync();
   _preferencesDialog->exec();
 
+  // get edit value from setting and set in window
   QString ssize = _settings->value(Util::V_SCREENSIZE).toString();
-
   QString sw = ssize.section('x',0,0);
   QString sh = ssize.section('x',1,1);
-
   int w = sw.toInt();
   int h = sh.toInt();
-
   _view->setSceneRect(0,0,w,h);
-
   resize(w, h);
 }
 

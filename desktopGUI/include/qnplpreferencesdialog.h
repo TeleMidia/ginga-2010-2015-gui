@@ -21,7 +21,7 @@ public:
 
     ~QnplPreferencesDialog();
 
-    void init(QSettings *s);
+    void createForms();
 
 public slots:
     void showPreferencesItem(QModelIndex index);
@@ -33,6 +33,9 @@ public slots:
     void customMenuRequested(QPoint);
     void removeVariable ();
 
+public:
+    int	exec();
+
 private:
     void loadSettings();
     void loadGingaPreferences();
@@ -40,10 +43,10 @@ private:
 
     QMap <QString, int> _screenSizeMap;
 
-    QWidget* _generalPane;
+    QWidget* _environmentPane;
     QWidget* _runPane;
 
-    Ui::QnplGeneralForm _generalForm;
+    Ui::QnplEnviornmentForm _enviornmentForm;
     Ui::QnplRunForm _runForm;
     Ui::QnplPreferencesForm _preferencesForm;
 

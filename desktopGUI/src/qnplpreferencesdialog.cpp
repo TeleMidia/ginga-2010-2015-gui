@@ -13,13 +13,26 @@ QnplPreferencesDialog::QnplPreferencesDialog(QSettings *settings,
   : QDialog(parent)
 {
 
-  _generalPane = new QWidget();
+  _settings = settings;
+  createForms();
+  loadSettings();
+}
+
+QnplPreferencesDialog::~QnplPreferencesDialog()
+{
+  delete _environmentPane;
+  delete _runPane;
+}
+
+void QnplPreferencesDialog::createForms()
+{
+  _environmentPane = new QWidget();
   _runPane = new QWidget();
 
-  _generalForm.setupUi(this);
+  _enviornmentForm.setupUi(this);
   _runForm.setupUi(this);
 
-  _generalPane->setLayout(_generalForm.verticalLayout);
+  _environmentPane->setLayout(_enviornmentForm.verticalLayout);
   _runPane->setLayout(_runForm.verticalLayout);
 
   _preferencesForm.setupUi(this);
@@ -40,21 +53,6 @@ QnplPreferencesDialog::QnplPreferencesDialog(QSettings *settings,
 
   connect(_runForm.table, SIGNAL(customContextMenuRequested(QPoint)),
           SLOT(customMenuRequested(QPoint)));
-
-  init (settings);
-}
-
-QnplPreferencesDialog::~QnplPreferencesDialog()
-{
-  delete _generalPane;
-  delete _runPane;
-}
-
-void QnplPreferencesDialog::init(QSettings* settings)
-{
-  _settings = settings;
-
-  if ( !_settings ) return;
 
   QStandardItemModel *model = new QStandardItemModel(2,1);
   QStandardItem *environmentItem = new QStandardItem(
@@ -92,26 +90,25 @@ void QnplPreferencesDialog::init(QSettings* settings)
         "font-weight: bold; font-size 32px;");
 
 
-  _preferencesForm._layout->addWidget(_generalPane);
+  _preferencesForm._layout->addWidget(_environmentPane);
   _preferencesForm._layout->addWidget(_runPane);
-  _generalPane->show();
+  _environmentPane->show();
   _runPane->hide();
 
-  for (int i = 0; i < _generalForm.screensizeBox->count(); i++)
+  for (int i = 0; i < _enviornmentForm.screensizeBox->count(); i++)
   {
-    QString itemText = _generalForm.screensizeBox->itemText(i);
+    QString itemText = _enviornmentForm.screensizeBox->itemText(i);
     _screenSizeMap [itemText.split(" ").at(0)] = i;
   }
 
-  loadSettings();
 }
 
 void QnplPreferencesDialog::loadSettings()
 {
-  _generalForm.logButton->setChecked(
+  _enviornmentForm.logButton->setChecked(
         _settings->value("enablelog", "true").toString() == "true");
 
-  _generalForm.autoplayButton->setChecked(
+  _enviornmentForm.autoplayButton->setChecked(
         _settings->value(Util::V_AUTOPLAY, "true").toString() == "true");
 
   _runForm.executableEdit->setText(_settings->value(Util::V_LOCATION).
@@ -122,15 +119,25 @@ void QnplPreferencesDialog::loadSettings()
 
   int index = _screenSizeMap.value(
                 _settings->value(Util::V_SCREENSIZE).toString(), 0);
+  if(index ==  0) {
+      QString actual_value;
+      if (_settings->value("lang").toString() == "en")
+          actual_value =  "actual size: ";
+      else if (_settings->value("lang").toString() == "pt_br")
+         actual_value =  "tamanho atual: ";
+     actual_value.append(_settings->value(Util::V_SCREENSIZE).toString());
+      _enviornmentForm.screensizeBox->setItemText(0, actual_value);
+  }
+  _enviornmentForm.screensizeBox->setCurrentIndex(index);
 
-  _generalForm.screensizeBox->setCurrentIndex(index);
+  qDebug() << "index=" << index << endl;
 
   if (_settings->value("lang").toString() == "en")
-    _generalForm.languageBox->setCurrentIndex(0);
+    _enviornmentForm.languageBox->setCurrentIndex(0);
   else if (_settings->value("lang").toString() == "pt_br")
-    _generalForm.languageBox->setCurrentIndex(1);
+    _enviornmentForm.languageBox->setCurrentIndex(1);
   else if (_settings->value("lang").toString() == "en")
-    _generalForm.languageBox->setCurrentIndex(2);
+    _enviornmentForm.languageBox->setCurrentIndex(2);
 
   _runForm.argsEdit->setText(_settings->value(Util::V_PARAMETERS,
                                               Util::defaultParameters())
@@ -159,22 +166,21 @@ void QnplPreferencesDialog::saveSettings()
 {
   qDebug() << "Saving settings...";
 
-  if (_generalForm.autoplayButton->isChecked())
+  if (_enviornmentForm.autoplayButton->isChecked())
     _settings->setValue(Util::V_AUTOPLAY, true);
   else
     _settings->setValue(Util::V_AUTOPLAY, false);
 
-  if (_generalForm.logButton->isChecked())
+  if (_enviornmentForm.logButton->isChecked())
     _settings->setValue(Util::V_ENABLE_LOG, true);
   else
     _settings->setValue(Util::V_ENABLE_LOG, false);
 
-  if (_generalForm.screensizeBox->currentIndex() != 0)
-    _settings->setValue(Util::V_SCREENSIZE,
-                      _generalForm.screensizeBox->currentText().
-                      split(" ").at(0));
+  _settings->setValue(
+      Util::V_SCREENSIZE,
+      _enviornmentForm.screensizeBox->currentText().split(" ").at(0));
 
-  switch (_generalForm.languageBox->currentIndex())
+  switch (_enviornmentForm.languageBox->currentIndex())
   {
     case 0:
       _settings->setValue(Util::V_LANG,"en");
@@ -218,14 +224,14 @@ void QnplPreferencesDialog::showPreferencesItem(QModelIndex index)
 
   if (itemSelected == Util::PREFERENCES_ENVIRONMENT)
   {
-    _generalPane->show();
+    _environmentPane->show();
     _runPane->hide();
     _preferencesForm._titleLabel->setText(tr("Environment"));
 
   }
   else if (itemSelected == Util::PREFERENCES_GINGA)
   {
-    _generalPane->hide();
+    _environmentPane->hide();
     _runPane->show();
     _preferencesForm._titleLabel->setText(tr("Ginga"));
   }
@@ -394,4 +400,10 @@ void QnplPreferencesDialog::removeVariable()
     QModelIndex index = list.at(0);
     _runForm.table->model()->removeRow(index.row());
   }
+}
+
+int QnplPreferencesDialog::exec()
+{
+    loadSettings();
+    return QDialog::exec();
 }
