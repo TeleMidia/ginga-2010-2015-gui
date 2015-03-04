@@ -4,7 +4,7 @@
 #include <QApplication>
 #include <QDir>
 
-QString Util::VERSION = "1.0.7";
+QString Util::VERSION = "1.0.8";
 QString Util::CMD_PREFIX = "cmd::";
 
 QString Util::GINGA_KEY_PREFIX = "GIEK:";
@@ -52,7 +52,6 @@ void Util::init() {
                      "gingagui");
 
   // hard codeded settings
-  VERSION = settings.value("VERSION", VERSION).toString();
   CMD_PREFIX = settings.value("GINGA/CMD_PREFIX", "cmd::").toString();
   GINGA_KEY_PREFIX = settings.value("GINGA/KEY_PREFIX", "GIEK:").toString();
   GINGA_CLICK_PREFIX = settings.value("GINGA/CLICK_PREFIX", "GIEC:").toString();
@@ -65,7 +64,6 @@ void Util::init() {
   PREFERENCES_GINGA = settings.value("GINGA/GINGA", "Ginga").toString();
   PREFERENCES_ADVANCED =
       settings.value("GINGA/ADVANCED", "Advanced").toString();
-  settings.setValue("VERSION", VERSION);
   settings.setValue("GINGA/CMD_PREFIX", CMD_PREFIX);
   settings.setValue("GINGA/KEY_PREFIX", GINGA_KEY_PREFIX);
   settings.setValue("GINGA/CLICK_PREFIX", GINGA_CLICK_PREFIX);
