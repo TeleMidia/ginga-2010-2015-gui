@@ -42,7 +42,6 @@ SOURCES += \
     src/qnplaboutdialog.cpp \
     src/qnplchannelsdialog.cpp \
     src/qnpliptvtunerdialog.cpp \
-    src/qnplaplication.cpp \
     src/gingaproxy.cpp \
     src/developerview.cpp \
     src/util.cpp \
@@ -56,7 +55,6 @@ HEADERS += \
     include/qnplaboutdialog.h \
     include/qnplchannelsdialog.h \
     include/qnpliptvtunerdialog.h \
-    include/qnplaplicationdialog.h \
     include/gingaproxy.h \
     include/developerview.h \
     include/util.h \
@@ -75,8 +73,7 @@ FORMS += \
     forms/qnplpreferencesform.ui \
     forms/qnplrunform.ui \
     forms/qnplchannelsform.ui \
-    forms/qnpliptvtunerform.ui \
-    forms/qnplaplicationform.ui
+    forms/qnpliptvtunerform.ui
 
 TRANSLATIONS += \
     translations/en.ts \

@@ -352,7 +352,6 @@ void QnplMainWindow::createDialogs()
   connect(_channelDialog, SIGNAL(scanChannelsRequested()), SLOT(scan()));
 
   _iptvDialog = new QnplIPTVTunerDialog(this);
-  _aplication = new QnplAplicationDialog(this);
 }
 
 void QnplMainWindow::createToolbars()

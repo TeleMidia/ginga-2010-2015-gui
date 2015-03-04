@@ -14,7 +14,6 @@
 #include "util.h"
 #include "qnplchannelsdialog.h"
 #include "qnpliptvtunerdialog.h"
-#include "qnplaplicationdialog.h"
 #include "developerview.h"
 #include "debugview.h"
 
@@ -170,7 +169,6 @@ private:
   QnplAboutDialog* _aboutDialog;
   QnplChannelsDialog * _channelDialog;
   QnplIPTVTunerDialog * _iptvDialog;
-  QnplAplicationDialog * _aplication;
 
   QProgressDialog *_scanProgress;
 
