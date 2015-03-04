@@ -2,7 +2,6 @@
 #include <QSettings>
 #include <QDebug>
 #include <QApplication>
-#include "qnplsettings.h"
 #include <QDir>
 
 QString Util::VERSION = "1.0.7";
