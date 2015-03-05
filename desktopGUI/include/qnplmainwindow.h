@@ -32,6 +32,8 @@ public slots:
   void load (const QString &location);
   void updateLocation (const QString &location);
 
+  void resizeView ();
+
   void performOpen();
   void performOpen(QAction* action);
   void performClear();

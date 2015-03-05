@@ -78,19 +78,7 @@ QnplMainWindow::QnplMainWindow(QWidget* parent)
   createToolbars();
   createConnections();
 
-  QString size = _settings->value(Util::V_SCREENSIZE, "0x0").toString();
-
-  int width = size.section('x',0,0).toInt();
-  int height = size.section('x',1,1).toInt();
-
-  if (width == 0 && height ==0)
-  {
-    width = DEFAULT_WIDTH;
-    height = DEFAULT_HEIGHT;
-  }
-  _view->setSceneRect(0, 0, width, height);
-
-  resize(width, height);
+  resizeView();
 }
 
 QnplMainWindow::~QnplMainWindow()
@@ -491,6 +479,36 @@ void QnplMainWindow::updateLocation(const QString &location)
     _location = location.trimmed();
 }
 
+void QnplMainWindow::resizeView()
+{
+  _settings->sync();
+
+  // get edit value from setting and set in window
+  QString ssize = _settings->value(Util::V_SCREENSIZE).toString();
+  QString sw = ssize.section('x',0,0);
+  QString sh = ssize.section('x',1,1);
+
+  int w = sw.toInt();
+  int h = sh.toInt();
+
+  if (w == 0 && h ==0)
+  {
+    w = DEFAULT_WIDTH;
+    h = DEFAULT_HEIGHT;
+  }
+
+  _toolbar->setFixedWidth(w);
+  _stackedWidget->setFixedSize(w, h);
+  adjustSize();
+
+
+  _stackedWidget->setMinimumSize(0, 0);
+  _stackedWidget->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+
+  _toolbar->setMinimumSize(0, 0);
+  _toolbar->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+}
+
 void QnplMainWindow::load(const QString &location)
 {
   QStringList recents = _settings->value(Util::V_FILES).toStringList();
@@ -610,8 +628,8 @@ void QnplMainWindow::performPlay()
         QString winId = hwndToString(_view->focusWidget()->winId());
         parameters << "--parent";
         parameters << ":0.0," + winId + ",0,0,"
-                      + QString::number(_view->width()) + ","
-                      + QString::number(_view->height());
+                      + QString::number(_stackedWidget->width()) + ","
+                      + QString::number(_stackedWidget->height());
 
         setFixedSize(size());
 #elif defined __WIN32
@@ -812,8 +830,8 @@ void QnplMainWindow::playIpChannel(QString ipChannel){
       QString winId = hwndToString(_view->focusWidget()->winId());
       plist<< "--parent";
       plist << ":0.0," + winId + ",0,0,"
-                + QString::number(_view->width()) + ","
-                + QString::number(_view->height());
+                + QString::number(_stackedWidget->width()) + ","
+                + QString::number(_stackedWidget->height());
 
       setFixedSize(size());
 #elif defined __WIN32
@@ -916,8 +934,8 @@ void QnplMainWindow::playChannel(Channel channel)
         QString winId = hwndToString(_view->focusWidget()->winId());
         plist<< "--parent";
         plist << ":0.0," + winId + ",0,0,"
-                  + QString::number(_view->width()) + ","
-                  + QString::number(_view->height());
+                  + QString::number(_stackedWidget->width()) + ","
+                  + QString::number(_stackedWidget->height());
 
         setFixedSize(size());
 #elif defined __WIN32
@@ -1096,30 +1114,32 @@ void QnplMainWindow::performPreferences()
 {
   // Set actual size in settings for be present in settings form
   QString new_size;
-  new_size.append(QString::number(_view->width()));
+  new_size.append(QString::number(_stackedWidget->width()));
   new_size.append("x");
-  new_size.append(QString::number(_view->height()));
+  new_size.append(QString::number(_stackedWidget->height()));
   qDebug() << "new_size=" << new_size << endl;
   _settings->setValue(Util::V_SCREENSIZE,new_size);
   _settings->sync();
   _preferencesDialog->exec();
 
-  // get edit value from setting and set in window
-  QString ssize = _settings->value(Util::V_SCREENSIZE).toString();
-  QString sw = ssize.section('x',0,0);
-  QString sh = ssize.section('x',1,1);
-  int w = sw.toInt();
-  int h = sh.toInt();
+  resizeView();
 
-  _toolbar->setFixedWidth(w);
-  _stackedWidget->setFixedSize(w, h);
-  adjustSize();
+//  // get edit value from setting and set in window
+//  QString ssize = _settings->value(Util::V_SCREENSIZE).toString();
+//  QString sw = ssize.section('x',0,0);
+//  QString sh = ssize.section('x',1,1);
+//  int w = sw.toInt();
+//  int h = sh.toInt();
 
-  _stackedWidget->setMinimumSize(0, 0);
-  _stackedWidget->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+//  _toolbar->setFixedWidth(w);
+//  _stackedWidget->setFixedSize(w, h);
+//  adjustSize();
 
-  _toolbar->setMinimumSize(0, 0);
-  _toolbar->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+//  _stackedWidget->setMinimumSize(0, 0);
+//  _stackedWidget->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+
+//  _toolbar->setMinimumSize(0, 0);
+//  _toolbar->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
 }
 
 void QnplMainWindow::performBug()
@@ -1163,8 +1183,8 @@ void QnplMainWindow::performRunAsPassive()
         QString winId = hwndToString(_view->focusWidget()->winId());
         plist << "--parent";
         plist << ":0.0," + winId + ",0,0,"
-                      + QString::number(_view->width()) + ","
-                      + QString::number(_view->height());
+                      + QString::number(_stackedWidget->width()) + ","
+                      + QString::number(_stackedWidget->height());
 
         setFixedSize(size());
 #elif defined __WIN32
@@ -1227,8 +1247,8 @@ void QnplMainWindow::performRunAsActive()
         QString winId = hwndToString(_view->focusWidget()->winId());
         plist << "--parent";
         plist << ":0.0," + winId + ",0,0,"
-                      + QString::number(_view->width()) + ","
-                      + QString::number(_view->height());
+                      + QString::number(_stackedWidget->width()) + ","
+                      + QString::number(_stackedWidget->height());
 
         setFixedSize(size());
 #elif defined __WIN32
@@ -1360,11 +1380,12 @@ void QnplMainWindow::resizeEvent(QResizeEvent* event)
     setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
   }
 
-  _movie->setScaledSize(centralWidget()->size());
-  _gifLabel->setFixedSize (centralWidget()->size());
+  _movie->setScaledSize(_stackedWidget->size());
+  _gifLabel->setFixedSize (_stackedWidget->size());
 
   _settings->setValue(Util::V_SCREENSIZE,
-                      QString::number(width())+ "x" +QString::number(height()));
+                      QString::number(_stackedWidget->width()) + "x" +
+                      QString::number(_stackedWidget->height()));
   event->accept();
   QMainWindow::resizeEvent(event);
 }
