@@ -11,6 +11,10 @@ public:
     QnplIPTVTunerDialog(QWidget* parent = 0);
     ~QnplIPTVTunerDialog();
     QString ip();
+    QString port();
+
+public slots:
+    void accept ();
 
 private:
   Ui::QnplIPTVTunerForm _form;

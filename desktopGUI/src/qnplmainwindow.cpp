@@ -751,6 +751,7 @@ void QnplMainWindow::performIptv()
       QString ipChannel = _iptvDialog->ip();
       if (ipChannel != "")
       {
+        ipChannel += ":" + _iptvDialog->port();
         playIpChannel (ipChannel);
         _view->setFocus();
       }
@@ -775,7 +776,7 @@ void QnplMainWindow::playIpChannel(QString ipChannel){
   plist.removeAll(Util::GUI_FILE);
 //    plist.replaceInStrings(Util::GUI_WID, WID);
 
-  _openLine->setText(_iptvDialog->ip());
+  _openLine->setText("IP: " + ipChannel);
 
   _playButton->setEnabled(false);
   _stopButton->setEnabled(true);
