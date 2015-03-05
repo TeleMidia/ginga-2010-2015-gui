@@ -94,6 +94,7 @@ private:
   void createToolbars();
   void createConnections();
   void removePath (QString);
+  void configureDefaultFlags(QStringList &plist);
 
   inline QString viewWID ()
   {

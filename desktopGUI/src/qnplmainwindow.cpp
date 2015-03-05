@@ -606,57 +606,21 @@ void QnplMainWindow::performPlay()
     if (_baseAction->isChecked())
     {
       parameters = Util::split(_settings->value(Util::V_PARAMETERS).toString());
+      configureDefaultFlags(parameters);
 
-      int index = parameters.indexOf("--wid");
-      if (index != -1)
-      {
-        if (index + 1 < parameters.size() )
-          parameters.removeAt(index + 1);
-
-        parameters.removeAt(index);
-      }
-
-      QFileInfo fileInfo (_settings->value(Util::V_CONTEXT_FILE).toString());
-      QString contextFilePath = fileInfo.absoluteDir().path();
-
-      if (!contextFilePath.isEmpty())
-        parameters << "--context-dir" << contextFilePath;
-
-      if (_settings->value(Util::V_EMBEDDED).toString() == "true")
-      {
-#ifdef __linux
-        QString winId = hwndToString(_view->focusWidget()->winId());
-        parameters << "--parent";
-        parameters << ":0.0," + winId + ",0,0,"
-                      + QString::number(_stackedWidget->width()) + ","
-                      + QString::number(_stackedWidget->height());
-
-        setFixedSize(size());
-#elif defined __WIN32
-        parameters << "--wid" << viewWID();
-#endif
-      }
-      if (_location.endsWith(".ncl"))
+      if (_location.endsWith(".ncl")){
         parameters.replaceInStrings(Util::GUI_FILE, _location);
-
-      else if (_location.endsWith(".ts"))
-      {
+      } else if (_location.endsWith(".ts")) {
         int index = parameters.indexOf("--ncl");
         if (index != -1)
         {
           parameters.insert(index, "--set-tuner");
           parameters.removeAt(index + 1);
         }
-
         parameters.replaceInStrings(Util::GUI_FILE, Util::GINGA_TS_FILE
                                     + _location);
-
         _tuneApplicationChannelAction->setEnabled(true);
       }
-
-      parameters.replaceInStrings(Util::GUI_SCREENSIZE,
-                                  _settings->value(Util::V_SCREENSIZE)
-                                  .toString());
 
       QFileInfo finfo(_location);
       _gingaProxy->setWorkingDirectory(finfo.absoluteDir().absolutePath());
@@ -795,50 +759,17 @@ void QnplMainWindow::performIptv()
 
 void QnplMainWindow::playIpChannel(QString ipChannel){
 
-  qDebug() << "playIpChannel " << ipChannel;
   performStop();
 
+  _settings->sync();
+
   QStringList plist;
-
   plist << Util::split(_settings->value(Util::V_PARAMETERS).toString());
-
-  int index = plist.indexOf("--wid");
-  if (index != -1)
-  {
-    if (index + 1 < plist.size() )
-      plist.removeAt(index + 1);
-
-    plist.removeAt(index);
-  }
 
   plist << "--set-tuner" << "ip:" + ipChannel;
   plist << "--poll-stdin";
 
-  QFileInfo fileInfo (_settings->value(Util::V_CONTEXT_FILE).toString());
-  plist << "--context-dir" << fileInfo.absoluteDir().path();
-
-  if (_settings->value("enablelog").toBool())
-    plist << "--enable-log" << "file";
-
-
-  plist.replaceInStrings("${SCREENSIZE}",
-                         _settings->value(Util::V_SCREENSIZE).toString());
-
-  if (_settings->value(Util::V_EMBEDDED).toString() == "true")
-  {
-#ifdef __linux
-      QString winId = hwndToString(_view->focusWidget()->winId());
-      plist<< "--parent";
-      plist << ":0.0," + winId + ",0,0,"
-                + QString::number(_stackedWidget->width()) + ","
-                + QString::number(_stackedWidget->height());
-
-      setFixedSize(size());
-#elif defined __WIN32
-      plist << "--wid" << viewWID();
-#endif
-
-  }
+  configureDefaultFlags(plist);
 
   plist.removeAll(Util::GUI_NCL);
   plist.removeAll(Util::GUI_FILE);
@@ -902,50 +833,18 @@ void QnplMainWindow::playChannel(Channel channel)
   {
     performStop();
 
+    _settings->sync();
+
     QStringList plist;
-
     plist << Util::split(_settings->value(Util::V_PARAMETERS).toString());
-
-    int index = plist.indexOf("--wid");
-    if (index != -1)
-    {
-      if (index + 1 < plist.size() )
-        plist.removeAt(index + 1);
-
-      plist.removeAt(index);
-    }
 
     plist << "--set-tuner" << "sbtvdt:" + channel.frequency;
     plist << "--poll-stdin";
 
-    QFileInfo fileInfo (_settings->value(Util::V_CONTEXT_FILE).toString());
-    plist << "--context-dir" << fileInfo.absoluteDir().path();
-
-    if (_settings->value("enablelog").toBool())
-      plist << "--enable-log" << "file";
-
-
-    plist.replaceInStrings("${SCREENSIZE}",
-                           _settings->value(Util::V_SCREENSIZE).toString());
-
-    if (_settings->value(Util::V_EMBEDDED).toString() == "true")
-    {
-#ifdef __linux
-        QString winId = hwndToString(_view->focusWidget()->winId());
-        plist<< "--parent";
-        plist << ":0.0," + winId + ",0,0,"
-                  + QString::number(_stackedWidget->width()) + ","
-                  + QString::number(_stackedWidget->height());
-
-        setFixedSize(size());
-#elif defined __WIN32
-        plist << "--wid" << viewWID();
-#endif
-    }
+    configureDefaultFlags(plist);
 
     plist.removeAll(Util::GUI_NCL);
     plist.removeAll(Util::GUI_FILE);
-//    plist.replaceInStrings(Util::GUI_WID, WID);
 
     _openLine->setText(channel.number + " - " + channel.name);
 
@@ -1123,23 +1022,6 @@ void QnplMainWindow::performPreferences()
   _preferencesDialog->exec();
 
   resizeView();
-
-//  // get edit value from setting and set in window
-//  QString ssize = _settings->value(Util::V_SCREENSIZE).toString();
-//  QString sw = ssize.section('x',0,0);
-//  QString sh = ssize.section('x',1,1);
-//  int w = sw.toInt();
-//  int h = sh.toInt();
-
-//  _toolbar->setFixedWidth(w);
-//  _stackedWidget->setFixedSize(w, h);
-//  adjustSize();
-
-//  _stackedWidget->setMinimumSize(0, 0);
-//  _stackedWidget->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
-
-//  _toolbar->setMinimumSize(0, 0);
-//  _toolbar->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
 }
 
 void QnplMainWindow::performBug()
@@ -1175,31 +1057,15 @@ void QnplMainWindow::performRun()
 
 void QnplMainWindow::performRunAsPassive()
 {
-  QString conf_location = _settings->value(Util::V_CONTEXT_FILE).toString();
-  QString context_dir = QFileInfo(conf_location).absoluteDir().path();
+  _settings->sync();
 
   QStringList plist;
-#ifdef __linux
-        QString winId = hwndToString(_view->focusWidget()->winId());
-        plist << "--parent";
-        plist << ":0.0," + winId + ",0,0,"
-                      + QString::number(_stackedWidget->width()) + ","
-                      + QString::number(_stackedWidget->height());
+  plist << Util::split(_settings->value(Util::V_PARAMETERS).toString());
 
-        setFixedSize(size());
-#elif defined __WIN32
-        plist << "--wid" << viewWID();
-#endif
   plist << "--device-class" << "1";
-  plist << "--vmode" << _settings->value(Util::V_SCREENSIZE).toString();
-  plist << "--context-dir" << context_dir;
   plist << "--disable-multicast";
-  plist << "--poll-stdin";
 
-  if (_settings->value("enablelog").toBool())
-  {
-    plist << "--enable-log" << "file";
-  }
+  configureDefaultFlags(plist);
 
   _gingaProxy->setBinaryPath(_settings->value(Util::V_LOCATION).toString());
   _gingaProxy->run(plist);
@@ -1231,8 +1097,9 @@ void QnplMainWindow::performRunAsPassive()
 void QnplMainWindow::performRunAsActive()
 {
   _settings->sync();
-  QString conf_location = _settings->value(Util::V_CONTEXT_FILE).toString();
-  QString context_dir = QFileInfo(conf_location).absoluteDir().path();
+
+  QStringList plist;
+  plist << Util::split(_settings->value(Util::V_PARAMETERS).toString());
 
   int port =  _settings->value(Util::V_DEVICE_PORT).toInt();
   ++port;
@@ -1242,27 +1109,11 @@ void QnplMainWindow::performRunAsActive()
   else
     _settings->setValue(Util::V_DEVICE_PORT, port);
 
-  QStringList plist;
-#ifdef __linux
-        QString winId = hwndToString(_view->focusWidget()->winId());
-        plist << "--parent";
-        plist << ":0.0," + winId + ",0,0,"
-                      + QString::number(_stackedWidget->width()) + ","
-                      + QString::number(_stackedWidget->height());
-
-        setFixedSize(size());
-#elif defined __WIN32
-        plist << "--wid" << viewWID();
-#endif
   plist << "--device-class" << "2";
   plist << "--device-srv-port" << QString::number(port);
-  plist << "--vmode" << _settings->value(Util::V_SCREENSIZE).toString();
-  plist << "--context-dir" << context_dir;
   plist << "--poll-stdin";
 
-  if (_settings->value("enablelog").toBool())
-    plist << "--enable-log" << "file";
-
+  configureDefaultFlags(plist);
 
   _gingaProxy->setBinaryPath(_settings->value(Util::V_LOCATION).toString());
   _gingaProxy->run(plist);
@@ -1286,6 +1137,53 @@ void QnplMainWindow::performRunAsActive()
   _activeAction->setEnabled(false);
 
   _view->setFocus();
+}
+
+
+void QnplMainWindow::configureDefaultFlags(QStringList &plist)
+{
+  // remove old ---wid use
+  int index = plist.indexOf("--wid");
+  if (index != -1) {
+    if (index + 1 < plist.size()) plist.removeAt(index + 1);
+
+    plist.removeAt(index);
+  }
+
+  //configure context file
+  QFileInfo fileInfo(_settings->value(Util::V_CONTEXT_FILE).toString());
+  QString contextFilePath = fileInfo.absoluteDir().path();
+  if (!contextFilePath.isEmpty())
+    plist << "--context-dir" << contextFilePath;
+
+  //configure log
+  if (_settings->value("enablelog").toBool())
+    plist << "--enable-log"
+          << "file";
+
+  // configure poll sdin
+  plist << "--poll-stdin";
+
+  // configure  if embedded
+  if (_settings->value(Util::V_EMBEDDED).toString() == "true") {
+#ifdef __linux
+    QString ssize = _settings->value(Util::V_SCREENSIZE).toString();
+    QString sw = ssize.section('x', 0, 0);
+    QString sh = ssize.section('x', 1, 1);
+    int w = sw.toInt();
+    int h = sh.toInt();
+    QString winId = hwndToString(_view->focusWidget()->winId());
+    plist << "--parent";
+    plist << ":0.0," + winId + ",0,0," + sw + "," + sh;
+#elif defined __WIN32
+    plist << "--wid" << viewWID();
+#endif
+  }
+
+  //configure scree nsize
+  plist.replaceInStrings(Util::GUI_SCREENSIZE,
+                         _settings->value(Util::V_SCREENSIZE).toString());
+
 }
 
 void QnplMainWindow::performCloseWindow()
