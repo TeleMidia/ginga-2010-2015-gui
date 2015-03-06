@@ -147,14 +147,14 @@ void  QnplMainWindow::createActions()
   _passiveAction->setEnabled(true);
   _passiveAction->setCheckable(true);
   _passiveAction->setText(tr("Passive"));
-  connect (_passiveAction, SIGNAL(triggered()), SLOT(performRunAsPassive()));
+  connect (_passiveAction, SIGNAL(triggered()), SLOT(runnAsPassive()));
 
   // active action
   _activeAction = new QAction(this);
   _activeAction->setEnabled(true);
   _activeAction->setCheckable(true);
   _activeAction->setText(tr("Active"));
-  connect (_activeAction, SIGNAL(triggered()), SLOT(performRunAsActive()));
+  connect (_activeAction, SIGNAL(triggered()), SLOT(runAsActive()));
 
   // preferences action
   _preferencesAction = new QAction(this);
@@ -405,7 +405,7 @@ void  QnplMainWindow::createConnections()
   connect(_tuneBroadcastChannelAction, SIGNAL(triggered()),
           SLOT(performChannels()));
   connect (_playButton, SIGNAL(clicked()),
-           SLOT(performRun()));
+           SLOT(performPlay()));
   connect (_pauseButton, SIGNAL(clicked()),
            SLOT(performPause()));
   connect (_stopButton, SIGNAL(clicked()),
@@ -535,7 +535,7 @@ void QnplMainWindow::load(const QString &location)
                  + "." + QFileInfo(location).completeSuffix());
 
   if (_settings->value(Util::V_AUTOPLAY).toString() == Util::TRUE_)
-    performPlay();
+    runAsBase();
 }
 
 void QnplMainWindow::performClear()
@@ -567,7 +567,7 @@ void QnplMainWindow::performQuit()
   QApplication::quit();
 }
 
-void QnplMainWindow::performPlay()
+void QnplMainWindow::runAsBase()
 {
   _settings->sync();
   _view->setFocus();
@@ -604,52 +604,39 @@ void QnplMainWindow::performPlay()
     _passiveAction->setEnabled(false);
     _activeAction->setEnabled(false);
 
-    // playing as base device
-    if (_baseAction->isChecked())
-    {
-      parameters = Util::split(_settings->value(Util::V_PARAMETERS).toString());
-      configureDefaultFlags(parameters);
+    parameters = Util::split(_settings->value(Util::V_PARAMETERS).toString());
+    configureDefaultFlags(parameters);
 
-      if (_location.endsWith(".ncl")){
-        parameters.replaceInStrings(Util::GUI_FILE, _location);
-      } else if (_location.endsWith(".ts")) {
-        int index = parameters.indexOf("--ncl");
-        if (index != -1)
-        {
-          parameters.insert(index, "--set-tuner");
-          parameters.removeAt(index + 1);
-        }
-        parameters.replaceInStrings(Util::GUI_FILE, Util::GINGA_TS_FILE
-                                    + _location);
-        _tuneApplicationChannelAction->setEnabled(true);
+    if (_location.endsWith(".ncl")) {
+      parameters.replaceInStrings(Util::GUI_FILE, _location);
+    } else if (_location.endsWith(".ts")) {
+      int index = parameters.indexOf("--ncl");
+      if (index != -1) {
+        parameters.insert(index, "--set-tuner");
+        parameters.removeAt(index + 1);
       }
-
-      QFileInfo finfo(_location);
-      _gingaProxy->setWorkingDirectory(finfo.absoluteDir().absolutePath());
-
-      qDebug() << _settings->value(Util::V_LOCATION).toString() << parameters;
-
-      _gingaProxy->setBinaryPath(_settings->value(Util::V_LOCATION).toString());
-      _gingaProxy->run(parameters);
-
-      _view->setFocus();
+      parameters.replaceInStrings(Util::GUI_FILE,
+                                  Util::GINGA_TS_FILE + _location);
+      _tuneApplicationChannelAction->setEnabled(true);
     }
-    // play as passive device
-    else if (_passiveAction->isChecked())
-      performRunAsPassive();
 
-    // play as active device
-    else if (_activeAction->isChecked())
-      performRunAsActive();
+    QFileInfo finfo(_location);
+    _gingaProxy->setWorkingDirectory(finfo.absoluteDir().absolutePath());
 
+    qDebug() << _settings->value(Util::V_LOCATION).toString() << parameters;
+
+    _gingaProxy->setBinaryPath(_settings->value(Util::V_LOCATION).toString());
+    _gingaProxy->run(parameters);
+
+    _view->setFocus();
   }
   else if (!_lastChannel.isNull())
     playChannel(_lastChannel);
   else if(_lastIpChannel != "")
-      playIpChannel(_lastIpChannel);
+    playIpChannel(_lastIpChannel);
   else
     QMessageBox::information(this, tr ("Information"),
-                             tr("Please, open NCL document to play."),
+                             tr("Please, open NCL document or transport stream to play."),
                              QMessageBox::Ok);
 }
 
@@ -1038,27 +1025,27 @@ void QnplMainWindow::performAbout()
   _aboutDialog->show();
 }
 
-void QnplMainWindow::performRun()
+void QnplMainWindow::performPlay()
 {
   _settings->sync();
   if (_baseAction->isChecked())
   {
     qDebug() << "run as base";
-    performPlay();
+    runAsBase();
   }
   else if (_passiveAction->isChecked())
   {
     qDebug() << "run as passive";
-    performRunAsPassive();
+    runAsPassive();
   }
   else if (_activeAction->isChecked())
   {
     qDebug() << "run as active";
-    performRunAsActive();
+    runAsActive();
   }
 }
 
-void QnplMainWindow::performRunAsPassive()
+void QnplMainWindow::runAsPassive()
 {
   _settings->sync();
   _preferencesAction->setEnabled(false);
@@ -1099,7 +1086,7 @@ void QnplMainWindow::performRunAsPassive()
   _view->setFocus();
 }
 
-void QnplMainWindow::performRunAsActive()
+void QnplMainWindow::runAsActive()
 {
   _settings->sync();
   _preferencesAction->setEnabled(false);

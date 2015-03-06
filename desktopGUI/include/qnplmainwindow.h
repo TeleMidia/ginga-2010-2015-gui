@@ -53,13 +53,13 @@ public slots:
   void performBug();
   void performAbout();
 
-  void performPlay();
   void performPause();
   void performStop();
   void performSeek();
-  void performRun();
-  void performRunAsPassive();
-  void performRunAsActive();
+  void performPlay();
+  void runAsBase();
+  void runAsPassive();
+  void runAsActive();
 
   void performCloseWindow();
 
