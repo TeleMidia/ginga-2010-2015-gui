@@ -208,10 +208,10 @@ void  QnplMainWindow::createMenus()
   _toolsMenu = menuBar()->addMenu(tr("Tools"));
   _toolsMenu->addAction(_preferencesAction);
 
-//   help menu
+  // help menu
   _helpMenu = menuBar()->addMenu(tr("Help"));
-//  _helpMenu->addAction(_bugAction);
-//  _helpMenu->addSeparator();
+  //  _helpMenu->addAction(_bugAction);
+  //  _helpMenu->addSeparator();
   _helpMenu->addAction(_aboutAction);
 }
 
@@ -773,13 +773,11 @@ void QnplMainWindow::playIpChannel(QString ipChannel){
   plist << Util::split(_settings->value(Util::V_PARAMETERS).toString());
 
   plist << "--set-tuner" << "ip:" + ipChannel;
-  plist << "--poll-stdin";
 
   configureDefaultFlags(plist);
 
   plist.removeAll(Util::GUI_NCL);
   plist.removeAll(Util::GUI_FILE);
-//    plist.replaceInStrings(Util::GUI_WID, WID);
 
   _openLine->setText("IP: " + ipChannel);
 
@@ -846,7 +844,6 @@ void QnplMainWindow::playChannel(Channel channel)
     plist << Util::split(_settings->value(Util::V_PARAMETERS).toString());
 
     plist << "--set-tuner" << "sbtvdt:" + channel.frequency;
-    plist << "--poll-stdin";
 
     configureDefaultFlags(plist);
 
@@ -872,7 +869,6 @@ void QnplMainWindow::playChannel(Channel channel)
     _passiveAction->setEnabled(false);
     _activeAction->setEnabled(false);
 
-    //        process->start(settings->value("location").toString(), plist);
     _gingaProxy->setBinaryPath(_settings->value("location").toString());
     _gingaProxy->run(plist);
 
@@ -1069,9 +1065,10 @@ void QnplMainWindow::performRunAsPassive()
 
   QStringList plist;
   plist << Util::split(_settings->value(Util::V_PARAMETERS).toString());
+  plist.removeAll(Util::GUI_NCL);
+  plist.removeAll(Util::GUI_FILE);
 
   plist << "--device-class" << "1";
-  plist << "--disable-multicast";
 
   configureDefaultFlags(plist);
 
@@ -1109,6 +1106,8 @@ void QnplMainWindow::performRunAsActive()
 
   QStringList plist;
   plist << Util::split(_settings->value(Util::V_PARAMETERS).toString());
+  plist.removeAll(Util::GUI_NCL);
+  plist.removeAll(Util::GUI_FILE);
 
   int port =  _settings->value(Util::V_DEVICE_PORT).toInt();
   ++port;
@@ -1120,7 +1119,6 @@ void QnplMainWindow::performRunAsActive()
 
   plist << "--device-class" << "2";
   plist << "--device-srv-port" << QString::number(port);
-  plist << "--poll-stdin";
 
   configureDefaultFlags(plist);
 
@@ -1181,11 +1179,19 @@ void QnplMainWindow::configureDefaultFlags(QStringList &plist)
     QString sh = ssize.section('x', 1, 1);
     int w = sw.toInt();
     int h = sh.toInt();
-    QString winId = hwndToString(_view->focusWidget()->winId());
+    unsigned long int value = (unsigned long int) _view->focusWidget()->winId();
     plist << "--parent";
-    plist << ":0.0," + winId + ",0,0," + sw + "," + sh;
+    plist << ":0.0," + QString::number(value) + ",0,0," + sw + "," + sh;
 #elif defined __WIN32
-    plist << "--wid" << viewWID();
+    QString WID = "";
+    foreach (QObject *ob, _view->focusWidget()->children()) {
+      QWidget *w = qobject_cast<QWidget *>(ob);
+      if (w) {
+        unsigned long int value = (unsigned long int) _view->focusWidget()->winId();
+        WID = QString::number(value);
+      }
+    }
+    plist << "--wid" << WID;
 #endif
   }
 
@@ -1218,50 +1224,6 @@ void QnplMainWindow::performOpen(QAction* act)
   if (act != _clearAction)
     load(act->text());
 
-}
-
-QString QnplMainWindow::hwndToString(WId winid)
-{
-  unsigned long int value = (unsigned long int) winid;
-  return QString::number(value);
-
-  /*
-#ifdef Q_OS_WIN
-  void* vhwnd = (void*) winid;
-  unsigned long int value = (unsigned long int) vhwnd;
-
-  char dst[32];
-  char digits[32];
-  unsigned long int i = 0, j = 0, n = 0;
-
-  do {
-    n = value % 10;
-    digits[i++] = (n < 10 ? (char)n+'0' : (char)n-10+'a');
-    value /= 10;
-
-    if (i > 31) {
-      break;
-    }
-
-  } while (value != 0);
-
-  n = i;
-  i--;
-
-  while (i >= 0 && j < 32) {
-    dst[j] = digits[i];
-    i--;
-    j++;
-  }
-
-  return QString(dst);
-#endif
-
-#ifdef Q_WS_X11
-  unsigned long int value = (unsigned long int) winid;
-  return QString::number(value);
-#endif
-    */
 }
 
 void QnplMainWindow::resizeEvent(QResizeEvent* event)
@@ -1321,21 +1283,11 @@ void QnplMainWindow::scan()
   _preferencesAction->setEnabled(false);
 
   QStringList plist;
-  plist << "--set-tuner" << "sbtvdt:scan" << "--poll-stdin";
-
-#if __linux
-  plist << "--parent";
-  plist << ":0.0," + hwndToString(_view->winId()) + ",0,0,"
-            + QString::number(_view->width()) + ","
-            + QString::number(_view->height());
-#elif defined __WIN32
-  plist << "--wid" << viewWID();
-#endif
-
-  if (_settings->value("enablelog").toBool())
-    plist << "--enable-log" << "file";
-
-  qDebug () << plist;
+  plist << Util::split(_settings->value(Util::V_PARAMETERS).toString());
+  plist.removeAll(Util::GUI_NCL);
+  plist.removeAll(Util::GUI_FILE);
+  plist << "--set-tuner" << "sbtvdt:scan";
+  configureDefaultFlags(plist);
 
   _gingaProxy->setBinaryPath(_settings->value(Util::V_LOCATION).toString());
   _gingaProxy->run(plist);

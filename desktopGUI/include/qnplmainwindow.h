@@ -96,24 +96,6 @@ private:
   void removePath (QString);
   void configureDefaultFlags(QStringList &plist);
 
-  inline QString viewWID ()
-  {
-    QString WID = "";
-
-    foreach (QObject* ob, _view->focusWidget()->children())
-    {
-      QWidget* w = qobject_cast<QWidget*>(ob);
-
-      if (w)
-      {
-        WID =  hwndToString(w->winId());
-      }
-    }
-    return WID;
-  }
-
-  QString hwndToString(WId winid);
-
   bool _isTuning;
   bool _isPlayingChannel;
   bool _isPaused;
