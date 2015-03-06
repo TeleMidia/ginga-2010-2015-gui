@@ -32,7 +32,7 @@
    <string>Preferences</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../application.qrc">
+   <iconset>
     <normaloff>:/icon/preferences</normaloff>:/icon/preferences</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -74,7 +74,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -83,9 +83,7 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../application.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>_buttonsGroup</sender>
