@@ -572,6 +572,8 @@ void QnplMainWindow::performPlay()
   _settings->sync();
   _view->setFocus();
 
+  _preferencesAction->setEnabled(false);
+
   QUrl url (_location);
   if (url.isLocalFile())
     _location = url.toLocalFile();
@@ -667,6 +669,8 @@ void QnplMainWindow::performStop()
 {
   _view->releaseKeyboard();
   _debugView->stopSession();
+  _preferencesAction->setEnabled(true);
+
   if (_timer != NULL)
   {
     _timer->stop();
@@ -761,6 +765,7 @@ void QnplMainWindow::performIptv()
 void QnplMainWindow::playIpChannel(QString ipChannel){
 
   performStop();
+  _preferencesAction->setEnabled(false);
 
   _settings->sync();
 
@@ -833,6 +838,7 @@ void QnplMainWindow::playChannel(Channel channel)
   if (channel.frequency != "")
   {
     performStop();
+    _preferencesAction->setEnabled(false);
 
     _settings->sync();
 
@@ -1059,6 +1065,7 @@ void QnplMainWindow::performRun()
 void QnplMainWindow::performRunAsPassive()
 {
   _settings->sync();
+  _preferencesAction->setEnabled(false);
 
   QStringList plist;
   plist << Util::split(_settings->value(Util::V_PARAMETERS).toString());
@@ -1098,6 +1105,7 @@ void QnplMainWindow::performRunAsPassive()
 void QnplMainWindow::performRunAsActive()
 {
   _settings->sync();
+  _preferencesAction->setEnabled(false);
 
   QStringList plist;
   plist << Util::split(_settings->value(Util::V_PARAMETERS).toString());
@@ -1310,6 +1318,7 @@ void QnplMainWindow::playPreviousChannel()
 void QnplMainWindow::scan()
 {
   performStop();
+  _preferencesAction->setEnabled(false);
 
   QStringList plist;
   plist << "--set-tuner" << "sbtvdt:scan" << "--poll-stdin";
@@ -1338,6 +1347,7 @@ void QnplMainWindow::scan()
 
 void QnplMainWindow::finishScan(int code)
 {
+  _preferencesAction->setEnabled(true);
   qDebug () << "code::" << code;
   _scanProgress->done(code);
   disconnect(_gingaProxy, SIGNAL(gingaStarted()),
