@@ -97,10 +97,12 @@ void QnplMainWindow::performDevice()
   else if (_passiveAction->isChecked())
   {
     _settings->setValue(key, "passive");
+    runAsPassive();
   }
   else if (_activeAction->isChecked())
   {
     _settings->setValue(key, "active");
+    runAsActive();
   }
 }
 
@@ -147,14 +149,12 @@ void  QnplMainWindow::createActions()
   _passiveAction->setEnabled(true);
   _passiveAction->setCheckable(true);
   _passiveAction->setText(tr("Passive"));
-  connect (_passiveAction, SIGNAL(triggered()), SLOT(runnAsPassive()));
 
   // active action
   _activeAction = new QAction(this);
   _activeAction->setEnabled(true);
   _activeAction->setCheckable(true);
   _activeAction->setText(tr("Active"));
-  connect (_activeAction, SIGNAL(triggered()), SLOT(runAsActive()));
 
   // preferences action
   _preferencesAction = new QAction(this);
@@ -392,6 +392,7 @@ void  QnplMainWindow::createConnections()
           SLOT(performDevice()));
   connect(_activeAction, SIGNAL(triggered()),
           SLOT(performDevice()));
+
   connect(_preferencesAction, SIGNAL(triggered()),
           SLOT(performPreferences()));
 //  connect(_bugAction, SIGNAL(triggered()),
@@ -1049,6 +1050,7 @@ void QnplMainWindow::runAsPassive()
 {
   _settings->sync();
   _preferencesAction->setEnabled(false);
+  _openLine->setText("Passive device");
 
   QStringList plist;
   plist << Util::split(_settings->value(Util::V_PARAMETERS).toString());
@@ -1090,6 +1092,7 @@ void QnplMainWindow::runAsActive()
 {
   _settings->sync();
   _preferencesAction->setEnabled(false);
+  _openLine->setText("Active device");
 
   QStringList plist;
   plist << Util::split(_settings->value(Util::V_PARAMETERS).toString());
