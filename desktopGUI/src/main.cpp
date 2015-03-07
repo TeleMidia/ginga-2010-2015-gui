@@ -4,7 +4,7 @@
 #include <QDesktopWidget>
 #include <QSettings>
 
-#include "qnplmainwindow.h"
+#include "mainwindow.h"
 #include "util.h"
 
 int Util::SCREEN_HEIGHT;
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
       application.installTranslator(translator);
     }
 
-    QnplMainWindow window;
+    MainWindow window;
     window.show();
 
     if (application.arguments().size() > 1)

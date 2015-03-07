@@ -36,30 +36,30 @@ INCLUDEPATH += include\
 
 SOURCES += \
     src/main.cpp \
-    src/qnplmainwindow.cpp \
-    src/qnplview.cpp \
-    src/qnplpreferencesdialog.cpp \
-    src/qnplaboutdialog.cpp \
-    src/qnplchannelsdialog.cpp \
-    src/qnpliptvtunerdialog.cpp \
     src/gingaproxy.cpp \
     src/developerview.cpp \
     src/util.cpp \
     src/debugview.cpp \
-    src/debugobjectitem.cpp
+    src/debugobjectitem.cpp \
+    src/aboutdialog.cpp \
+    src/channelsdialog.cpp \
+    src/iptvtunerdialog.cpp \
+    src/mainwindow.cpp \
+    src/preferencesdialog.cpp \
+    src/gingaview.cpp
 
 HEADERS += \
-    include/qnplmainwindow.h \
-    include/qnplview.h \
-    include/qnplpreferencesdialog.h \
-    include/qnplaboutdialog.h \
-    include/qnplchannelsdialog.h \
-    include/qnpliptvtunerdialog.h \
     include/gingaproxy.h \
     include/developerview.h \
     include/util.h \
     include/debugview.h \
-    include/debugobjectitem.h
+    include/debugobjectitem.h \
+    include/iptvtunerdialog.h \
+    include/aboutdialog.h \
+    include/channelsdialog.h \
+    include/mainwindow.h \
+    include/preferencesdialog.h \
+    include/gingaview.h
 
 RESOURCES += \
     application.qrc
@@ -68,12 +68,12 @@ RC_FILE = \
     application.rc
 
 FORMS += \
-    forms/qnplaboutform.ui \
-    forms/qnplenvironmentform.ui \
-    forms/qnplpreferencesform.ui \
-    forms/qnplrunform.ui \
-    forms/qnplchannelsform.ui \
-    forms/qnpliptvtunerform.ui
+    forms/aboutform.ui \
+    forms/channelsform.ui \
+    forms/environmentform.ui \
+    forms/iptvtunerform.ui \
+    forms/preferencesform.ui \
+    forms/runform.ui
 
 TRANSLATIONS += \
     translations/en.ts \
