@@ -1,5 +1,5 @@
-#ifndef QNPLMAINWINDOW_H
-#define QNPLMAINWINDOW_H
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
 #include <QMainWindow>
 #include <QProgressDialog>
@@ -169,4 +169,4 @@ private:
   DebugView * _debugView;
 };
 
-#endif // QNPLMAINWINDOW_H
+#endif // MAINWINDOW_H

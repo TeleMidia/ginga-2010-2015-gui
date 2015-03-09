@@ -1,7 +1,7 @@
-#ifndef QNPLIPTVTUNERDIALOG_H
-#define QNPLIPTVTUNERDIALOG_H
+#ifndef IPTVTUNERDIALOG_H
+#define IPTVTUNERDIALOG_H
 
-#include "ui_qnpliptvtunerform.h"
+#include "ui_iptvtunerform.h"
 
 class IptvTunerDialog : public QDialog
 {
@@ -17,7 +17,7 @@ public slots:
     void accept ();
 
 private:
-  Ui::QnplIPTVTunerForm _form;
+  Ui::IptvTunerForm _form;
 };
 
-#endif // QNPLIPTVTUNERDIALOG_H
+#endif // IPTVTUNERDIALOG_H

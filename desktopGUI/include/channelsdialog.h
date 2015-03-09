@@ -1,5 +1,5 @@
-#ifndef QNPLCHANNELSDIALOG_H
-#define QNPLCHANNELSDIALOG_H
+#ifndef CHANNELSDIALOG_H
+#define CHANNELSDIALOG_H
 
 #include <QDialog>
 #include <QTextEdit>
@@ -13,7 +13,7 @@
 #include <QStandardItemModel>
 #include <QFileDialog>
 
-#include "ui_qnplchannelsform.h"
+#include "ui_channelsform.h"
 
 class Channel {
 public:
@@ -57,10 +57,10 @@ public slots:
 
 private:
     QStringList listanext;
-    Ui::QnplChannelsForm formChannel;
+    Ui::ChannelsForm formChannel;
     int selectedRow;
     QVector <Channel> channels;
 
 };
 
-#endif // QNPLCHANNELSDIALOG_H
+#endif // CHANNELSDIALOG_H

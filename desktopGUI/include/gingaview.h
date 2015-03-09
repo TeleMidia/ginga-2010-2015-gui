@@ -1,5 +1,5 @@
-#ifndef QNPLVIEW_H
-#define QNPLVIEW_H
+#ifndef VIEW_H
+#define VIEW_H
 
 #include <QGraphicsView>
 #include <QDebug>
@@ -31,4 +31,4 @@ private:
   QGraphicsScene* scene;
 };
 
-#endif // QNPLVIEW_H
+#endif // VIEW_H

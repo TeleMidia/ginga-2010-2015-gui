@@ -1,5 +1,5 @@
-#ifndef QNPLPREFERENCESDIALOG_H
-#define QNPLPREFERENCESDIALOG_H
+#ifndef PREFERENCESDIALOG_H
+#define PREFERENCESDIALOG_H
 
 #include <QDialog>
 #include <QStandardItemModel>
@@ -7,9 +7,9 @@
 #include <QFile>
 #include <QSettings>
 
-#include "ui_qnplenvironmentform.h"
-#include "ui_qnplpreferencesform.h"
-#include "ui_qnplrunform.h"
+#include "ui_environmentform.h"
+#include "ui_preferencesform.h"
+#include "ui_runform.h"
 
 
 class PreferencesDialog : public QDialog
@@ -46,11 +46,11 @@ private:
     QWidget* _environmentPane;
     QWidget* _runPane;
 
-    Ui::QnplEnviornmentForm _enviornmentForm;
-    Ui::QnplRunForm _runForm;
-    Ui::QnplPreferencesForm _preferencesForm;
+    Ui::EnviornmentForm _enviornmentForm;
+    Ui::RunForm _runForm;
+    Ui::PreferencesForm _preferencesForm;
 
     QSettings* _settings;
 };
 
-#endif // QNPLPREFERENCESDIALOG_H
+#endif // PREFERENCESDIALOG_H

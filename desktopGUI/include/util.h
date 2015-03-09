@@ -1,5 +1,5 @@
-#ifndef QNPLUTIL_H
-#define QNPLUTIL_H
+#ifndef UTIL_H
+#define UTIL_H
 
 #include <QStringList>
 #include <QString>
@@ -80,4 +80,4 @@ public:
 };
 
 
-#endif // QNPLUTIL_H
+#endif // UTIL_H

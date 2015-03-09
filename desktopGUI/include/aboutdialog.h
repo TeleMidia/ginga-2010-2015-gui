@@ -12,7 +12,7 @@
 #include <QDateTime>
 #include <QProcess>
 
-#include "ui_qnplaboutform.h"
+#include "ui_aboutform.h"
 
 class AboutDialog : public QDialog
 {

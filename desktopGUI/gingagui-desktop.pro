@@ -46,7 +46,8 @@ SOURCES += \
     src/iptvtunerdialog.cpp \
     src/mainwindow.cpp \
     src/preferencesdialog.cpp \
-    src/gingaview.cpp
+    src/gingaview.cpp \
+
 
 HEADERS += \
     include/gingaproxy.h \
