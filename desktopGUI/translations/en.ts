@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0">
 <context>
-    <name>QnplAboutDialog</name>
+    <name>AboutDialog</name>
     <message>
         <location filename="../src/ui/qnplaboutdialog.cpp" line="8"/>
         <source>About Ginga</source>
@@ -10,88 +10,88 @@
     </message>
 </context>
 <context>
-    <name>QnplAboutForm</name>
+    <name>AboutForm</name>
     <message>
-        <location filename="../forms/QnplAboutForm.ui" line="20"/>
+        <location filename="../forms/AboutForm.ui" line="20"/>
         <source>About Ginga</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplAboutForm.ui" line="51"/>
+        <location filename="../forms/AboutForm.ui" line="51"/>
         <source>Ginga v0.13.2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplAboutForm.ui" line="64"/>
+        <location filename="../forms/AboutForm.ui" line="64"/>
         <source>More...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplAboutForm.ui" line="80"/>
+        <location filename="../forms/AboutForm.ui" line="80"/>
         <source>Copyright 1989-2012 PUC-RIO/LABORATORIO TELEMIDIA, All Rights Reserved.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplAboutForm.ui" line="102"/>
+        <location filename="../forms/AboutForm.ui" line="102"/>
         <source>The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>QnplGeneralForm</name>
+    <name>GeneralForm</name>
     <message>
-        <location filename="../forms/QnplGeneralForm.ui" line="20"/>
+        <location filename="../forms/GeneralForm.ui" line="20"/>
         <source>Dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplGeneralForm.ui" line="26"/>
+        <location filename="../forms/GeneralForm.ui" line="26"/>
         <source>System</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplGeneralForm.ui" line="32"/>
+        <location filename="../forms/GeneralForm.ui" line="32"/>
         <source>Automatically start the presentation when a document is opened</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplGeneralForm.ui" line="35"/>
+        <location filename="../forms/GeneralForm.ui" line="35"/>
         <source>Autoplay</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplGeneralForm.ui" line="48"/>
+        <location filename="../forms/GeneralForm.ui" line="48"/>
         <source>User interface</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplGeneralForm.ui" line="54"/>
+        <location filename="../forms/GeneralForm.ui" line="54"/>
         <source>Language:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplGeneralForm.ui" line="68"/>
+        <location filename="../forms/GeneralForm.ui" line="68"/>
         <source>English</source>
         <translation type="unfinished"></translation>
     </message>
     <message utf8="true">
-        <location filename="../forms/QnplGeneralForm.ui" line="73"/>
+        <location filename="../forms/GeneralForm.ui" line="73"/>
         <source>Português (Brasil)</source>
         <translation type="unfinished"></translation>
     </message>
     <message utf8="true">
-        <location filename="../forms/QnplGeneralForm.ui" line="78"/>
+        <location filename="../forms/GeneralForm.ui" line="78"/>
         <source>Español</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplGeneralForm.ui" line="86"/>
+        <location filename="../forms/GeneralForm.ui" line="86"/>
         <source>* Application restart required</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>QnplMainWindow</name>
+    <name>MainWindow</name>
     <message>
         <location filename="../src/ui/qnplmainwindow.cpp" line="32"/>
         <source>Open...</source>
@@ -172,7 +172,7 @@
     </message>
 </context>
 <context>
-    <name>QnplPreferencesDialog</name>
+    <name>PreferencesDialog</name>
     <message>
         <location filename="../src/ui/qnplpreferencesdialog.cpp" line="38"/>
         <location filename="../src/ui/qnplpreferencesdialog.cpp" line="54"/>
@@ -194,103 +194,103 @@
     </message>
 </context>
 <context>
-    <name>QnplPreferencesForm</name>
+    <name>PreferencesForm</name>
     <message>
-        <location filename="../forms/QnplPreferencesForm.ui" line="32"/>
+        <location filename="../forms/PreferencesForm.ui" line="32"/>
         <source>Preferences</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>QnplRunForm</name>
+    <name>RunForm</name>
     <message>
-        <location filename="../forms/QnplRunForm.ui" line="20"/>
+        <location filename="../forms/RunForm.ui" line="20"/>
         <source>Dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplRunForm.ui" line="26"/>
+        <location filename="../forms/RunForm.ui" line="26"/>
         <source>Display</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplRunForm.ui" line="39"/>
+        <location filename="../forms/RunForm.ui" line="39"/>
         <source>640x480 (4:3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplRunForm.ui" line="48"/>
+        <location filename="../forms/RunForm.ui" line="48"/>
         <source>800x600 (4:3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplRunForm.ui" line="57"/>
+        <location filename="../forms/RunForm.ui" line="57"/>
         <source>1024x768 (4:3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplRunForm.ui" line="66"/>
+        <location filename="../forms/RunForm.ui" line="66"/>
         <source>854x480 (16:9)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplRunForm.ui" line="75"/>
+        <location filename="../forms/RunForm.ui" line="75"/>
         <source>1280x720 (16:9)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplRunForm.ui" line="84"/>
+        <location filename="../forms/RunForm.ui" line="84"/>
         <source>1920x1080 (16:9)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplRunForm.ui" line="93"/>
+        <location filename="../forms/RunForm.ui" line="93"/>
         <source>fullscreen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplRunForm.ui" line="102"/>
+        <location filename="../forms/RunForm.ui" line="102"/>
         <source>----------</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplRunForm.ui" line="107"/>
+        <location filename="../forms/RunForm.ui" line="107"/>
         <source>320x400 (4:5)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplRunForm.ui" line="116"/>
+        <location filename="../forms/RunForm.ui" line="116"/>
         <source>400x320 (5:4)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplRunForm.ui" line="134"/>
+        <location filename="../forms/RunForm.ui" line="134"/>
         <source>Screen Size:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplRunForm.ui" line="144"/>
+        <location filename="../forms/RunForm.ui" line="144"/>
         <source>Command</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplRunForm.ui" line="150"/>
+        <location filename="../forms/RunForm.ui" line="150"/>
         <source>Executable:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplRunForm.ui" line="160"/>
-        <location filename="../forms/QnplRunForm.ui" line="238"/>
+        <location filename="../forms/RunForm.ui" line="160"/>
+        <location filename="../forms/RunForm.ui" line="238"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplRunForm.ui" line="170"/>
+        <location filename="../forms/RunForm.ui" line="170"/>
         <source>Parameters:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplRunForm.ui" line="195"/>
+        <location filename="../forms/RunForm.ui" line="195"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -299,12 +299,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplRunForm.ui" line="218"/>
+        <location filename="../forms/RunForm.ui" line="218"/>
         <source>Ginga Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../forms/QnplRunForm.ui" line="224"/>
+        <location filename="../forms/RunForm.ui" line="224"/>
         <source>Location:</source>
         <translation type="unfinished"></translation>
     </message>
