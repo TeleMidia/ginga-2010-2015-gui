@@ -63,6 +63,7 @@ public slots:
 
   void performCloseWindow();
 
+  void expandWindow ();
 
   void writeScanOutput (QString);
 
@@ -77,6 +78,7 @@ public slots:
 
   void keyPressEvent(QKeyEvent *);
   void resizeEvent(QResizeEvent *event);
+  void moveEvent (QMoveEvent * event );
 
   void handleGingaOutput(QString);
   void startSession ();
@@ -118,6 +120,7 @@ private:
   QAction* _passiveAction;
   QAction* _activeAction;
   QAction* _preferencesAction;
+  QAction* _expandWindowAction;
   QAction* _bugAction;
   QAction* _aboutAction;
 
@@ -140,11 +143,13 @@ private:
   QLineEdit* _seekPlayTime;
 
   QString _location;
+  QString _oldSize;
 
   QProcess* _process;
 
   bool _passiveIsRunning;
   bool _isChannel;
+  bool _isExpanded;
 
   GingaView* _view;
   QWidget* _animationView;

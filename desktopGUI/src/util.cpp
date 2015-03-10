@@ -31,6 +31,7 @@ QString Util::V_LAST_DIR = "lastdir_opened";
 QString Util::V_FILES = "files";
 QString Util::V_AUTOPLAY = "autoplay";
 QString Util::V_SCREENSIZE = "screensize";
+QString Util::V_SCREENPOS = "screenpos";
 QString Util::V_PASSIVE = "passive_running";
 QString Util::V_DEVICE_PORT = "device_port";
 QString Util::V_ENABLE_LOG = "enablelog";

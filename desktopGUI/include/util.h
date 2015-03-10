@@ -56,6 +56,7 @@ public:
   static QString V_FILES;
   static QString V_AUTOPLAY;
   static QString V_SCREENSIZE;
+  static QString V_SCREENPOS;
   static QString V_PASSIVE;
   static QString V_DEVICE_PORT;
   static QString V_ENABLE_LOG;

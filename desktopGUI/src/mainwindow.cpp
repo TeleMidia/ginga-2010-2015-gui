@@ -63,6 +63,7 @@ MainWindow::MainWindow(QWidget* parent)
   _isChannel = false;
   _isTuning = false;
   _isPaused = false;
+  _isExpanded = false;
   _location = "";
   _process = NULL;
   _timer = NULL;
@@ -161,6 +162,12 @@ void  MainWindow::createActions()
   _preferencesAction->setEnabled(true);
   _preferencesAction->setText(tr("Preferences..."));
 
+  // exapand action
+  _expandWindowAction = new QAction(this);
+  _expandWindowAction->setEnabled(true);
+  _expandWindowAction->setText(tr("Expand Window"));
+  _expandWindowAction->setShortcut(QKeySequence(Qt::Key_F11));
+
   // bug action
 //  _bugAction = new QAction(this);
 //  _bugAction->setEnabled(true);
@@ -207,6 +214,7 @@ void  MainWindow::createMenus()
   // tools menu
   _toolsMenu = menuBar()->addMenu(tr("Tools"));
   _toolsMenu->addAction(_preferencesAction);
+  _toolsMenu->addAction(_expandWindowAction);
 
   // help menu
   _helpMenu = menuBar()->addMenu(tr("Help"));
@@ -395,6 +403,10 @@ void  MainWindow::createConnections()
 
   connect(_preferencesAction, SIGNAL(triggered()),
           SLOT(performPreferences()));
+
+  connect(_expandWindowAction, SIGNAL(triggered()),
+          SLOT(expandWindow()));
+
 //  connect(_bugAction, SIGNAL(triggered()),
 //          SLOT(performBug()));
   connect(_aboutAction, SIGNAL(triggered()),
@@ -485,12 +497,18 @@ void MainWindow::resizeView()
   _settings->sync();
 
   // get edit value from setting and set in window
-  QString ssize = _settings->value(Util::V_SCREENSIZE).toString();
-  QString sw = ssize.section('x',0,0);
-  QString sh = ssize.section('x',1,1);
+  QString screen_pos = _settings->value(Util::V_SCREENPOS).toString();
+  QString screen_x = screen_pos.section('x',0,0);
+  QString screen_y = screen_pos.section('x',1,1);
 
-  int w = sw.toInt();
-  int h = sh.toInt();
+  QString screen_size = _settings->value(Util::V_SCREENSIZE).toString();
+  QString screen_w = screen_size.section('x',0,0);
+  QString screen_h = screen_size.section('x',1,1);
+
+  int x = screen_x.toInt();
+  int y = screen_y.toInt();
+  int w = screen_w.toInt();
+  int h = screen_h.toInt();
 
   if (w == 0 && h ==0)
   {
@@ -508,6 +526,8 @@ void MainWindow::resizeView()
 
   _toolbar->setMinimumSize(0, 0);
   _toolbar->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+
+  move (x, y);
 }
 
 void MainWindow::load(const QString &location)
@@ -608,11 +628,15 @@ void MainWindow::runAsBase()
     parameters = Util::split(_settings->value(Util::V_PARAMETERS).toString());
     configureDefaultFlags(parameters);
 
-    if (_location.endsWith(".ncl")) {
+    if (_location.endsWith(".ncl"))
+    {
       parameters.replaceInStrings(Util::GUI_FILE, _location);
-    } else if (_location.endsWith(".ts")) {
+    }
+    else if (_location.endsWith(".ts"))
+    {
       int index = parameters.indexOf("--ncl");
-      if (index != -1) {
+      if (index != -1)
+      {
         parameters.insert(index, "--set-tuner");
         parameters.removeAt(index + 1);
       }
@@ -1167,8 +1191,6 @@ void MainWindow::configureDefaultFlags(QStringList &plist)
     QString ssize = _settings->value(Util::V_SCREENSIZE).toString();
     QString sw = ssize.section('x', 0, 0);
     QString sh = ssize.section('x', 1, 1);
-    int w = sw.toInt();
-    int h = sh.toInt();
     unsigned long int value = (unsigned long int) _view->focusWidget()->winId();
     plist << "--parent";
     plist << ":0.0," + QString::number(value) + ",0,0," + sw + "," + sh;
@@ -1185,7 +1207,7 @@ void MainWindow::configureDefaultFlags(QStringList &plist)
 #endif
   }
 
-  //configure scree nsize
+  //configure screen size
   plist.replaceInStrings(Util::GUI_SCREENSIZE,
                          _settings->value(Util::V_SCREENSIZE).toString());
 
@@ -1209,6 +1231,33 @@ void MainWindow::performCloseWindow()
   }
 }
 
+void MainWindow::expandWindow()
+{
+  bool flag = _isExpanded;
+  _isExpanded = ! _isExpanded;
+
+  _settings->sync();
+  if (flag)
+  {
+    setMinimumSize(0, 0);
+    setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+
+    _settings->setValue(Util::V_SCREENSIZE, _oldSize);
+
+    resizeView();
+  }
+  else
+  {
+    _oldSize = _settings->value(Util::V_SCREENSIZE).toString();
+
+    _movie->setScaledSize(QSize(Util::SCREEN_WIDTH, Util::SCREEN_HEIGHT));
+    _gifLabel->setFixedSize (Util::SCREEN_WIDTH, Util::SCREEN_HEIGHT);
+
+    setFixedSize(Util::SCREEN_WIDTH, Util::SCREEN_HEIGHT);
+    move (0, 0);
+  }
+}
+
 void MainWindow::performOpen(QAction* act)
 {
   if (act != _clearAction)
@@ -1221,32 +1270,50 @@ void MainWindow::resizeEvent(QResizeEvent* event)
   if (_gingaProxy->gingaIsRunning())
     return;
 
-  QString aspectRatio = _settings->value(Util::V_ASPECT_RATIO, "").toString();
+  if (!_isExpanded)
+  {
+    QString aspectRatio = _settings->value(Util::V_ASPECT_RATIO, "").toString();
 
-  if (aspectRatio == Util::WIDE)
-  {
-    setFixedHeight(width () * 9 / 16);
-    QCoreApplication::processEvents();
-  }
-  else if (aspectRatio == Util::STANDARD)
-  {
-    setFixedHeight(width() * 3 / 4);
-    QCoreApplication::processEvents();
-  }
-  else
-  {
-    setMinimumSize(0, 0);
-    setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+    if (aspectRatio == Util::WIDE)
+    {
+      setFixedHeight(width () * 9 / 16);
+      QCoreApplication::processEvents();
+    }
+    else if (aspectRatio == Util::STANDARD)
+    {
+      setFixedHeight(width() * 3 / 4);
+      QCoreApplication::processEvents();
+    }
+    else
+    {
+      setMinimumSize(0, 0);
+      setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+    }
   }
 
   _movie->setScaledSize(_stackedWidget->size());
   _gifLabel->setFixedSize (_stackedWidget->size());
+
+  _settings->setValue(Util::V_SCREENPOS,
+                      QString::number(x()) + "x" + QString::number(y()));
 
   _settings->setValue(Util::V_SCREENSIZE,
                       QString::number(_stackedWidget->width()) + "x" +
                       QString::number(_stackedWidget->height()));
   event->accept();
   QMainWindow::resizeEvent(event);
+}
+
+void MainWindow::moveEvent(QMoveEvent *event)
+{
+  if (!_isExpanded)
+  {
+    _settings->sync();
+    _settings->setValue(Util::V_SCREENPOS,
+                        QString::number(x()) + "x" + QString::number(y()));
+  }
+
+  QMainWindow::moveEvent(event);
 }
 
 void MainWindow::playNextChannel()
@@ -1358,6 +1425,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
   else if (event->key() == Qt::Key_B && (event->modifiers() &
                                          Qt::ControlModifier))
     _debugView->setVisible(!_debugView->isVisible());
+
+  QMainWindow::keyPressEvent(event);
 }
 
 void MainWindow::handleGingaOutput(QString message)
