@@ -1198,8 +1198,8 @@ void MainWindow::configureDefaultFlags(QStringList &plist)
     QString WID = "";
     foreach (QObject *ob, _view->focusWidget()->children()) {
       QWidget *w = qobject_cast<QWidget *>(ob);
-      if (w) {
-        unsigned long int value = (unsigned long int) _view->focusWidget()->winId();
+      if (w != NULL && w->hasFocus()) {
+        unsigned long int value = (unsigned long int) w->winId();
         WID = QString::number(value);
       }
     }
