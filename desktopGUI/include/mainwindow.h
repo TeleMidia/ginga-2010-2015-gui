@@ -16,6 +16,8 @@
 #include "iptvtunerdialog.h"
 #include "developerview.h"
 #include "debugview.h"
+#include "catalog.h"
+
 
 class MainWindow : public QMainWindow
 {
@@ -86,6 +88,7 @@ public slots:
 private slots:
   void enableSeekButton ();
   void finishScan (int code);
+  void openCatalog ();
 
 private:
   void createMenus();
@@ -111,6 +114,7 @@ private:
   QMenu* _helpMenu;
 
   QAction* _openAction;
+  QAction* _openCatalog;
   QAction* _tuneApplicationChannelAction;
   QAction* _tuneIPTVChannellAction;
   QAction* _tuneBroadcastChannelAction;
@@ -172,6 +176,8 @@ private:
   GingaProxy *_gingaProxy;
   DeveloperView * _developerView;
   DebugView * _debugView;
+
+   Catalog *_catalog;
 };
 
 #endif // MAINWINDOW_H

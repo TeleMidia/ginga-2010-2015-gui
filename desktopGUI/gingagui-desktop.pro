@@ -47,6 +47,8 @@ SOURCES += \
     src/mainwindow.cpp \
     src/preferencesdialog.cpp \
     src/gingaview.cpp \
+    src/catalog.cpp \
+    src/pbds.cpp
 
 
 HEADERS += \
@@ -60,7 +62,9 @@ HEADERS += \
     include/channelsdialog.h \
     include/mainwindow.h \
     include/preferencesdialog.h \
-    include/gingaview.h
+    include/gingaview.h \
+    include/catalog.h \
+    include/pbds.h
 
 RESOURCES += \
     application.qrc

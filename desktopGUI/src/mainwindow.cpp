@@ -127,6 +127,11 @@ void  MainWindow::createActions()
   _tuneIPTVChannellAction->setEnabled(true);
   _tuneIPTVChannellAction->setText(tr("Tune IP Channel..."));
 
+  _openCatalog = new QAction (this);
+  _openCatalog->setShortcut(QKeySequence(tr("Ctrl+Shift+C")));
+  _openCatalog->setEnabled(true);
+  _openCatalog->setText(tr("Open Catalog"));
+
 
   // quit action
   _quitAction = new QAction(this);
@@ -198,6 +203,7 @@ void  MainWindow::createMenus()
   _fileMenu = menuBar()->addMenu(tr("File"));
   _fileMenu->addAction(_openAction);
   _fileMenu->addMenu(_recentMenu);
+  _fileMenu->addAction(_openCatalog);
   _fileMenu->addSeparator();
   _fileMenu->addAction(_tuneBroadcastChannelAction);
   _fileMenu->addAction(_tuneIPTVChannellAction);
@@ -334,6 +340,8 @@ void MainWindow::createWidgets()
   _stackedWidget->addWidget(_animationView);
   _stackedWidget->setCurrentIndex(0);
 
+  _catalog = new Catalog (this);
+
   setCentralWidget(_stackedWidget);
 }
 
@@ -384,6 +392,8 @@ void  MainWindow::createConnections()
 {
   connect(_openAction, SIGNAL(triggered()),
           SLOT(performOpen()));
+  connect(_openCatalog, SIGNAL(triggered()),
+          SLOT(openCatalog()));
   connect(_recentMenu,SIGNAL(triggered(QAction*)),
           SLOT(performOpen(QAction*)));
   connect(_clearAction, SIGNAL(triggered()),
@@ -1466,6 +1476,12 @@ void MainWindow::handleGingaOutput(QString message)
     }
   }
 }
+
+void MainWindow::openCatalog()
+{
+  _catalog->open();
+}
+
 
 void MainWindow::startSession()
 {
