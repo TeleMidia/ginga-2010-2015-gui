@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QDesktopWidget>
 #include <QSettings>
+#include <QTextCodec>
 
 #include "mainwindow.h"
 #include "util.h"
@@ -19,6 +20,11 @@ int main(int argc, char *argv[])
     application.setApplicationName("GingaGui");
     application.setOrganizationName("Telemidia Lab");
     application.setOrganizationDomain("telemidia.puc-rio.br");
+
+    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    QTextCodec::setCodecForTr(codec);
+    QTextCodec::setCodecForCStrings(codec);
+    QTextCodec::setCodecForLocale(codec);
 
     Util::init();
 

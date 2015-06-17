@@ -8,7 +8,7 @@
 class PBDS_Node
 {
 public:
-  enum PBDS_NodeType {PRIVATE_BASE, APPLICATION};
+  enum PBDS_NodeType {PRIVATE_BASE, RESIDENT_BASE, INSTALLED_BASE, APPLICATION};
 
   PBDS_Node (const QString &id, const QString &label, PBDS_NodeType type)
   {
@@ -92,7 +92,9 @@ class PBDS_Manager
 public:
   PBDS_Manager();
 
+  void update ();
   void clear ();
+
   bool addNode(PBDS_Node *node, PBDS_PrivateBase *parent = 0);
   QList <PBDS_Node *> getNodes () const { return _root->getNodes(); }
 

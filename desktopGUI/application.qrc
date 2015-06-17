@@ -33,6 +33,9 @@
         <file alias="channels">images/icons/channels.png</file>
         <file alias="pc">images/icons/pc.png</file>
         <file alias="resume">images/icons/resume.png</file>
+        <file alias="ncl">images/icons/ncl.png</file>
+        <file alias="closed_folder">images/icons/folder.png</file>
+        <file alias="opened_folder">images/icons/opened_folder.png</file>
     </qresource>
     <qresource prefix="/logo">
         <file alias="nclplayer">images/logos/logo-nclplayer.png</file>
