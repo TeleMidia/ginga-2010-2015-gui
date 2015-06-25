@@ -177,6 +177,7 @@ void PreferencesDialog::saveSettings()
   else
     _settings->setValue(Util::V_ENABLE_LOG, false);
 
+  if (_enviornmentForm.screensizeBox->currentIndex() != 0)
   _settings->setValue(
         Util::V_SCREENSIZE,
         _enviornmentForm.screensizeBox->currentText().split(" ").at(0));
