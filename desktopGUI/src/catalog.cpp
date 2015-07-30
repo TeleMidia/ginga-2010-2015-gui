@@ -81,6 +81,8 @@ Catalog::Catalog(QWidget *parent) :
   QHBoxLayout *centerLayout = new QHBoxLayout;
   QVBoxLayout *buttonsLayout = new QVBoxLayout;
 
+  _pbds = PBDS::getInstance();
+
   QLabel *title = new QLabel ("Catalog");
 
   _treeWidget = new QTreeWidget;
@@ -191,12 +193,12 @@ void Catalog::changeButtonsState()
 
 void Catalog::updateCatalog()
 {
-  _pbds.update();
+  _pbds->update();
 
   _treeWidget->clear(); //This removes and deletes all the items in the tree
 
   QList<QTreeWidgetItem *> items;
-  QList <PBDS_Node *> nodes = _pbds.getNodes();
+  QList <PBDS_Node *> nodes = _pbds->getNodes();
   for (int i = 0; i < nodes.size(); i++)
     tree_depth_traversal(items, 0, nodes.at(i));
 

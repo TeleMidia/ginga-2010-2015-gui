@@ -12,7 +12,7 @@ class Catalog : public QDialog
 public:
   explicit Catalog(QWidget *parent = 0);
 
-  ~Catalog() { _pbds.clear(); }
+  ~Catalog() { _pbds->clear(); }
 
   bool eventFilter(QObject *, QEvent *);
 
@@ -28,7 +28,7 @@ private slots:
 
 private:
   void updateCatalog ();
-  PBDS_Manager _pbds;
+  PBDS* _pbds;
 
   QTreeWidget *_treeWidget;
 

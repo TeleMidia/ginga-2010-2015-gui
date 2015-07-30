@@ -96,11 +96,10 @@ private:
   QList <QString> _uris;
 };
 
-class PBDS_Manager
+class PBDS
 {
 public:
-  PBDS_Manager();
-
+  static PBDS * getInstance();
   void update ();
   void clear ();
 
@@ -109,6 +108,12 @@ public:
 
 private:
   PBDS_PrivateBase *_root;
+  PBDS();
+  static PBDS* _instance;
+  PBDS_PrivateBase *present_apps;
+  PBDS_PrivateBase *installed_apps;
+  PBDS_PrivateBase *resident_apps;
+  void fillPBDSWithExamples();
 
 };
 

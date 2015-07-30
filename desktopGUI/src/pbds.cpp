@@ -1,47 +1,62 @@
 #include "include/pbds.h"
 #include <QDebug>
 
-PBDS_Manager::PBDS_Manager()
-{
-  _root = new PBDS_PrivateBase ("root", "Private Base Data Structure");
+PBDS* PBDS::_instance = NULL;
+
+PBDS* PBDS::getInstance(){
+  if ( _instance == NULL)
+    _instance = new PBDS();
+  return _instance;
 }
 
-void PBDS_Manager::update()
-{
-  clear();
 
+PBDS::PBDS()
+{
+  _root = new PBDS_PrivateBase ("root", "Private Base Data Structure");
+
+  // create default bases
+  present_apps = new PBDS_PrivateBase(
+                                       "present", "PRESENT Applications");
+  installed_apps = new PBDS_PrivateBase(
+                                       "installed", "Installed Applications");
+  resident_apps = new PBDS_PrivateBase(
+                                       "resident", "Resident Applications");
+
+  addNode(present_apps);
+  addNode(installed_apps);
+  addNode(resident_apps);
+
+  fillPBDSWithExamples();
+}
+
+void PBDS::fillPBDSWithExamples()
+{
   PBDS_PrivateBase *base1 = new PBDS_PrivateBase("XXXX", "Globo");
   PBDS_PrivateBase *base2 = new PBDS_PrivateBase("XXXX.YYYY", "service1");
   PBDS_PrivateBase *base3 = new PBDS_PrivateBase("ZZZZ", "SBT");
 
   PBDS_Application *app1 = new PBDS_Application ("NCL1", "Copa America");
 
-  PBDS_PrivateBase *installed_apps = new PBDS_PrivateBase(
-                                       "installed", "Installed Applications");
-
   PBDS_Application *first_john = new PBDS_Application(
                                    "first_josh", "O primeiro João");
-
   PBDS_Application *world_cup = new PBDS_Application(
                                    "world_cup", "Copa do Mundo 2010");
-
-  PBDS_PrivateBase *resident_apps = new PBDS_PrivateBase(
-                                       "resident", "Resident Applications");
-
-  base1->setActive(true);
 
   addNode(base1);
   addNode(app1, base1);
   addNode(base2, base1);
   addNode(base3);
-  addNode(installed_apps);
-  addNode(resident_apps);
+  base1->setActive(true);
 
   addNode(first_john, resident_apps);
   addNode(world_cup, resident_apps);
 }
 
-bool PBDS_Manager::addNode(PBDS_Node *node, PBDS_PrivateBase *parent)
+void PBDS::update()
+{
+}
+
+bool PBDS::addNode(PBDS_Node *node, PBDS_PrivateBase *parent)
 {
   if (node == NULL)
     return false;
@@ -61,7 +76,7 @@ bool PBDS_Manager::addNode(PBDS_Node *node, PBDS_PrivateBase *parent)
   return true;
 }
 
-void PBDS_Manager::clear()
+void PBDS::clear()
 {
   QList <PBDS_Node *> nodes = _root->getNodes();
   foreach (PBDS_Node *node, nodes)
