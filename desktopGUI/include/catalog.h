@@ -5,6 +5,7 @@
 #include <QTreeWidget>
 #include <pbds.h>
 #include <QPushButton>
+#include <QCheckBox>
 
 class Catalog : public QDialog
 {
@@ -21,6 +22,8 @@ signals:
 public slots:
   void open ();
   void removeCurrentItem ();
+  void showMoreInformation ();
+
 
 private slots:
   void changeIcon (QTreeWidgetItem *);
@@ -36,6 +39,7 @@ private:
   QPushButton *_saveAppButton;
   QPushButton *_removeAppButton;
   QPushButton *_importAppButton;
+  QCheckBox *_showMoreInformation;
 };
 
 class CatalogItem : public QTreeWidgetItem

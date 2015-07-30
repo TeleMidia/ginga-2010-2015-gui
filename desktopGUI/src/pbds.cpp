@@ -12,7 +12,7 @@ PBDS* PBDS::getInstance(){
 
 PBDS::PBDS()
 {
-  _root = new PBDS_PrivateBase ("root", "Private Base Data Structure");
+  root = new PBDS_PrivateBase ("root", "Private Base Data Structure");
 
   // create default bases
   present_apps = new PBDS_PrivateBase(
@@ -62,7 +62,7 @@ bool PBDS::addNode(PBDS_Node *node, PBDS_PrivateBase *parent)
     return false;
 
   if (parent == 0)
-    parent = _root;
+    parent = root;
 
   if (parent->contains(node->getId()))
   {
@@ -78,9 +78,9 @@ bool PBDS::addNode(PBDS_Node *node, PBDS_PrivateBase *parent)
 
 void PBDS::clear()
 {
-  QList <PBDS_Node *> nodes = _root->getNodes();
+  QList <PBDS_Node *> nodes = root->getNodes();
   foreach (PBDS_Node *node, nodes)
   {
-    _root->removeNode(node->getId());
+    root->removeNode(node->getId());
   }
 }

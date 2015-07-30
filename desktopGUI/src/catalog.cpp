@@ -5,6 +5,7 @@
 #include <QEvent>
 #include <QDragEnterEvent>
 #include <QDebug>
+#include <QHeaderView>
 
 void tree_depth_traversal (QList<QTreeWidgetItem *> &items,
                            CatalogItem *parent, PBDS_Node *node)
@@ -86,8 +87,13 @@ Catalog::Catalog(QWidget *parent) :
   QLabel *title = new QLabel ("Catalog");
 
   _treeWidget = new QTreeWidget;
-  _treeWidget->setColumnCount(2);
-  _treeWidget->setHeaderLabels(QStringList () << "Private Base" << "Active");
+  _treeWidget->setColumnCount(6);
+  _treeWidget->setHeaderLabels(QStringList () << "Private Base" << "Active" << "NCL uri" << "Control Code"<< "Target profile" << "Transport Type");
+  _treeWidget->header()->resizeSection(1, 100);
+  _treeWidget->hideColumn(2);
+  _treeWidget->hideColumn(3);
+  _treeWidget->hideColumn(4);
+  _treeWidget->hideColumn(5);
   _treeWidget->setAlternatingRowColors(true);
   _treeWidget->setDragDropMode(QAbstractItemView::InternalMove);
   _treeWidget->setDragEnabled(true);
@@ -119,18 +125,23 @@ Catalog::Catalog(QWidget *parent) :
 
   _removeAppButton = new QPushButton ("Remove Application");
   _removeAppButton->setEnabled(false);
-
-  _importAppButton = new QPushButton ("Import Application");
-
-
   connect (_removeAppButton,
            SIGNAL(clicked()), this,
            SLOT (removeCurrentItem()));
+
+  _importAppButton = new QPushButton ("Import Application");
+
+  _showMoreInformation = new QCheckBox ("Show more information");
+  connect (_showMoreInformation,
+           SIGNAL(clicked()), this,
+           SLOT (showMoreInformation()));
+
 
   buttonsLayout->addWidget(_playAppButton);
   buttonsLayout->addWidget(_saveAppButton);
   buttonsLayout->addWidget(_removeAppButton);
   buttonsLayout->addWidget(_importAppButton);
+  buttonsLayout->addWidget(_showMoreInformation);
 
   buttonsLayout->setAlignment(Qt::AlignTop);
 
@@ -141,8 +152,7 @@ Catalog::Catalog(QWidget *parent) :
   mainLayout->addLayout(centerLayout);
   mainLayout->addWidget(closeButton, 0, Qt::AlignCenter);
 
-  setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-
+  setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
   setLayout(mainLayout);
   setWindowTitle(tr("Catalog"));
   setModal(false);
@@ -163,6 +173,19 @@ void Catalog::removeCurrentItem()
   _treeWidget->removeItemWidget(currentItem, i);
 
   delete currentItem;
+}
+
+void Catalog::showMoreInformation()
+{
+  _treeWidget->setColumnHidden(2,!_showMoreInformation->isChecked());
+  _treeWidget->setColumnHidden(3,!_showMoreInformation->isChecked());
+  _treeWidget->setColumnHidden(4,!_showMoreInformation->isChecked());
+  _treeWidget->setColumnHidden(5,!_showMoreInformation->isChecked());
+  _treeWidget->header()->resizeSection(1, 100);
+  _treeWidget->header()->resizeSection(2 , 100);
+  _treeWidget->header()->resizeSection(3 , 100);
+  _treeWidget->header()->resizeSection(4 , 100);
+  _treeWidget->header()->resizeSection(5 , 100);
 }
 
 

@@ -83,6 +83,7 @@ public slots:
   void moveEvent (QMoveEvent * event );
 
   void handleGingaOutput(QString);
+  void handleAITMessage(const QVector <QString> & data);
   void startSession ();
 
 private slots:
@@ -173,6 +174,7 @@ private:
   QLabel *_gifLabel;
   QTimer *_timer;
 
+  PBDS* _pbds;
   GingaProxy *_gingaProxy;
   DeveloperView * _developerView;
   DebugView * _debugView;

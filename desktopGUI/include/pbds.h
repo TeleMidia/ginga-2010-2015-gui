@@ -90,6 +90,10 @@ public:
 
   void addURI (QString const &uri) { _uris.append(uri); }
   QList <QString> getURIs () const { return _uris; }
+  QString nclURI;
+  QString controlCode;
+  QString targetProfile;
+  QString transportType;
 
 private:
   bool _isPersistent;
@@ -100,19 +104,20 @@ class PBDS
 {
 public:
   static PBDS * getInstance();
+
   void update ();
   void clear ();
-
   bool addNode(PBDS_Node *node, PBDS_PrivateBase *parent = 0);
-  QList <PBDS_Node *> getNodes () const { return _root->getNodes(); }
+  QList <PBDS_Node *> getNodes () const { return root->getNodes(); }
 
-private:
-  PBDS_PrivateBase *_root;
-  PBDS();
-  static PBDS* _instance;
+  PBDS_PrivateBase *root;
   PBDS_PrivateBase *present_apps;
   PBDS_PrivateBase *installed_apps;
   PBDS_PrivateBase *resident_apps;
+
+private:
+  PBDS();
+  static PBDS* _instance;
   void fillPBDSWithExamples();
 
 };
