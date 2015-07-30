@@ -14,10 +14,13 @@ public:
 
   ~Catalog() { _pbds.clear(); }
 
+  bool eventFilter(QObject *, QEvent *);
+
 signals:
 
 public slots:
   void open ();
+  void removeCurrentItem ();
 
 private slots:
   void changeIcon (QTreeWidgetItem *);
@@ -29,6 +32,7 @@ private:
 
   QTreeWidget *_treeWidget;
 
+  QPushButton *_playAppButton;
   QPushButton *_saveAppButton;
   QPushButton *_removeAppButton;
   QPushButton *_importAppButton;
@@ -44,7 +48,7 @@ public:
   PBDS_Node * getPBDSNode () const {return _node; }
 
 private:
-  PBDS_Node *_node;
+  PBDS_Node *_node; //don't delete me!
 };
 
 #endif // CATALOG_H

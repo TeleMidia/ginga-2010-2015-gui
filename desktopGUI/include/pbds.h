@@ -32,7 +32,10 @@ class PBDS_PrivateBase : public PBDS_Node
 {
 public:
   PBDS_PrivateBase (const QString &id, const QString &label)
-    : PBDS_Node(id, label, PRIVATE_BASE) {}
+    : PBDS_Node(id, label, PRIVATE_BASE)
+  {
+    _active = false;
+  }
 
   ~PBDS_PrivateBase()
   {
@@ -65,10 +68,16 @@ public:
     return list;
   }
 
+  void setActive (bool active) { _active = active; }
+  bool isActive () const { return _active; }
+
   bool contains (QString id) const { return _nodes.contains(id); }
 
 protected:
   QMap <QString, PBDS_Node *> _nodes;
+
+private:
+  bool _active;
 };
 
 class PBDS_Application : public PBDS_Node

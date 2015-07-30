@@ -11,7 +11,7 @@ void PBDS_Manager::update()
   clear();
 
   PBDS_PrivateBase *base1 = new PBDS_PrivateBase("XXXX", "Globo");
-  PBDS_PrivateBase *base2 = new PBDS_PrivateBase("XXXX.YYYY", "Band");
+  PBDS_PrivateBase *base2 = new PBDS_PrivateBase("XXXX.YYYY", "service1");
   PBDS_PrivateBase *base3 = new PBDS_PrivateBase("ZZZZ", "SBT");
 
   PBDS_Application *app1 = new PBDS_Application ("NCL1", "Copa America");
@@ -27,6 +27,8 @@ void PBDS_Manager::update()
 
   PBDS_PrivateBase *resident_apps = new PBDS_PrivateBase(
                                        "resident", "Resident Applications");
+
+  base1->setActive(true);
 
   addNode(base1);
   addNode(app1, base1);
