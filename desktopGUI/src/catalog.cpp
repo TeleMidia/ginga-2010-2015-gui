@@ -1,11 +1,13 @@
 #include "include/catalog.h"
 
 #include <QLabel>
-#include <QVBoxLayout>
 #include <QEvent>
 #include <QDragEnterEvent>
 #include <QDebug>
 #include <QHeaderView>
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QDesktopServices>
 
 void tree_depth_traversal (QList<QTreeWidgetItem *> &items,
                            CatalogItem *parent, PBDS_Node *node)
@@ -84,21 +86,43 @@ void tree_depth_traversal (QList<QTreeWidgetItem *> &items,
 Catalog::Catalog(QWidget *parent) :
   QDialog(parent)
 {
-  QVBoxLayout *mainLayout = new QVBoxLayout;
-  QHBoxLayout *centerLayout = new QHBoxLayout;
-  QVBoxLayout *buttonsLayout = new QVBoxLayout;
-  QLabel *title = new QLabel ("Catalog");
+  mainLayout = new QVBoxLayout;
   _pbds = PBDS::getInstance();
+
+  // Show trees
+  createPBDSTree();
+  createPRESENTTree();
+
+
+  // close button
+  QPushButton *closeButton = new QPushButton ("Close");
+  closeButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
+  connect (closeButton, SIGNAL(clicked()),
+           this, SLOT(close()));
+
+  // configure QDialog flags
+  setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+  setLayout(mainLayout);
+  setWindowTitle(tr("Catalog"));
+  setModal(false);
+  mainLayout->addWidget(closeButton, 0, Qt::AlignCenter);
+}
+
+
+
+void Catalog::createPBDSTree()
+{
+  QLabel *title = new QLabel ("PBDS");
+  mainLayout->addWidget(title);
+  QHBoxLayout *pbdsLayout = new QHBoxLayout();
+  QWidget * buttonsWidget = new QWidget();
+  QVBoxLayout *buttonsLayout = new QVBoxLayout();
+  buttonsWidget->setLayout(buttonsLayout);
 
   // create tree collumns
   _treeWidget = new QTreeWidget;
-  _treeWidget->setColumnCount(6);
-  _treeWidget->setHeaderLabels(QStringList () << "Private Base" << "Active" << "NCL uri" << "Control Code"<< "Target profile" << "Transport Type");
-  _treeWidget->header()->resizeSection(1, 100);
-  _treeWidget->hideColumn(2);
-  _treeWidget->hideColumn(3);
-  _treeWidget->hideColumn(4);
-  _treeWidget->hideColumn(5);
+  _treeWidget->setColumnCount(2);
+  _treeWidget->setHeaderLabels(QStringList () << "Private Base" << "Active");
 
   // configure tree flags
   _treeWidget->setAlternatingRowColors(true);
@@ -107,19 +131,15 @@ Catalog::Catalog(QWidget *parent) :
   _treeWidget->viewport()->setAcceptDrops(true);
   _treeWidget->setDropIndicatorShown(true);
   _treeWidget->viewport()->installEventFilter(this);
-
+  _treeWidget->setMinimumWidth(QApplication::desktop()->width() * 15/100);
 
   // tree signals
   connect (_treeWidget, SIGNAL(itemExpanded(QTreeWidgetItem*)),
            this, SLOT(changeIcon(QTreeWidgetItem*)));
   connect (_treeWidget, SIGNAL(itemCollapsed(QTreeWidgetItem*)),
            this, SLOT(changeIcon(QTreeWidgetItem*)));
-  QPushButton *closeButton = new QPushButton ("Close");
-  closeButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
-  connect (closeButton, SIGNAL(clicked()),
-           this, SLOT(close()));
   connect (_treeWidget,
-           SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this,        SLOT (changeButtonsState()));
+           SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT (changeButtonsState()));
 
   _playAppButton = new QPushButton ("Play Application");
   _playAppButton->setEnabled(false);
@@ -135,29 +155,72 @@ Catalog::Catalog(QWidget *parent) :
 
   _importAppButton = new QPushButton ("Import Application");
 
-  _showMoreInformation = new QCheckBox ("Show more information");
-  connect (_showMoreInformation,
-           SIGNAL(clicked()), this,
-           SLOT (showMoreInformation()));
-
-  // add widgets in QDialog
+  // add widgets in mainLayout
   buttonsLayout->addWidget(_playAppButton);
   buttonsLayout->addWidget(_saveAppButton);
   buttonsLayout->addWidget(_removeAppButton);
   buttonsLayout->addWidget(_importAppButton);
+  buttonsLayout->setAlignment(Qt::AlignTop);
+  buttonsWidget->setMinimumWidth(QApplication::desktop()->width() * 10/100);
+  pbdsLayout->addWidget(_treeWidget);
+  pbdsLayout->addWidget(buttonsWidget);
+  mainLayout->addLayout(pbdsLayout);
+
+}
+
+void Catalog::createPRESENTTree()
+{
+  QLabel *title = new QLabel ("PRESENT Applications");
+  mainLayout->addWidget(title);
+  QHBoxLayout *presentLayout = new QHBoxLayout;
+  QWidget * buttonsWidget = new QWidget();
+  QVBoxLayout *buttonsLayout = new QVBoxLayout();
+  buttonsWidget->setLayout(buttonsLayout);
+
+  // create tree collumns
+  _presentTreeWidget = new QTreeWidget;
+  _presentTreeWidget->setColumnCount(5);
+  _presentTreeWidget->setHeaderLabels(QStringList () << "Application Id" << "main NCL URI" << "Control Code"<< "Target profile" << "Transport Type");
+  _presentTreeWidget->header()->resizeSection(0, 100);
+  _presentTreeWidget->hideColumn(1);
+  _presentTreeWidget->hideColumn(2);
+  _presentTreeWidget->hideColumn(3);
+  _presentTreeWidget->hideColumn(4);
+
+  // configure tree flags
+  _presentTreeWidget->setAlternatingRowColors(true);
+  _presentTreeWidget->setDragDropMode(QAbstractItemView::InternalMove);
+  _presentTreeWidget->setDragEnabled(true);
+  _presentTreeWidget->viewport()->setAcceptDrops(true);
+  _presentTreeWidget->setDropIndicatorShown(true);
+  _presentTreeWidget->viewport()->installEventFilter(this);
+  _presentTreeWidget->setMinimumWidth(QApplication::desktop()->width() * 15/100);
+
+
+  // tree signals
+  connect (_presentTreeWidget, SIGNAL(itemExpanded(QTreeWidgetItem*)),
+           this, SLOT(changeIcon(QTreeWidgetItem*)));
+  connect (_presentTreeWidget, SIGNAL(itemCollapsed(QTreeWidgetItem*)),
+           this, SLOT(changeIcon(QTreeWidgetItem*)));
+  connect (_presentTreeWidget,
+           SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT (changeButtonsState()));
+
+  _playAppButton = new QPushButton ("Play Application");
+  _playAppButton->setChecked(false);
+
+  _showMoreInformation = new QCheckBox ("Show more information");
+  connect (_showMoreInformation,
+           SIGNAL(clicked()), this,
+           SLOT (showPresentTreeMoreInformation()));
+
+  // add widgets in mainLayout
+  buttonsLayout->addWidget(_playAppButton);
   buttonsLayout->addWidget(_showMoreInformation);
   buttonsLayout->setAlignment(Qt::AlignTop);
-  centerLayout->addWidget(_treeWidget);
-  centerLayout->addLayout(buttonsLayout);
-  mainLayout->addWidget(title);
-  mainLayout->addLayout(centerLayout);
-  mainLayout->addWidget(closeButton, 0, Qt::AlignCenter);
-
-  // configure QDialog flags
-  setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-  setLayout(mainLayout);
-  setWindowTitle(tr("Catalog"));
-  setModal(false);
+  buttonsWidget->setMinimumWidth(QApplication::desktop()->width() * 10/100);
+  presentLayout->addWidget(_presentTreeWidget);
+  presentLayout->addWidget(buttonsWidget);
+  mainLayout->addLayout(presentLayout);
 }
 
 void Catalog::open()
@@ -177,17 +240,17 @@ void Catalog::removeCurrentItem()
   delete currentItem;
 }
 
-void Catalog::showMoreInformation()
+void Catalog::showPresentTreeMoreInformation()
 {
-  _treeWidget->setColumnHidden(2,!_showMoreInformation->isChecked());
-  _treeWidget->setColumnHidden(3,!_showMoreInformation->isChecked());
-  _treeWidget->setColumnHidden(4,!_showMoreInformation->isChecked());
-  _treeWidget->setColumnHidden(5,!_showMoreInformation->isChecked());
-  _treeWidget->header()->resizeSection(1, 100);
-  _treeWidget->header()->resizeSection(2 , 100);
-  _treeWidget->header()->resizeSection(3 , 100);
-  _treeWidget->header()->resizeSection(4 , 100);
-  _treeWidget->header()->resizeSection(5 , 100);
+  _presentTreeWidget->setColumnHidden(1,!_showMoreInformation->isChecked());
+  _presentTreeWidget->setColumnHidden(2,!_showMoreInformation->isChecked());
+  _presentTreeWidget->setColumnHidden(3,!_showMoreInformation->isChecked());
+  _presentTreeWidget->setColumnHidden(4,!_showMoreInformation->isChecked());
+  _presentTreeWidget->header()->resizeSection(0, 100);
+  _presentTreeWidget->header()->resizeSection(1, 100);
+  _presentTreeWidget->header()->resizeSection(2 , 100);
+  _presentTreeWidget->header()->resizeSection(3 , 100);
+  _presentTreeWidget->header()->resizeSection(4 , 100);
 }
 
 

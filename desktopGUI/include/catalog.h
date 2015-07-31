@@ -6,6 +6,7 @@
 #include <pbds.h>
 #include <QPushButton>
 #include <QCheckBox>
+#include <QVBoxLayout>
 
 class Catalog : public QDialog
 {
@@ -22,7 +23,7 @@ signals:
 public slots:
   void open ();
   void removeCurrentItem ();
-  void showMoreInformation ();
+  void showPresentTreeMoreInformation ();
 
 
 private slots:
@@ -31,15 +32,19 @@ private slots:
 
 private:
   void updateCatalog ();
+  void createPBDSTree();
+  void createPRESENTTree();
+
   PBDS* _pbds;
 
+  QVBoxLayout *mainLayout;
   QTreeWidget *_treeWidget;
-
+  QTreeWidget *_presentTreeWidget;
   QPushButton *_playAppButton;
   QPushButton *_saveAppButton;
   QPushButton *_removeAppButton;
   QPushButton *_importAppButton;
-  QCheckBox *_showMoreInformation;
+  QCheckBox * _showMoreInformation;
 };
 
 class CatalogItem : public QTreeWidgetItem
