@@ -1482,20 +1482,19 @@ void MainWindow::handleGingaOutput(QString message)
 
 void MainWindow::handleAITMessage(const QVector <QString> & data)
 {
-//  if (data.size() == 4)
-  QString nclURI = data.at(0);
-  PBDS_Application *app1 = new PBDS_Application (nclURI, nclURI);
-  app1->nclURI = nclURI;
-  app1->controlCode = data.at(1);
-  app1->targetProfile = data.at(2);
-  app1->transportType = data.at(3);
-  qDebug() << "data=" << data << endl;
+  PBDS_Application *app = new PBDS_Application (data.at(0), data.at(0));
+  app->controlCode = data.at(1);
+  app->mainNclUri =  data.at(2);
+  app->targetProfile = data.at(3);
+  app->transportType = data.at(4);
+  _pbds->addNode(app, _pbds->present_apps);
 }
 
 void MainWindow::openCatalog()
 {
+//  handleGingaOutput("cmd::0::ait::code/main.ncl::PRESENT::c_profile::legacy");
+  handleGingaOutput("cmd::0::ait::present_app::0x02::code/main.ncl::0x8003::0x05");
   _catalog->open();
-  handleGingaOutput("cmd::0::ait::code/main.ncl::PRESENT::c_profile::legacy");
 }
 
 

@@ -90,7 +90,7 @@ public:
 
   void addURI (QString const &uri) { _uris.append(uri); }
   QList <QString> getURIs () const { return _uris; }
-  QString nclURI;
+  QString mainNclUri;
   QString controlCode;
   QString targetProfile;
   QString transportType;
