@@ -44,7 +44,7 @@ private:
   QPushButton *_pbdsRemoveAppButton;
   QPushButton *_pbdsImportAppButton;
   QTreeWidget *_presentTreeWidget;
-  QCheckBox   *_presentShowMoreInformation;
+  QCheckBox   *_presentShowMoreCheckBox;
   QPushButton *_presentPlayAppButton;
 };
 

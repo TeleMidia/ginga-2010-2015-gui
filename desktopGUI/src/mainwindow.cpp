@@ -1492,8 +1492,8 @@ void MainWindow::handleAITMessage(const QVector <QString> & data)
 
 void MainWindow::openCatalog()
 {
-//  handleGingaOutput("cmd::0::ait::code/main.ncl::PRESENT::c_profile::legacy");
-  handleGingaOutput("cmd::0::ait::present_app::0x02::code/main.ncl::0x8003::0x05");
+  handleGingaOutput("cmd::0::ait::1::0x02::code/main.ncl::0x8003::0x05");
+  handleGingaOutput("cmd::0::ait::2::0x02::code/main.ncl::0x8003::0x05");
   _catalog->open();
 }
 

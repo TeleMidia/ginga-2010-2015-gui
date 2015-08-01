@@ -267,8 +267,31 @@ void Catalog::pbdsUpdate()
 
         _pbdsTreeWidget->expandAll();
     }
-}
 
+    if(_presentTreeWidget != NULL){
+
+        // This removes and deletes all the items in the tree
+        _presentTreeWidget->clear();
+
+        // fullfill_presentTreeWidget
+        QList<QTreeWidgetItem *> items;
+        QList <PBDS_Node *> nodes = _pbds->getInstance()->present_apps->getNodes();
+        CatalogItem *child = NULL;
+        PBDS_Application* app = NULL;
+        for (int i = 0; i < nodes.size(); i++){
+            app = (PBDS_Application*) nodes.at(i);
+            QStringList labels;
+            labels << app->getLabel() << app->mainNclUri <<  app->controlCode << app->targetProfile << app->transportType;
+            child = new CatalogItem(app, labels);
+            child->setIcon(0, QIcon (":icons/ncl"));
+            items.append(child);
+        }
+        _presentTreeWidget->insertTopLevelItems(0, items);
+        for (int i = 0; i < items.size(); i++)
+            _presentTreeWidget->resizeColumnToContents(i);
+        _presentTreeWidget->expandAll();
+    }
+}
 
 //
 // PRESENT Tree related methods

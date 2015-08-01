@@ -22,7 +22,6 @@ PBDS::PBDS()
   resident_apps = new PBDS_PrivateBase(
                                        "resident", "Resident Applications");
 
-  addNode(present_apps);
   addNode(installed_apps);
   addNode(resident_apps);
 
