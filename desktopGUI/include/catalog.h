@@ -22,29 +22,30 @@ signals:
 
 public slots:
   void open ();
-  void removeCurrentItem ();
-  void showPresentTreeMoreInformation ();
+  void pbdsRemoveCurrentItem ();
+  void presentShowMoreInformation ();
 
 
 private slots:
-  void changeIcon (QTreeWidgetItem *);
-  void changeButtonsState ();
+  void pbdsChangeIcon (QTreeWidgetItem *);
+  void pbdsChangeButtonsState ();
 
 private:
-  void updateCatalog ();
+  void pbdsUpdate ();
   void createPBDSTree();
   void createPRESENTTree();
 
   PBDS* _pbds;
 
   QVBoxLayout *mainLayout;
-  QTreeWidget *_treeWidget;
+  QTreeWidget *_pbdsTreeWidget;
+  QPushButton *_pbdsPlayAppButton;
+  QPushButton *_pbdsSaveAppButton;
+  QPushButton *_pbdsRemoveAppButton;
+  QPushButton *_pbdsImportAppButton;
   QTreeWidget *_presentTreeWidget;
-  QPushButton *_playAppButton;
-  QPushButton *_saveAppButton;
-  QPushButton *_removeAppButton;
-  QPushButton *_importAppButton;
-  QCheckBox * _showMoreInformation;
+  QCheckBox   *_presentShowMoreInformation;
+  QPushButton *_presentPlayAppButton;
 };
 
 class CatalogItem : public QTreeWidgetItem

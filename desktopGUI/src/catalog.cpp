@@ -89,10 +89,14 @@ Catalog::Catalog(QWidget *parent) :
   mainLayout = new QVBoxLayout;
   _pbds = PBDS::getInstance();
 
-  // Show trees
-  createPBDSTree();
-  createPRESENTTree();
+  _pbdsTreeWidget = NULL;
+  _presentTreeWidget =NULL;
 
+  // Show PBDSTree
+  createPBDSTree();
+
+  // Show PRESENTTree
+  createPRESENTTree();
 
   // close button
   QPushButton *closeButton = new QPushButton ("Close");
@@ -108,7 +112,47 @@ Catalog::Catalog(QWidget *parent) :
   mainLayout->addWidget(closeButton, 0, Qt::AlignCenter);
 }
 
+void Catalog::open()
+{
+  pbdsUpdate();
+  QDialog::show();
+}
 
+bool Catalog::eventFilter(QObject *object, QEvent *event)
+{
+  if (_pbdsTreeWidget != NULL && object == _pbdsTreeWidget->viewport())
+    {
+      QEvent::Type type = event->type();
+      if (type == QEvent::DragEnter)
+        {
+          CatalogItem *item = (CatalogItem *) _pbdsTreeWidget->currentItem();
+
+          if (item->parent() != NULL /* I'm a top level item */
+              && item->getPBDSNode() != NULL /* I'm an 'empty' label */)
+            {
+              ((QDragEnterEvent *)event)->acceptProposedAction();
+            }
+          return true;
+        }
+      else if (type == QEvent::Drop)
+        {
+          qDebug () << "drop";
+          QTreeWidgetItem *currentItem = _pbdsTreeWidget->itemAt(
+                ((QDropEvent*)event)->pos());
+          if (currentItem)
+            qDebug () << currentItem->text(0);
+
+          //      ((QDropEvent*)event)->acceptProposedAction();
+          return true;
+        }
+    }
+  return false;
+}
+
+
+//
+// PBDS Tree related methods
+//
 
 void Catalog::createPBDSTree()
 {
@@ -120,54 +164,115 @@ void Catalog::createPBDSTree()
   buttonsWidget->setLayout(buttonsLayout);
 
   // create tree collumns
-  _treeWidget = new QTreeWidget;
-  _treeWidget->setColumnCount(2);
-  _treeWidget->setHeaderLabels(QStringList () << "Private Base" << "Active");
+  _pbdsTreeWidget = new QTreeWidget;
+  _pbdsTreeWidget->setColumnCount(2);
+  _pbdsTreeWidget->setHeaderLabels(QStringList () << "Private Base" << "Active");
 
   // configure tree flags
-  _treeWidget->setAlternatingRowColors(true);
-  _treeWidget->setDragDropMode(QAbstractItemView::InternalMove);
-  _treeWidget->setDragEnabled(true);
-  _treeWidget->viewport()->setAcceptDrops(true);
-  _treeWidget->setDropIndicatorShown(true);
-  _treeWidget->viewport()->installEventFilter(this);
-  _treeWidget->setMinimumWidth(QApplication::desktop()->width() * 15/100);
+  _pbdsTreeWidget->setAlternatingRowColors(true);
+  _pbdsTreeWidget->setDragDropMode(QAbstractItemView::InternalMove);
+  _pbdsTreeWidget->setDragEnabled(true);
+  _pbdsTreeWidget->viewport()->setAcceptDrops(true);
+  _pbdsTreeWidget->setDropIndicatorShown(true);
+  _pbdsTreeWidget->viewport()->installEventFilter(this);
+  _pbdsTreeWidget->setMinimumWidth(QApplication::desktop()->width() * 15/100);
 
   // tree signals
-  connect (_treeWidget, SIGNAL(itemExpanded(QTreeWidgetItem*)),
-           this, SLOT(changeIcon(QTreeWidgetItem*)));
-  connect (_treeWidget, SIGNAL(itemCollapsed(QTreeWidgetItem*)),
-           this, SLOT(changeIcon(QTreeWidgetItem*)));
-  connect (_treeWidget,
-           SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT (changeButtonsState()));
+  connect (_pbdsTreeWidget, SIGNAL(itemExpanded(QTreeWidgetItem*)),
+           this, SLOT(pbdsChangeIcon(QTreeWidgetItem*)));
+  connect (_pbdsTreeWidget, SIGNAL(itemCollapsed(QTreeWidgetItem*)),
+           this, SLOT(pbdsChangeIcon(QTreeWidgetItem*)));
+  connect (_pbdsTreeWidget,
+           SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT (pbdsChangeButtonsState()));
 
-  _playAppButton = new QPushButton ("Play Application");
-  _playAppButton->setEnabled(false);
+  _pbdsPlayAppButton = new QPushButton ("Play Application");
+  _pbdsPlayAppButton->setEnabled(false);
 
-  _saveAppButton = new QPushButton ("Save Application");
-  _saveAppButton->setEnabled(false);
+  _pbdsSaveAppButton = new QPushButton ("Save Application");
+  _pbdsSaveAppButton->setEnabled(false);
 
-  _removeAppButton = new QPushButton ("Remove Application");
-  _removeAppButton->setEnabled(false);
-  connect (_removeAppButton,
+  _pbdsRemoveAppButton = new QPushButton ("Remove Application");
+  _pbdsRemoveAppButton->setEnabled(false);
+  connect (_pbdsRemoveAppButton,
            SIGNAL(clicked()), this,
-           SLOT (removeCurrentItem()));
+           SLOT (pbdsRemoveCurrentItem()));
 
-  _importAppButton = new QPushButton ("Import Application");
+  _pbdsImportAppButton = new QPushButton ("Import Application");
 
   // add widgets in mainLayout
-  buttonsLayout->addWidget(_playAppButton);
-  buttonsLayout->addWidget(_saveAppButton);
-  buttonsLayout->addWidget(_removeAppButton);
-  buttonsLayout->addWidget(_importAppButton);
+  buttonsLayout->addWidget(_pbdsPlayAppButton);
+  buttonsLayout->addWidget(_pbdsSaveAppButton);
+  buttonsLayout->addWidget(_pbdsRemoveAppButton);
+  buttonsLayout->addWidget(_pbdsImportAppButton);
   buttonsLayout->setAlignment(Qt::AlignTop);
   buttonsWidget->setMinimumWidth(QApplication::desktop()->width() * 10/100);
-  pbdsLayout->addWidget(_treeWidget);
+  pbdsLayout->addWidget(_pbdsTreeWidget);
   pbdsLayout->addWidget(buttonsWidget);
   mainLayout->addLayout(pbdsLayout);
 
 }
 
+void Catalog::pbdsRemoveCurrentItem()
+{
+  QTreeWidgetItem *currentItem = _pbdsTreeWidget->currentItem();
+
+  for (int i = 0; i < currentItem->columnCount(); i++)
+    _pbdsTreeWidget->removeItemWidget(currentItem, i);
+
+  delete currentItem;
+}
+
+void Catalog::pbdsChangeIcon(QTreeWidgetItem *item)
+{
+  if (item != NULL && ((CatalogItem *)item)->getPBDSNode() != NULL
+      && ((CatalogItem *)item)->getPBDSNode()->getType() ==
+      PBDS_Node::PRIVATE_BASE)
+    {
+      item->setIcon(0, item->isExpanded() ? QIcon (":icons/opened_folder") :
+                                            QIcon (":icons/closed_folder"));
+    }
+}
+
+void Catalog::pbdsChangeButtonsState()
+{
+  CatalogItem *item = (CatalogItem *) _pbdsTreeWidget->currentItem();
+  if (item != NULL && item->getPBDSNode() != NULL)
+    {
+      _pbdsRemoveAppButton->setEnabled(
+            item->getPBDSNode()->getType() == PBDS_Node::APPLICATION);
+
+      _pbdsPlayAppButton->setEnabled(
+            item->getPBDSNode()->getType() == PBDS_Node::APPLICATION);
+    }
+}
+
+void Catalog::pbdsUpdate()
+{
+    _pbds->update();
+
+    if(_pbdsTreeWidget != NULL){
+
+        // This removes and deletes all the items in the tree
+        _pbdsTreeWidget->clear();
+
+        QList<QTreeWidgetItem *> items;
+        QList <PBDS_Node *> nodes = _pbds->getNodes();
+        for (int i = 0; i < nodes.size(); i++)
+            tree_depth_traversal(items, 0, nodes.at(i));
+
+        _pbdsTreeWidget->insertTopLevelItems(0, items);
+
+        for (int i = 0; i < items.size(); i++)
+            _pbdsTreeWidget->resizeColumnToContents(i);
+
+        _pbdsTreeWidget->expandAll();
+    }
+}
+
+
+//
+// PRESENT Tree related methods
+//
 void Catalog::createPRESENTTree()
 {
   QLabel *title = new QLabel ("PRESENT Applications");
@@ -199,23 +304,27 @@ void Catalog::createPRESENTTree()
 
   // tree signals
   connect (_presentTreeWidget, SIGNAL(itemExpanded(QTreeWidgetItem*)),
-           this, SLOT(changeIcon(QTreeWidgetItem*)));
+           this, SLOT(pbdsChangeIcon(QTreeWidgetItem*)));
   connect (_presentTreeWidget, SIGNAL(itemCollapsed(QTreeWidgetItem*)),
-           this, SLOT(changeIcon(QTreeWidgetItem*)));
+           this, SLOT(pbdsChangeIcon(QTreeWidgetItem*)));
   connect (_presentTreeWidget,
-           SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT (changeButtonsState()));
+           SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT (pbdsChangeButtonsState()));
 
-  _playAppButton = new QPushButton ("Play Application");
-  _playAppButton->setChecked(false);
+  _pbdsPlayAppButton = new QPushButton ("Play Application");
+  _pbdsPlayAppButton->setChecked(false);
 
-  _showMoreInformation = new QCheckBox ("Show more information");
-  connect (_showMoreInformation,
+
+  _presentPlayAppButton = new QPushButton ("Play Application");
+  _presentPlayAppButton->setEnabled(false);
+
+  _presentShowMoreCheckBox = new QCheckBox ("Show more information");
+  connect (_presentShowMoreCheckBox,
            SIGNAL(clicked()), this,
-           SLOT (showPresentTreeMoreInformation()));
+           SLOT (presentShowMoreInformation()));
 
   // add widgets in mainLayout
-  buttonsLayout->addWidget(_playAppButton);
-  buttonsLayout->addWidget(_showMoreInformation);
+  buttonsLayout->addWidget(_presentPlayAppButton);
+  buttonsLayout->addWidget(_presentShowMoreCheckBox);
   buttonsLayout->setAlignment(Qt::AlignTop);
   buttonsWidget->setMinimumWidth(QApplication::desktop()->width() * 10/100);
   presentLayout->addWidget(_presentTreeWidget);
@@ -223,29 +332,12 @@ void Catalog::createPRESENTTree()
   mainLayout->addLayout(presentLayout);
 }
 
-void Catalog::open()
+void Catalog::presentShowMoreInformation()
 {
-  updateCatalog();
-
-  QDialog::show();
-}
-
-void Catalog::removeCurrentItem()
-{
-  QTreeWidgetItem *currentItem = _treeWidget->currentItem();
-
-  for (int i = 0; i < currentItem->columnCount(); i++)
-    _treeWidget->removeItemWidget(currentItem, i);
-
-  delete currentItem;
-}
-
-void Catalog::showPresentTreeMoreInformation()
-{
-  _presentTreeWidget->setColumnHidden(1,!_showMoreInformation->isChecked());
-  _presentTreeWidget->setColumnHidden(2,!_showMoreInformation->isChecked());
-  _presentTreeWidget->setColumnHidden(3,!_showMoreInformation->isChecked());
-  _presentTreeWidget->setColumnHidden(4,!_showMoreInformation->isChecked());
+  _presentTreeWidget->setColumnHidden(1,!_presentShowMoreCheckBox->isChecked());
+  _presentTreeWidget->setColumnHidden(2,!_presentShowMoreCheckBox->isChecked());
+  _presentTreeWidget->setColumnHidden(3,!_presentShowMoreCheckBox->isChecked());
+  _presentTreeWidget->setColumnHidden(4,!_presentShowMoreCheckBox->isChecked());
   _presentTreeWidget->header()->resizeSection(0, 100);
   _presentTreeWidget->header()->resizeSection(1, 100);
   _presentTreeWidget->header()->resizeSection(2 , 100);
@@ -254,78 +346,3 @@ void Catalog::showPresentTreeMoreInformation()
 }
 
 
-void Catalog::changeIcon(QTreeWidgetItem *item)
-{
-  if (item != NULL && ((CatalogItem *)item)->getPBDSNode() != NULL
-      && ((CatalogItem *)item)->getPBDSNode()->getType() ==
-      PBDS_Node::PRIVATE_BASE)
-    {
-      item->setIcon(0, item->isExpanded() ? QIcon (":icons/opened_folder") :
-                                            QIcon (":icons/closed_folder"));
-    }
-}
-
-void Catalog::changeButtonsState()
-{
-  CatalogItem *item = (CatalogItem *) _treeWidget->currentItem();
-  if (item != NULL && item->getPBDSNode() != NULL)
-    {
-
-      _removeAppButton->setEnabled(
-            item->getPBDSNode()->getType() == PBDS_Node::APPLICATION);
-
-      _playAppButton->setEnabled(
-            item->getPBDSNode()->getType() == PBDS_Node::APPLICATION);
-    }
-}
-
-void Catalog::updateCatalog()
-{
-  _pbds->update();
-
-  // This removes and deletes all the items in the tree
-  _treeWidget->clear();
-
-  QList<QTreeWidgetItem *> items;
-  QList <PBDS_Node *> nodes = _pbds->getNodes();
-  for (int i = 0; i < nodes.size(); i++)
-    tree_depth_traversal(items, 0, nodes.at(i));
-
-  _treeWidget->insertTopLevelItems(0, items);
-
-  for (int i = 0; i < items.size(); i++)
-    _treeWidget->resizeColumnToContents(i);
-
-  _treeWidget->expandAll();
-}
-
-bool Catalog::eventFilter(QObject *object, QEvent *event)
-{
-  if (object == _treeWidget->viewport())
-    {
-      QEvent::Type type = event->type();
-      if (type == QEvent::DragEnter)
-        {
-          CatalogItem *item = (CatalogItem *) _treeWidget->currentItem();
-
-          if (item->parent() != NULL /* I'm a top level item */
-              && item->getPBDSNode() != NULL /* I'm an 'empty' label */)
-            {
-              ((QDragEnterEvent *)event)->acceptProposedAction();
-            }
-          return true;
-        }
-      else if (type == QEvent::Drop)
-        {
-          qDebug () << "drop";
-          QTreeWidgetItem *currentItem = _treeWidget->itemAt(
-                ((QDropEvent*)event)->pos());
-          if (currentItem)
-            qDebug () << currentItem->text(0);
-
-          //      ((QDropEvent*)event)->acceptProposedAction();
-          return true;
-        }
-    }
-  return false;
-}
