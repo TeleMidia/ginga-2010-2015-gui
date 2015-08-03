@@ -68,6 +68,11 @@ public:
     return list;
   }
 
+  void clearNodes ()
+  {
+    _nodes.clear();
+  }
+
   void setActive (bool active) { _active = active; }
   bool isActive () const { return _active; }
 

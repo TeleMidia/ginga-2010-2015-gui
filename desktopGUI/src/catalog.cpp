@@ -114,7 +114,7 @@ Catalog::Catalog(QWidget *parent) :
 
 void Catalog::open()
 {
-  pbdsUpdate();
+  updateCatalog();
   QDialog::show();
 }
 
@@ -246,7 +246,7 @@ void Catalog::pbdsChangeButtonsState()
     }
 }
 
-void Catalog::pbdsUpdate()
+void Catalog::updateCatalog()
 {
     _pbds->update();
 

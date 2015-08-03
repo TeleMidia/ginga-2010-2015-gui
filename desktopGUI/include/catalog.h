@@ -13,10 +13,9 @@ class Catalog : public QDialog
   Q_OBJECT
 public:
   explicit Catalog(QWidget *parent = 0);
-
   ~Catalog() { _pbds->clear(); }
-
   bool eventFilter(QObject *, QEvent *);
+  void updateCatalog ();
 
 signals:
 
@@ -31,7 +30,6 @@ private slots:
   void pbdsChangeButtonsState ();
 
 private:
-  void pbdsUpdate ();
   void createPBDSTree();
   void createPRESENTTree();
 

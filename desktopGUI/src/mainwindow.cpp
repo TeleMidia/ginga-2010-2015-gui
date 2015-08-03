@@ -11,6 +11,7 @@
 #include <QMenuBar>
 #include <QToolBar>
 #include <QMessageBox>
+#include <unistd.h>
 
 #define DEFAULT_WIDTH 400
 #define DEFAULT_HEIGHT 300
@@ -1482,19 +1483,35 @@ void MainWindow::handleGingaOutput(QString message)
 
 void MainWindow::handleAITMessage(const QVector <QString> & data)
 {
-  PBDS_Application *app = new PBDS_Application (data.at(0), data.at(0));
-  app->controlCode = data.at(1);
-  app->mainNclUri =  data.at(2);
-  app->targetProfile = data.at(3);
-  app->transportType = data.at(4);
-  _pbds->addNode(app, _pbds->present_apps);
+  if(data.at(0) == "clear"){
+      _pbds->present_apps->clearNodes();
+  }
+  else{
+      PBDS_Application *app = new PBDS_Application (data.at(0), data.at(0));
+      app->controlCode = data.at(1);
+      app->mainNclUri =  data.at(2);
+      app->targetProfile = data.at(3);
+      app->transportType = data.at(4);
+      _pbds->addNode(app, _pbds->present_apps);
+  }
+  _catalog->updateCatalog();
 }
 
 void MainWindow::openCatalog()
 {
-  handleGingaOutput("cmd::0::ait::1::0x02::code/main.ncl::0x8003::0x05");
-  handleGingaOutput("cmd::0::ait::2::0x02::code/main.ncl::0x8003::0x05");
+// Debug prcessing ginga command helper
+//  if(_catalog->isVisible() == false){
+//      handleGingaOutput("cmd::0::ait::1::0x02::code/main.ncl::0x8003::0x05");
+//      handleGingaOutput("cmd::0::ait::2::0x02::code/main.ncl::0x8003::0x05");
+//      _catalog->open();
+//      QTimer::singleShot(2000, this, SLOT(openCatalog()));
+//  }else{
+//    handleGingaOutput("cmd::0::ait::clear");
+//    _catalog->updateCatalog();
+//  }
+
   _catalog->open();
+
 }
 
 
