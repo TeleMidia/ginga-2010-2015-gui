@@ -9,7 +9,7 @@
 #include <QDesktopWidget>
 #include <QDesktopServices>
 
-void tree_depth_traversal (QList<QTreeWidgetItem *> &items,
+void pbdsTreeDepthTraversal (QList<QTreeWidgetItem *> &items,
                            CatalogItem *parent, PBDS_Node *node)
 {
   QColor active_color(180, 255, 255);
@@ -51,7 +51,7 @@ void tree_depth_traversal (QList<QTreeWidgetItem *> &items,
       else
         {
           for (int i = 0; i < children.size(); i++)
-            tree_depth_traversal(items, private_base, children.at(i));
+            pbdsTreeDepthTraversal(items, private_base, children.at(i));
         }
     }
 
@@ -61,7 +61,7 @@ void tree_depth_traversal (QList<QTreeWidgetItem *> &items,
       CatalogItem *child = NULL;
       QStringList labels;
       PBDS_Application* app = (PBDS_Application*) node;
-      labels << app->getLabel() << "" << app->mainNclUri <<  app->controlCode << app->targetProfile << app->transportType;
+      labels << app->getLabel();
       child = new CatalogItem(node, labels);
       child->setIcon(0, QIcon (":icons/ncl"));
 
@@ -150,6 +150,55 @@ bool Catalog::eventFilter(QObject *object, QEvent *event)
 }
 
 
+
+void Catalog::updateCatalog()
+{
+    _pbds->update();
+
+    if(_pbdsTreeWidget != NULL){
+
+        // This removes and deletes all the items in the tree
+        _pbdsTreeWidget->clear();
+
+        QList<QTreeWidgetItem *> items;
+        QList <PBDS_Node *> nodes = _pbds->getNodes();
+        for (int i = 0; i < nodes.size(); i++)
+            pbdsTreeDepthTraversal(items, 0, nodes.at(i));
+
+        _pbdsTreeWidget->insertTopLevelItems(0, items);
+
+        for (int i = 0; i < items.size(); i++)
+            _pbdsTreeWidget->resizeColumnToContents(i);
+
+        _pbdsTreeWidget->expandAll();
+    }
+
+    if(_presentTreeWidget != NULL){
+
+        // This removes and deletes all the items in the tree
+        _presentTreeWidget->clear();
+
+        // fullfill_presentTreeWidget
+        QList<QTreeWidgetItem *> items;
+        QList <PBDS_Node *> nodes = _pbds->getInstance()->present_apps->getNodes();
+        CatalogItem *child = NULL;
+        PBDS_Application* app = NULL;
+        for (int i = 0; i < nodes.size(); i++){
+            app = (PBDS_Application*) nodes.at(i);
+            QStringList labels;
+            labels << app->getLabel() << app->mainNclUri <<  app->controlCode << app->targetProfile << app->transportType;
+            child = new CatalogItem(app, labels);
+            child->setIcon(0, QIcon (":icons/ncl"));
+            items.append(child);
+        }
+        _presentTreeWidget->insertTopLevelItems(0, items);
+        for (int i = 0; i < items.size(); i++)
+            _presentTreeWidget->resizeColumnToContents(i);
+        _presentTreeWidget->expandAll();
+    }
+}
+
+
 //
 // PBDS Tree related methods
 //
@@ -175,7 +224,7 @@ void Catalog::createPBDSTree()
   _pbdsTreeWidget->viewport()->setAcceptDrops(true);
   _pbdsTreeWidget->setDropIndicatorShown(true);
   _pbdsTreeWidget->viewport()->installEventFilter(this);
-  _pbdsTreeWidget->setMinimumWidth(QApplication::desktop()->width() * 15/100);
+  _pbdsTreeWidget->setMinimumWidth(QApplication::desktop()->width() * 50/100);
 
   // tree signals
   connect (_pbdsTreeWidget, SIGNAL(itemExpanded(QTreeWidgetItem*)),
@@ -246,59 +295,13 @@ void Catalog::pbdsChangeButtonsState()
     }
 }
 
-void Catalog::updateCatalog()
-{
-    _pbds->update();
-
-    if(_pbdsTreeWidget != NULL){
-
-        // This removes and deletes all the items in the tree
-        _pbdsTreeWidget->clear();
-
-        QList<QTreeWidgetItem *> items;
-        QList <PBDS_Node *> nodes = _pbds->getNodes();
-        for (int i = 0; i < nodes.size(); i++)
-            tree_depth_traversal(items, 0, nodes.at(i));
-
-        _pbdsTreeWidget->insertTopLevelItems(0, items);
-
-        for (int i = 0; i < items.size(); i++)
-            _pbdsTreeWidget->resizeColumnToContents(i);
-
-        _pbdsTreeWidget->expandAll();
-    }
-
-    if(_presentTreeWidget != NULL){
-
-        // This removes and deletes all the items in the tree
-        _presentTreeWidget->clear();
-
-        // fullfill_presentTreeWidget
-        QList<QTreeWidgetItem *> items;
-        QList <PBDS_Node *> nodes = _pbds->getInstance()->present_apps->getNodes();
-        CatalogItem *child = NULL;
-        PBDS_Application* app = NULL;
-        for (int i = 0; i < nodes.size(); i++){
-            app = (PBDS_Application*) nodes.at(i);
-            QStringList labels;
-            labels << app->getLabel() << app->mainNclUri <<  app->controlCode << app->targetProfile << app->transportType;
-            child = new CatalogItem(app, labels);
-            child->setIcon(0, QIcon (":icons/ncl"));
-            items.append(child);
-        }
-        _presentTreeWidget->insertTopLevelItems(0, items);
-        for (int i = 0; i < items.size(); i++)
-            _presentTreeWidget->resizeColumnToContents(i);
-        _presentTreeWidget->expandAll();
-    }
-}
 
 //
 // PRESENT Tree related methods
 //
 void Catalog::createPRESENTTree()
 {
-  QLabel *title = new QLabel ("PRESENT Applications");
+  QLabel *title = new QLabel ("Signalized Applications");
   mainLayout->addWidget(title);
   QHBoxLayout *presentLayout = new QHBoxLayout;
   QWidget * buttonsWidget = new QWidget();
@@ -310,6 +313,10 @@ void Catalog::createPRESENTTree()
   _presentTreeWidget->setColumnCount(5);
   _presentTreeWidget->setHeaderLabels(QStringList () << "Application Id" << "main NCL URI" << "Control Code"<< "Target profile" << "Transport Type");
   _presentTreeWidget->header()->resizeSection(0, 100);
+  _presentTreeWidget->header()->resizeSection(1, 400);
+  _presentTreeWidget->header()->resizeSection(2 , 100);
+  _presentTreeWidget->header()->resizeSection(3 , 100);
+  _presentTreeWidget->header()->resizeSection(4 , 100);
   _presentTreeWidget->hideColumn(1);
   _presentTreeWidget->hideColumn(2);
   _presentTreeWidget->hideColumn(3);
@@ -322,23 +329,18 @@ void Catalog::createPRESENTTree()
   _presentTreeWidget->viewport()->setAcceptDrops(true);
   _presentTreeWidget->setDropIndicatorShown(true);
   _presentTreeWidget->viewport()->installEventFilter(this);
-  _presentTreeWidget->setMinimumWidth(QApplication::desktop()->width() * 15/100);
+  _presentTreeWidget->setMinimumWidth(QApplication::desktop()->width() * 50/100);
 
 
   // tree signals
-  connect (_presentTreeWidget, SIGNAL(itemExpanded(QTreeWidgetItem*)),
-           this, SLOT(pbdsChangeIcon(QTreeWidgetItem*)));
-  connect (_presentTreeWidget, SIGNAL(itemCollapsed(QTreeWidgetItem*)),
-           this, SLOT(pbdsChangeIcon(QTreeWidgetItem*)));
-  connect (_presentTreeWidget,
-           SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT (pbdsChangeButtonsState()));
-
-  _pbdsPlayAppButton = new QPushButton ("Play Application");
-  _pbdsPlayAppButton->setChecked(false);
-
 
   _presentPlayAppButton = new QPushButton ("Play Application");
   _presentPlayAppButton->setEnabled(false);
+  connect (_presentTreeWidget,
+           SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT (presentChangeButtonsState()));
+  connect (_presentPlayAppButton,
+           SIGNAL(clicked()), this,
+           SLOT (presentPlayItem()));
 
   _presentShowMoreCheckBox = new QCheckBox ("Show more information");
   connect (_presentShowMoreCheckBox,
@@ -355,6 +357,22 @@ void Catalog::createPRESENTTree()
   mainLayout->addLayout(presentLayout);
 }
 
+void Catalog::presentChangeButtonsState()
+{
+  CatalogItem *item = (CatalogItem *) _presentTreeWidget->currentItem();
+  if (item != NULL && item->getPBDSNode() != NULL)
+    {
+      _presentPlayAppButton->setEnabled(
+            item->getPBDSNode()->getType() == PBDS_Node::APPLICATION);
+    }
+}
+
+void Catalog::presentPlayItem()
+{
+    CatalogItem *item = (CatalogItem *) _presentTreeWidget->currentItem();
+    qDebug() << "currentItem=" << item->getPBDSNode()->getLabel();
+}
+
 void Catalog::presentShowMoreInformation()
 {
   _presentTreeWidget->setColumnHidden(1,!_presentShowMoreCheckBox->isChecked());
@@ -362,7 +380,7 @@ void Catalog::presentShowMoreInformation()
   _presentTreeWidget->setColumnHidden(3,!_presentShowMoreCheckBox->isChecked());
   _presentTreeWidget->setColumnHidden(4,!_presentShowMoreCheckBox->isChecked());
   _presentTreeWidget->header()->resizeSection(0, 100);
-  _presentTreeWidget->header()->resizeSection(1, 100);
+  _presentTreeWidget->header()->resizeSection(1, 400);
   _presentTreeWidget->header()->resizeSection(2 , 100);
   _presentTreeWidget->header()->resizeSection(3 , 100);
   _presentTreeWidget->header()->resizeSection(4 , 100);

@@ -21,13 +21,15 @@ signals:
 
 public slots:
   void open ();
-  void pbdsRemoveCurrentItem ();
-  void presentShowMoreInformation ();
+  void pbdsRemoveCurrentItem();
+  void presentShowMoreInformation();
+  void presentPlayItem();
 
 
 private slots:
   void pbdsChangeIcon (QTreeWidgetItem *);
   void pbdsChangeButtonsState ();
+  void presentChangeButtonsState();
 
 private:
   void createPBDSTree();
