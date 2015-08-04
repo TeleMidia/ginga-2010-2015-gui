@@ -91,10 +91,10 @@ Catalog::Catalog(QWidget *parent) :
   _pbdsTreeWidget = NULL;
   _presentTreeWidget =NULL;
 
-  // Show PBDSTree
-  createPBDSTree();
+  // create PBDSTree
+//  createPBDSTree();
 
-  // Show PRESENTTree
+  // create PRESENTTree
   createPRESENTTree();
 
   // close button
@@ -219,7 +219,7 @@ void Catalog::createPBDSTree()
   _pbdsTreeWidget->viewport()->setAcceptDrops(true);
   _pbdsTreeWidget->setDropIndicatorShown(true);
   _pbdsTreeWidget->viewport()->installEventFilter(this);
-  _pbdsTreeWidget->setMinimumWidth(QApplication::desktop()->width() * 50/100);
+  _pbdsTreeWidget->setMinimumWidth(200);
 
   // tree signals
   connect (_pbdsTreeWidget, SIGNAL(itemExpanded(QTreeWidgetItem*)),
@@ -249,7 +249,7 @@ void Catalog::createPBDSTree()
   buttonsLayout->addWidget(_pbdsRemoveAppButton);
   buttonsLayout->addWidget(_pbdsImportAppButton);
   buttonsLayout->setAlignment(Qt::AlignTop);
-  buttonsWidget->setMinimumWidth(QApplication::desktop()->width() * 10/100);
+  buttonsWidget->setMinimumWidth(200);
   pbdsLayout->addWidget(_pbdsTreeWidget);
   pbdsLayout->addWidget(buttonsWidget);
   mainLayout->addLayout(pbdsLayout);
@@ -305,12 +305,15 @@ void Catalog::createPRESENTTree()
   // create tree collumns
   _presentTreeWidget = new QTreeWidget;
   _presentTreeWidget->setColumnCount(5);
-  _presentTreeWidget->setHeaderLabels(QStringList () << "Application Id" << "main NCL URI" << "Control Code"<< "Target profile" << "Transport Type");
-  _presentTreeWidget->header()->resizeSection(0, 100);
+  QStringList labels;
+  labels << "Application Id" << "main NCL URI" << "Control Code"<< "Target profile" << "Transport Type";
+  _presentTreeWidget->setHeaderLabels(labels);
+  _presentTreeWidget->header()->resizeSection(0, 90);
   _presentTreeWidget->header()->resizeSection(1, 400);
-  _presentTreeWidget->header()->resizeSection(2 , 100);
-  _presentTreeWidget->header()->resizeSection(3 , 100);
-  _presentTreeWidget->header()->resizeSection(4 , 100);
+  _presentTreeWidget->header()->resizeSection(2 , 90);
+  _presentTreeWidget->header()->resizeSection(3 , 90);
+  _presentTreeWidget->header()->resizeSection(4 , 90);
+  _presentTreeWidget->setMinimumWidth(800);
   _presentTreeWidget->hideColumn(1);
   _presentTreeWidget->hideColumn(2);
   _presentTreeWidget->hideColumn(3);
@@ -323,7 +326,6 @@ void Catalog::createPRESENTTree()
   _presentTreeWidget->viewport()->setAcceptDrops(true);
   _presentTreeWidget->setDropIndicatorShown(true);
   _presentTreeWidget->viewport()->installEventFilter(this);
-  _presentTreeWidget->setMinimumWidth(QApplication::desktop()->width() * 50/100);
 
 
   // tree signals
@@ -345,7 +347,7 @@ void Catalog::createPRESENTTree()
   buttonsLayout->addWidget(_presentPlayAppButton);
   buttonsLayout->addWidget(_presentShowMoreCheckBox);
   buttonsLayout->setAlignment(Qt::AlignTop);
-  buttonsWidget->setMinimumWidth(QApplication::desktop()->width() * 10/100);
+  buttonsWidget->setMinimumWidth(200);
   presentLayout->addWidget(_presentTreeWidget);
   presentLayout->addWidget(buttonsWidget);
   mainLayout->addLayout(presentLayout);
@@ -376,11 +378,11 @@ void Catalog::presentShowMoreInformation()
   _presentTreeWidget->setColumnHidden(2,!_presentShowMoreCheckBox->isChecked());
   _presentTreeWidget->setColumnHidden(3,!_presentShowMoreCheckBox->isChecked());
   _presentTreeWidget->setColumnHidden(4,!_presentShowMoreCheckBox->isChecked());
-  _presentTreeWidget->header()->resizeSection(0, 100);
+  _presentTreeWidget->header()->resizeSection(0, 90);
   _presentTreeWidget->header()->resizeSection(1, 400);
-  _presentTreeWidget->header()->resizeSection(2 , 100);
-  _presentTreeWidget->header()->resizeSection(3 , 100);
-  _presentTreeWidget->header()->resizeSection(4 , 100);
+  _presentTreeWidget->header()->resizeSection(2 , 90);
+  _presentTreeWidget->header()->resizeSection(3 , 90);
+  _presentTreeWidget->header()->resizeSection(4 , 90);
 }
 
 
