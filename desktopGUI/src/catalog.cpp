@@ -220,8 +220,6 @@ void Catalog::createPBDSTree()
   _pbdsTreeWidget->setDropIndicatorShown(true);
   _pbdsTreeWidget->viewport()->installEventFilter(this);
   _pbdsTreeWidget->setMinimumWidth(200);
-
-  // tree signals
   connect (_pbdsTreeWidget, SIGNAL(itemExpanded(QTreeWidgetItem*)),
            this, SLOT(pbdsChangeIcon(QTreeWidgetItem*)));
   connect (_pbdsTreeWidget, SIGNAL(itemCollapsed(QTreeWidgetItem*)),
@@ -229,6 +227,7 @@ void Catalog::createPBDSTree()
   connect (_pbdsTreeWidget,
            SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT (pbdsChangeButtonsState()));
 
+  // tree buttons
   _pbdsPlayAppButton = new QPushButton ("Play Application");
   _pbdsPlayAppButton->setEnabled(false);
 
@@ -308,11 +307,11 @@ void Catalog::createPRESENTTree()
   QStringList labels;
   labels << "Application Id" << "main NCL URI" << "Control Code"<< "Target profile" << "Transport Type";
   _presentTreeWidget->setHeaderLabels(labels);
-  _presentTreeWidget->header()->resizeSection(0, 90);
-  _presentTreeWidget->header()->resizeSection(1, 400);
-  _presentTreeWidget->header()->resizeSection(2 , 90);
-  _presentTreeWidget->header()->resizeSection(3 , 90);
-  _presentTreeWidget->header()->resizeSection(4 , 90);
+  _presentTreeWidget->header()->resizeSection(0, 100);
+  _presentTreeWidget->header()->resizeSection(1, 420);
+  _presentTreeWidget->header()->resizeSection(2 , 80);
+  _presentTreeWidget->header()->resizeSection(3 , 80);
+  _presentTreeWidget->header()->resizeSection(4 , 80);
   _presentTreeWidget->setMinimumWidth(800);
   _presentTreeWidget->hideColumn(1);
   _presentTreeWidget->hideColumn(2);
@@ -326,17 +325,18 @@ void Catalog::createPRESENTTree()
   _presentTreeWidget->viewport()->setAcceptDrops(true);
   _presentTreeWidget->setDropIndicatorShown(true);
   _presentTreeWidget->viewport()->installEventFilter(this);
+  connect (_presentTreeWidget,
+           SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this,
+           SLOT (performPresentDoubleClicked(QTreeWidgetItem*,int)));
 
-
-  // tree signals
-
+  // tree buttons
   _presentPlayAppButton = new QPushButton ("Play Application");
   _presentPlayAppButton->setEnabled(false);
   connect (_presentTreeWidget,
            SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT (presentChangeButtonsState()));
   connect (_presentPlayAppButton,
            SIGNAL(clicked()), this,
-           SLOT (presentPlayItem()));
+           SLOT (performPresentPlay()));
 
   _presentShowMoreCheckBox = new QCheckBox ("Show more information");
   connect (_presentShowMoreCheckBox,
@@ -363,26 +363,36 @@ void Catalog::presentChangeButtonsState()
     }
 }
 
-void Catalog::presentPlayItem()
-{
-    CatalogItem *item = (CatalogItem *) _presentTreeWidget->currentItem();
-    PBDS_Application * app = (PBDS_Application *) item->getPBDSNode();
-    qDebug() << "currentItem=" << app->mainNclUri;
-    emit playApplicationChannelRequested(app->mainNclUri);
-    this->accept();
-}
-
 void Catalog::presentShowMoreInformation()
 {
   _presentTreeWidget->setColumnHidden(1,!_presentShowMoreCheckBox->isChecked());
   _presentTreeWidget->setColumnHidden(2,!_presentShowMoreCheckBox->isChecked());
   _presentTreeWidget->setColumnHidden(3,!_presentShowMoreCheckBox->isChecked());
   _presentTreeWidget->setColumnHidden(4,!_presentShowMoreCheckBox->isChecked());
-  _presentTreeWidget->header()->resizeSection(0, 90);
-  _presentTreeWidget->header()->resizeSection(1, 400);
-  _presentTreeWidget->header()->resizeSection(2 , 90);
-  _presentTreeWidget->header()->resizeSection(3 , 90);
-  _presentTreeWidget->header()->resizeSection(4 , 90);
+  _presentTreeWidget->header()->resizeSection(0, 100);
+  _presentTreeWidget->header()->resizeSection(1, 420);
+  _presentTreeWidget->header()->resizeSection(2 , 80);
+  _presentTreeWidget->header()->resizeSection(3 , 80);
+  _presentTreeWidget->header()->resizeSection(4 , 80);
 }
 
+void Catalog::performPresentPlay()
+{
+    CatalogItem *item = (CatalogItem *) _presentTreeWidget->currentItem();
+    PBDS_Application * app = (PBDS_Application *) item->getPBDSNode();
+    presentPlay(app->mainNclUri);
+}
+
+void Catalog::performPresentDoubleClicked(QTreeWidgetItem *item, int column)
+{
+    CatalogItem *catalog_item = (CatalogItem *) item;
+    PBDS_Application * app = (PBDS_Application *) catalog_item->getPBDSNode();
+    presentPlay(app->mainNclUri);
+}
+
+void Catalog::presentPlay(QString nclUri)
+{
+    emit playApplicationChannelRequested(nclUri);
+    this->accept();
+}
 

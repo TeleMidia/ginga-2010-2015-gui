@@ -24,12 +24,14 @@ public slots:
   void open ();
   void pbdsRemoveCurrentItem();
   void presentShowMoreInformation();
-  void presentPlayItem();
+  void performPresentPlay();
+  void performPresentDoubleClicked(QTreeWidgetItem * item, int column );
 
 private slots:
   void pbdsChangeIcon (QTreeWidgetItem *);
   void pbdsChangeButtonsState ();
   void presentChangeButtonsState();
+  void presentPlay(QString nclUri);
 
 private:
   void createPBDSTree();
