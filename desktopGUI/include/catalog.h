@@ -18,6 +18,7 @@ public:
   void updateCatalog ();
 
 signals:
+  void playApplicationChannelRequested(QString application);
 
 public slots:
   void open ();

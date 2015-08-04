@@ -405,7 +405,7 @@ void  MainWindow::createConnections()
   connect(_tuneIPTVChannellAction, SIGNAL(triggered()),
           SLOT(performIptv()));
   connect(_tuneApplicationChannelAction, SIGNAL(triggered()),
-          SLOT(performAplication()));
+          SLOT(performApplicationChannel()));
   connect(_baseAction, SIGNAL(triggered()),
           SLOT(performDevice()));
   connect(_passiveAction, SIGNAL(triggered()),
@@ -476,6 +476,9 @@ void  MainWindow::createConnections()
 
   connect (_openLine, SIGNAL (textChanged(QString)),
            this, SLOT (updateLocation (QString)));
+
+  connect (_catalog, SIGNAL (playApplicationChannelRequested(QString)),
+           this, SLOT (playApplicationChannel(QString)));
 }
 
 
@@ -756,19 +759,24 @@ void MainWindow::performSeek()
   qDebug () << "SEEK";
 }
 
-void MainWindow::performAplication()
+void MainWindow::performApplicationChannel()
 {
   QString application =
       QFileDialog::getOpenFileName(this, "Application Channel",
                                    _settings->value(Util::V_LAST_DIR).
                                    toString(), "Files (*.ncl *.ts)");
-  if (application != "")
-  {
-    _gingaProxy->sendCommand(Util::GINGA_COMMAND_PREFIX + "start," +
-                             application);
-    _view->setFocus();
-  }
+  emit playApplicationChannel(application);
+}
 
+
+void MainWindow::playApplicationChannel(QString application)
+{
+    if (application != "")
+    {
+      _gingaProxy->sendCommand(Util::GINGA_COMMAND_PREFIX + "start," +
+                               application);
+      _view->setFocus();
+    }
 }
 
 
@@ -1427,7 +1435,7 @@ void MainWindow::removePath(QString path)
     dir.rmdir(path);
   }
   else
-    QFile::remove(path);
+      QFile::remove(path);
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)

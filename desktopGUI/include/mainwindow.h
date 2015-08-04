@@ -50,7 +50,8 @@ public slots:
   void performPreferences();
   void performChannels();
   void performIptv();
-  void performAplication();
+  void performApplicationChannel();
+  void playApplicationChannel(QString application);
 
   void performBug();
   void performAbout();

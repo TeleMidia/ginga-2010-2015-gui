@@ -370,7 +370,10 @@ void Catalog::presentChangeButtonsState()
 void Catalog::presentPlayItem()
 {
     CatalogItem *item = (CatalogItem *) _presentTreeWidget->currentItem();
-    qDebug() << "currentItem=" << item->getPBDSNode()->getLabel();
+    PBDS_Application * app = (PBDS_Application *) item->getPBDSNode();
+    qDebug() << "currentItem=" << app->mainNclUri;
+    emit playApplicationChannelRequested(app->mainNclUri);
+    this->accept();
 }
 
 void Catalog::presentShowMoreInformation()
