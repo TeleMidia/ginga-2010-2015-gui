@@ -481,7 +481,6 @@ void  MainWindow::createConnections()
            this, SLOT (playApplicationChannel(QString)));
 }
 
-
 void MainWindow::performOpen()
 {
   if (_location != "*")
@@ -698,6 +697,11 @@ void MainWindow::performStop()
   _debugView->stopSession();
   _preferencesAction->setEnabled(true);
 
+  // clear PRESENT apps from catalog
+  _pbds->present_apps->clearNodes();
+  _catalog->updateCatalog();
+
+
   if (_timer != NULL)
   {
     _timer->stop();
@@ -768,7 +772,6 @@ void MainWindow::performApplicationChannel()
   emit playApplicationChannel(application);
 }
 
-
 void MainWindow::playApplicationChannel(QString application)
 {
     if (application != "")
@@ -778,7 +781,6 @@ void MainWindow::playApplicationChannel(QString application)
       _view->setFocus();
     }
 }
-
 
 void MainWindow::performIptv()
 {
@@ -1043,7 +1045,6 @@ void MainWindow::writeScanOutput(QString p_stdout)
   }
 }
 
-
 void MainWindow::performPreferences()
 {
   // Set actual size in settings for be present in settings form
@@ -1179,7 +1180,6 @@ void MainWindow::runAsActive()
 
   _view->setFocus();
 }
-
 
 void MainWindow::configureDefaultFlags(QStringList &plist)
 {
@@ -1353,7 +1353,6 @@ void MainWindow::playPreviousChannel()
     playChannel(previousChannel);
 }
 
-
 void MainWindow::scan()
 {
   performStop();
@@ -1388,7 +1387,6 @@ void MainWindow::finishScan(int code)
 
   qDebug() <<  "finishScan()::finished";
 }
-
 
 void MainWindow::sendKillMessage()
 {
@@ -1521,7 +1519,6 @@ void MainWindow::openCatalog()
   _catalog->open();
 
 }
-
 
 void MainWindow::startSession()
 {

@@ -88,7 +88,6 @@ Catalog::Catalog(QWidget *parent) :
 {
   mainLayout = new QVBoxLayout;
   _pbds = PBDS::getInstance();
-
   _pbdsTreeWidget = NULL;
   _presentTreeWidget =NULL;
 
@@ -149,8 +148,6 @@ bool Catalog::eventFilter(QObject *object, QEvent *event)
   return false;
 }
 
-
-
 void Catalog::updateCatalog()
 {
     _pbds->update();
@@ -198,11 +195,9 @@ void Catalog::updateCatalog()
     }
 }
 
-
 //
 // PBDS Tree related methods
 //
-
 void Catalog::createPBDSTree()
 {
   QLabel *title = new QLabel ("PBDS");
@@ -294,7 +289,6 @@ void Catalog::pbdsChangeButtonsState()
             item->getPBDSNode()->getType() == PBDS_Node::APPLICATION);
     }
 }
-
 
 //
 // PRESENT Tree related methods

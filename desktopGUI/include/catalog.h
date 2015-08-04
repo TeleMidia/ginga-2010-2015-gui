@@ -26,7 +26,6 @@ public slots:
   void presentShowMoreInformation();
   void presentPlayItem();
 
-
 private slots:
   void pbdsChangeIcon (QTreeWidgetItem *);
   void pbdsChangeButtonsState ();
