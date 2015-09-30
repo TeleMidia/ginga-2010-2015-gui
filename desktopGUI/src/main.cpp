@@ -21,11 +21,6 @@ int main(int argc, char *argv[])
     application.setOrganizationName("Telemidia Lab");
     application.setOrganizationDomain("telemidia.puc-rio.br");
 
-    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
-    QTextCodec::setCodecForTr(codec);
-    QTextCodec::setCodecForCStrings(codec);
-    QTextCodec::setCodecForLocale(codec);
-
     Util::init();
 
     application.setApplicationVersion(Util::VERSION);

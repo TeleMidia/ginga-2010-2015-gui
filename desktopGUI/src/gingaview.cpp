@@ -3,6 +3,7 @@
 #include <QResizeEvent>
 #include <QMouseEvent>
 #include <QUrl>
+#include <QMimeData>
 
 #include "../include/util.h"
 

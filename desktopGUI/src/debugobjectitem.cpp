@@ -11,7 +11,7 @@
 DebugObjectItem::DebugObjectItem(const QString &object, int seconds,
                                  const int &increment,
                                  QGraphicsScene *sceneParent) :
-  QGraphicsRectItem(0, sceneParent), _increment (increment), _object (object)
+  QGraphicsRectItem(), _increment (increment), _object (object)
 {
   _diffRectBegin.setWidth(0);
   _realDuration.setWidth(0);
@@ -26,6 +26,9 @@ DebugObjectItem::DebugObjectItem(const QString &object, int seconds,
   _timer->start(1000);
 
   _startTime = seconds;
+
+  if (sceneParent != NULL)
+      sceneParent->addItem(this);
 
   setToolTip("Start: " + Util::secondsToString(_startTime));
 }

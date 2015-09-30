@@ -226,8 +226,6 @@ void  MainWindow::createMenus()
 
   // help menu
   _helpMenu = menuBar()->addMenu(tr("Help"));
-  //  _helpMenu->addAction(_bugAction);
-  //  _helpMenu->addSeparator();
   _helpMenu->addAction(_aboutAction);
 }
 
@@ -311,6 +309,7 @@ void MainWindow::createWidgets()
   _scanProgress->setWindowFlags(Qt::Dialog | Qt::Desktop);
   _scanProgress->setWindowTitle("Scanning");
   _scanProgress->setWindowIcon(windowIcon());
+  _scanProgress->close();
 
   _stackedWidget = new QStackedWidget(this);
 
