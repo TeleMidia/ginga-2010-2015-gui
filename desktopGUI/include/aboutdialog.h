@@ -2,15 +2,6 @@
 #define ABOUTDIALOG_H
 
 #include <QDialog>
-#include <QTextEdit>
-#include <QVBoxLayout>
-#include <QFile>
-#include <QTextStream>
-#include <QDebug>
-#include <QDesktopServices>
-#include <QUrl>
-#include <QDateTime>
-#include <QProcess>
 
 #include "ui_aboutform.h"
 
@@ -20,16 +11,13 @@ class AboutDialog : public QDialog
 
 public:
   AboutDialog(QString execLocation, QWidget* parent = 0);
-  ~AboutDialog();
+  ~AboutDialog() {}
 
 public slots:
   void showMore();
-  void printGingaVersion ();
-  void printFailToStart(QProcess::ProcessError);
 
 private:
-  Ui::AboutForm form;
-  QProcess *process;
+  Ui::AboutForm _form;  
 };
 
 #endif // ABOUTDIALOG_H

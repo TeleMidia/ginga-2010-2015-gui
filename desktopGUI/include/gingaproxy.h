@@ -72,6 +72,8 @@ public:
   }
   bool gingaIsRunning () const;
 
+  QString version ();
+
 
 signals:
   void gingaStarted ();

@@ -55,7 +55,7 @@ void pbdsTreeDepthTraversal (QList<QTreeWidgetItem *> &items,
         }
     }
 
-  // handle a APPLICATION node
+  // handle an APPLICATION node
   else if (node->getType() == PBDS_Node::APPLICATION)
     {
       CatalogItem *child = NULL;
@@ -86,13 +86,13 @@ void pbdsTreeDepthTraversal (QList<QTreeWidgetItem *> &items,
 Catalog::Catalog(QWidget *parent) :
   QDialog(parent)
 {
-  mainLayout = new QVBoxLayout;
+  _mainLayout = new QVBoxLayout;
   _pbds = PBDS::getInstance();
   _pbdsTreeWidget = NULL;
-  _presentTreeWidget =NULL;
+  _presentTreeWidget = NULL;
 
   // create PBDSTree
-//  createPBDSTree();
+  //  createPBDSTree();
 
   // create PRESENTTree
   createPRESENTTree();
@@ -105,10 +105,11 @@ Catalog::Catalog(QWidget *parent) :
 
   // configure QDialog flags
   setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-  setLayout(mainLayout);
+  setLayout(_mainLayout);
   setWindowTitle(tr("Catalog"));
   setModal(false);
-  mainLayout->addWidget(closeButton, 0, Qt::AlignCenter);
+
+  _mainLayout->addWidget(closeButton, 0, Qt::AlignCenter);
 }
 
 void Catalog::open()
@@ -201,7 +202,7 @@ void Catalog::updateCatalog()
 void Catalog::createPBDSTree()
 {
   QLabel *title = new QLabel ("PBDS");
-  mainLayout->addWidget(title);
+  _mainLayout->addWidget(title);
   QHBoxLayout *pbdsLayout = new QHBoxLayout();
   QWidget * buttonsWidget = new QWidget();
   QVBoxLayout *buttonsLayout = new QVBoxLayout();
@@ -251,7 +252,7 @@ void Catalog::createPBDSTree()
   buttonsWidget->setMinimumWidth(200);
   pbdsLayout->addWidget(_pbdsTreeWidget);
   pbdsLayout->addWidget(buttonsWidget);
-  mainLayout->addLayout(pbdsLayout);
+  _mainLayout->addLayout(pbdsLayout);
 
 }
 
@@ -294,17 +295,19 @@ void Catalog::pbdsChangeButtonsState()
 //
 void Catalog::createPRESENTTree()
 {
-  QLabel *title = new QLabel ("Signalized Applications");
-  mainLayout->addWidget(title);
+  QLabel *title = new QLabel ("Applications");
   QHBoxLayout *presentLayout = new QHBoxLayout;
   QWidget * buttonsWidget = new QWidget();
   QVBoxLayout *buttonsLayout = new QVBoxLayout();
+  QStringList labels;
+
+  _mainLayout->addWidget(title);
   buttonsWidget->setLayout(buttonsLayout);
 
   // create tree collumns
   _presentTreeWidget = new QTreeWidget;
   _presentTreeWidget->setColumnCount(5);
-  QStringList labels;
+
   labels << "Application Id" << "main NCL URI" << "Control Code"<< "Target profile" << "Transport Type";
   _presentTreeWidget->setHeaderLabels(labels);
   _presentTreeWidget->header()->resizeSection(0, 100);
@@ -320,13 +323,9 @@ void Catalog::createPRESENTTree()
 
   // configure tree flags
   _presentTreeWidget->setAlternatingRowColors(true);
-  _presentTreeWidget->setDragDropMode(QAbstractItemView::InternalMove);
-  _presentTreeWidget->setDragEnabled(true);
-  _presentTreeWidget->viewport()->setAcceptDrops(true);
-  _presentTreeWidget->setDropIndicatorShown(true);
-  _presentTreeWidget->viewport()->installEventFilter(this);
+
   connect (_presentTreeWidget,
-           SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this,
+           SIGNAL(itemDoubleClicked(QTreeWidgetItem*)), this,
            SLOT (performPresentDoubleClicked(QTreeWidgetItem*,int)));
 
   // tree buttons
@@ -350,7 +349,7 @@ void Catalog::createPRESENTTree()
   buttonsWidget->setMinimumWidth(200);
   presentLayout->addWidget(_presentTreeWidget);
   presentLayout->addWidget(buttonsWidget);
-  mainLayout->addLayout(presentLayout);
+  _mainLayout->addLayout(presentLayout);
 }
 
 void Catalog::presentChangeButtonsState()
@@ -383,7 +382,7 @@ void Catalog::performPresentPlay()
     presentPlay(app->mainNclUri);
 }
 
-void Catalog::performPresentDoubleClicked(QTreeWidgetItem *item, int column)
+void Catalog::performPresentDoubleClicked(QTreeWidgetItem *item)
 {
     CatalogItem *catalog_item = (CatalogItem *) item;
     PBDS_Application * app = (PBDS_Application *) catalog_item->getPBDSNode();

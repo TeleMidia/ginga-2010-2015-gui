@@ -4,6 +4,8 @@
 #include <QApplication>
 #include <QWidget>
 #include <QSettings>
+#include <QEventLoop>
+#include <QTimer>
 
 GingaProxy* GingaProxy::_instance = 0;
 
@@ -38,7 +40,7 @@ void GingaProxy::run(QString nclFile, bool parentFlag, bool forceKill)
   if (parentFlag)
   {
     unsigned long long ullWid = (unsigned long long)
-        QApplication::activeWindow()->winId();
+                                QApplication::activeWindow()->winId();
 
     if (ullWid != 0)
     {
@@ -59,11 +61,9 @@ bool GingaProxy::gingaIsRunning() const
   {
     QProcess::ProcessState state = _process->state();
     if (state != QProcess::NotRunning)
-    {
       return true;
-    }
-  }
 
+  }
   return false;
 }
 
@@ -149,6 +149,47 @@ void GingaProxy::destroyProcess()
     _process->deleteLater();
     _process = NULL;
   }
+}
+
+QString GingaProxy::version()
+{
+  QStringList args;
+  QString version;
+  QEventLoop loop;
+  QTimer timer;
+
+  if (_binaryPath != "")
+  {
+
+    timer.setInterval(10000);
+    timer.setSingleShot(true);
+
+    args << "--version";
+
+    terminateProcess();
+
+    _process = new QProcess(this);
+    _process->setReadChannel(QProcess::StandardOutput);
+    _process->setReadChannelMode(QProcess::MergedChannels);
+
+    _process->start(_binaryPath, args);
+    _process->waitForStarted();
+
+    timer.start();
+    connect (&timer, SIGNAL (timeout()), &loop, SLOT(quit()));
+    connect (_process, SIGNAL (error()), &loop, SLOT(quit()));
+    connect (_process, SIGNAL (timeout()), &loop, SLOT(quit()));
+    connect (_process, SIGNAL (readyReadStandardOutput()),
+             &loop, SLOT(quit()));
+
+    loop.exec();
+
+    version = _process->readAllStandardOutput();
+
+    killProcess();
+  }
+
+  return version;
 }
 
 void GingaProxy::catchGingaOutput()

@@ -866,7 +866,7 @@ void MainWindow::performChannels()
 
 void MainWindow::playChannel(Channel channel)
 {
-  if (channel.frequency != "")
+  if (channel._frequency != "")
   {
     performStop();
     _preferencesAction->setEnabled(false);
@@ -876,14 +876,14 @@ void MainWindow::playChannel(Channel channel)
     QStringList plist;
     plist << Util::split(_settings->value(Util::V_PARAMETERS).toString());
 
-    plist << "--set-tuner" << "sbtvdt:" + channel.frequency;
+    plist << "--set-tuner" << "sbtvdt:" + channel._frequency;
 
     configureDefaultFlags(plist);
 
     plist.removeAll(Util::GUI_NCL);
     plist.removeAll(Util::GUI_FILE);
 
-    _openLine->setText(channel.number + " - " + channel.name);
+    _openLine->setText(channel._number + " - " + channel._name);
 
     _playButton->setEnabled(false);
     _stopButton->setEnabled(true);
@@ -1338,7 +1338,7 @@ void MainWindow::moveEvent(QMoveEvent *event)
 void MainWindow::playNextChannel()
 {
   Channel nextChannel = _channelDialog->nextChannel();
-  if(nextChannel.frequency != "")
+  if(nextChannel._frequency != "")
   {
     playChannel(nextChannel);
   }
@@ -1348,7 +1348,7 @@ void MainWindow::playPreviousChannel()
 {
   Channel previousChannel = _channelDialog->previousChannel();
 
-  if(previousChannel.frequency != "")
+  if(previousChannel._frequency != "")
     playChannel(previousChannel);
 }
 

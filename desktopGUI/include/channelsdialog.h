@@ -17,16 +17,16 @@
 
 class Channel {
 public:
-    QString frequency;
-    QString number;
-    QString name;
+    QString _frequency;
+    QString _number;
+    QString _name;
 
     inline bool operator <(const Channel c) const {
-        return this->number.toDouble() < c.number.toDouble();
+        return this->_number.toDouble() < c._number.toDouble();
     }
 
-    inline bool isNull () { return frequency == ""; }
-    inline void setNull () { frequency = ""; number = ""; name = ""; }
+    inline bool isNull () { return _frequency == ""; }
+    inline void setNull () { _frequency = ""; _number = ""; _name = ""; }
 };
 
 class ChannelsDialog : public QDialog
@@ -34,8 +34,6 @@ class ChannelsDialog : public QDialog
     Q_OBJECT
 
  signals:
-    void channelsimprimir(QString a,QString b,QString c);
-    void channelsimprimirNext(QString a, QString b,QString c);
     void tunerChannelRequested (Channel);
     void scanChannelsRequested ();
 
@@ -56,10 +54,10 @@ public slots:
    void loadGingaChannels();
 
 private:
-    QStringList listanext;
-    Ui::ChannelsForm formChannel;
-    int selectedRow;
-    QVector <Channel> channels;
+    QStringList _listNext;
+    Ui::ChannelsForm _formChannel;
+    int _selectedRow;
+    QVector <Channel> _channels;
 
 };
 

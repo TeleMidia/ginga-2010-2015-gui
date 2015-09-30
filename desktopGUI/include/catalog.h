@@ -25,7 +25,7 @@ public slots:
   void pbdsRemoveCurrentItem();
   void presentShowMoreInformation();
   void performPresentPlay();
-  void performPresentDoubleClicked(QTreeWidgetItem * item, int column );
+  void performPresentDoubleClicked(QTreeWidgetItem * item);
 
 private slots:
   void pbdsChangeIcon (QTreeWidgetItem *);
@@ -39,7 +39,7 @@ private:
 
   PBDS* _pbds;
 
-  QVBoxLayout *mainLayout;
+  QVBoxLayout *_mainLayout;
   QTreeWidget *_pbdsTreeWidget;
   QPushButton *_pbdsPlayAppButton;
   QPushButton *_pbdsSaveAppButton;

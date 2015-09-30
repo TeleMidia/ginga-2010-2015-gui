@@ -1,48 +1,29 @@
+#include <QDesktopServices>
+#include <QUrl>
 #include "aboutdialog.h"
 #include "util.h"
+#include "gingaproxy.h"
+#include <QDateTime>
 
 AboutDialog::AboutDialog(QString execLocation, QWidget* parent)
   : QDialog(parent)
 {
+  GingaProxy *gingaProxy = GingaProxy::getInstance();
+
   setWindowTitle(tr("About Ginga GUI"));
 
   // setting
-  form.setupUi(this);
-  form.lbTitle->setText("Ginga GUI v" + QString(Util::VERSION));
-  form.label_2->setText("Date: "+QDateTime::currentDateTime().toString("dd/MM/yyyy."));
-  form.lbTitle_1->setText("Ginga");
-  process = new QProcess (this);
+  _form.setupUi(this);
+  _form.lbTitle->setText("Ginga GUI v" + QString(Util::VERSION));
+  _form.label_2->setText("Date: "
+                         + QDateTime::currentDateTime().toString("dd/MM/yyyy."));
+  _form.lbTitle_1->setText("Ginga");
 
-  QStringList plist;
-  plist << "--version";
+  gingaProxy->setBinaryPath(execLocation);
+  _form.label->setText(gingaProxy->version());
 
-  connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(printGingaVersion()));
-  connect(process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(printFailToStart(QProcess::ProcessError)));
-
-  process->start(execLocation, plist);
-
-  // connecting
-  connect(form.btMore, SIGNAL(pressed()), SLOT(showMore()));
-  connect(form.btMore_2, SIGNAL(pressed()), SLOT(showMore()));
-}
-
-void AboutDialog::printFailToStart(QProcess::ProcessError error)
-{
-    if (error == QProcess::FailedToStart){
-        form.label->setStyleSheet("color: red");
-        form.label->setText("Cannot identify version! Binary not found.");
-    }
-}
-
-void AboutDialog::printGingaVersion()
-{
-    form.label->setText(process->readAllStandardOutput());
-    process->close();
-}
-
-AboutDialog::~AboutDialog()
-{
-
+  connect(_form.btMore, SIGNAL(pressed()), SLOT(showMore()));
+  connect(_form.btMore_2, SIGNAL(pressed()), SLOT(showMore()));
 }
 
 void AboutDialog::showMore()
