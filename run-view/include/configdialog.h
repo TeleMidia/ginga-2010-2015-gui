@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-#include "ui_qnplrunform.h"
+#include "ui_runform.h"
 
 class ConfigDialog : public QDialog
 {
@@ -27,7 +27,7 @@ private slots:
 private:
   void saveGingaPreferences();
 
-  Ui::QnplRunForm *_runForm;
+  Ui::RunForm *_runForm;
 };
 
 #endif // CONFIGDIALOG_H

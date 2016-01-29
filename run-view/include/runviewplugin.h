@@ -5,7 +5,7 @@
 #include <core/modules/ProjectControl.h>
 
 #include "../include/gingaproxy.h"
-#include "../include/qnplview.h"
+#include "../include/gingaview.h"
 #include "include/configdialog.h"
 
 #include <QPushButton>
@@ -30,12 +30,7 @@ public:
   inline QWidget* getWidget() { return _runWidget;}
 
 public slots:
-  inline void init ()
-  {
-    _currentProject = IPlugin::getProject();
-    _lineEdit->setText(_currentProject->getLocation());
-  }
-
+  void init ();
   void playApplication ();
   void execConfigDialog ();
   void updateGUI ();
@@ -71,7 +66,7 @@ private:
   Project *_currentProject;
 
   QWidget *_runWidget;
-  QnplView * _gingaView;
+  GingaView * _gingaView;
   GingaProxy * _gingaProxy;
 
   QPushButton *_playButton;

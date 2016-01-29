@@ -14,7 +14,7 @@
 ConfigDialog::ConfigDialog(QWidget *parent) :
   QDialog(parent)
 {
-  _runForm = new Ui::QnplRunForm;
+  _runForm = new Ui::RunForm;
   _runForm->setupUi(this);
   _runForm->contextFileLocation->setEnabled(false);
   _runForm->table->setContextMenuPolicy(Qt::CustomContextMenu);

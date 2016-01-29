@@ -17,7 +17,7 @@ RunViewPlugin::RunViewPlugin()
 {
   _settings = new QSettings(QSettings::IniFormat, QSettings::UserScope,
                             "telemidia", "gingagui", this);
-  _gingaView = new QnplView;
+  _gingaView = new GingaView;
   _gingaView->installEventFilter(this);
 
   _runWidget = new QWidget;
@@ -127,8 +127,28 @@ void RunViewPlugin::playApplication()
       QString::number(_gingaView->height());
 
   argsList.replaceInStrings(Util::GUI_FILE, nclFilePath);
-  argsList.replaceInStrings(Util::GUI_WID, QString::number((unsigned long long)
-                                                      _gingaView->winId()));
+  /*argsList.replaceInStrings(Util::GUI_WID, QString::number((unsigned long long)
+                                                      _gingaView->winId()));*/
+
+#ifdef __linux
+  int sw = _gingaView->width();
+  int sh = _gingaView->height();
+  unsigned long int value = (unsigned long int) _gingaView->focusWidget()->winId();
+  argsList << "--parent";
+  argsList << ":0.0," + QString::number(value) + ",0,0," + 
+    QString::number(sw) + "," + QString::number(sh);
+#elif defined __WIN32
+  QString WID = "";
+  foreach (QObject *ob, _view->focusWidget()->children()) {
+    QWidget *w = qobject_cast<QWidget *>(ob);
+    if (w) {
+      unsigned long int value = (unsigned long int) w->winId();
+      WID = QString::number(value);
+    }
+  }
+  argsList << "--wid" << WID;
+#endif
+
   argsList.replaceInStrings(Util::GUI_SCREENSIZE, vmode);
 
   argsList << "--context-dir" << contextLocation;
@@ -139,6 +159,20 @@ void RunViewPlugin::playApplication()
   _gingaProxy->setBinaryPath(gingaLocation);
   _gingaProxy->run(argsList);
   _gingaView->setFocus();
+}
+
+void RunViewPlugin::init ()
+{
+  QString location;
+  int index;
+  
+  _currentProject = IPlugin::getProject();
+  location = _currentProject->getLocation ();
+  index = location.lastIndexOf (".");
+
+  location = location.replace (index, location.length() - index, ".ncl");
+
+  _lineEdit->setText (location);
 }
 
 void RunViewPlugin::execConfigDialog()
