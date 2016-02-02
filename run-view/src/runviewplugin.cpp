@@ -9,6 +9,7 @@
 #include <QDesktopWidget>
 #include <QLineEdit>
 #include <QKeyEvent>
+#include <QInputDialog>
 
 int Util::SCREEN_HEIGHT;
 int Util::SCREEN_WIDTH;
@@ -29,8 +30,24 @@ RunViewPlugin::RunViewPlugin()
   Util::SCREEN_HEIGHT = QApplication::desktop()->height();
   Util::SCREEN_WIDTH = QApplication::desktop()->width();
 
-  _playButton = new QPushButton();
-  _playButton->setIcon(QIcon (":/icons/play"));
+  QAction *action_playApplication = new QAction("Play Application",this);
+  QAction *action_runPassiveNCLPlugin = new QAction("Run Passive",this);
+  QAction *action_runActiveNCLPlugin = new QAction("Run Active",this);
+  connect (action_playApplication,SIGNAL(triggered()),this,SLOT(playApplication()));
+  connect (action_runPassiveNCLPlugin,SIGNAL(triggered()), this, SLOT(functionRunPassivePlugin()));
+  connect (action_runActiveNCLPlugin,SIGNAL(triggered()),this,SLOT(functionRunActivePlugin()));
+
+  //_playButton = new QPushButton();
+  _playButton = new QToolButton(0); //create a run_NCL button(It used to be created in design mode)
+  menu_Multidevice = new QMenu(0); // assign a dropdown menu to the button
+  menu_Multidevice->addAction(action_runPassiveNCLPlugin);
+  menu_Multidevice->addAction(action_runActiveNCLPlugin);
+  _playButton->setMenu(menu_Multidevice);
+  _playButton->setDefaultAction(action_playApplication);
+  _playButton->setPopupMode(QToolButton::MenuButtonPopup);
+
+  action_playApplication->setIcon(QIcon (":/icons/play"));
+  //_playButton->setIcon(QIcon (":/icons/play"));
   _playButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
 
   _stopButton = new QPushButton();
@@ -58,8 +75,8 @@ RunViewPlugin::RunViewPlugin()
   _runWidget->setLayout(layout);
   _runWidget->setFocusProxy(_gingaView);
 
-  connect (_playButton, SIGNAL(pressed()),
-           SLOT(playApplication()));
+  /*connect (_playButton, SIGNAL(pressed()),
+           SLOT(playApplication())); */
   connect (_stopButton, SIGNAL(pressed()),
            _gingaProxy, SLOT(stop()));
   connect (configButton, SIGNAL(pressed()),
@@ -159,6 +176,72 @@ void RunViewPlugin::playApplication()
   _gingaProxy->setBinaryPath(gingaLocation);
   _gingaProxy->run(argsList);
   _gingaView->setFocus();
+}
+
+void RunViewPlugin::functionRunPassivePlugin()//see ComposerMainWindow::functionRunPassive
+{
+  int i;
+  bool ok;
+  GlobalSettings settings;
+  settings.beginGroup("runginga");
+  QString command = settings.value("local_ginga_cmd").toString();
+  QString args = settings.value("local_ginga_passive_args").toString();
+  settings.endGroup();
+
+  /* PARAMETERS */
+  //\todo Other parameters
+  QStringList args_list = Utilities::splitParams(args);
+  // args_list.replaceInStrings("${nclpath}", nclpath);
+
+  int value = QInputDialog::getInt(
+        _runWidget,
+        tr("Multidevices"),//title
+        tr("Passive"), //label
+        1, //start
+        1, //min
+        5, //max
+        1, //step
+        &ok );
+
+  if( ok )
+  {
+    qDebug() << command << args_list;
+    for(i = 0; i < value; i++)
+      QProcess::startDetached(command, args_list);
+  }
+}
+
+void RunViewPlugin::functionRunActivePlugin()
+{
+  int i;
+  bool ok;
+  GlobalSettings settings;
+  settings.beginGroup("runginga");
+  QString command = settings.value("local_ginga_cmd").toString();
+  QString args = settings.value("local_ginga_active_args").toString();
+  settings.endGroup();
+
+  /* PARAMETERS */
+  //\todo Other parameters
+  QStringList args_list = Utilities::splitParams(args);
+  // args_list.replaceInStrings("${nclpath}", nclpath);
+
+  int value = QInputDialog::getInt(
+        _runWidget,
+        tr("Multidevices"),
+        tr("Active"),
+        1,
+        1,
+        5,
+        1,
+        &ok );
+
+  if( ok )
+  {
+    qDebug() << command << args_list;
+    for(i = 0; i < value; i++)
+      QProcess::startDetached(command, args_list);
+  }
 }
 
 void RunViewPlugin::init ()

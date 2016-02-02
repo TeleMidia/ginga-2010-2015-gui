@@ -9,6 +9,9 @@
 #include "include/configdialog.h"
 
 #include <QPushButton>
+#include <QToolButton>
+#include <QMenu>
+#include <QAction>
 
 using namespace composer::extension;
 
@@ -32,6 +35,8 @@ public:
 public slots:
   void init ();
   void playApplication ();
+  void functionRunPassivePlugin();
+  void functionRunActivePlugin();
   void execConfigDialog ();
   void updateGUI ();
 
@@ -69,7 +74,8 @@ private:
   GingaView * _gingaView;
   GingaProxy * _gingaProxy;
 
-  QPushButton *_playButton;
+  QToolButton *_playButton;
+  QMenu *menu_Multidevice;
   QPushButton *_stopButton;
   QLineEdit *_lineEdit;
   QSettings *_settings;
