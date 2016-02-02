@@ -182,11 +182,11 @@ void RunViewPlugin::functionRunPassivePlugin()//see ComposerMainWindow::function
 {
   int i;
   bool ok;
-  GlobalSettings settings;
-  settings.beginGroup("runginga");
-  QString command = settings.value("local_ginga_cmd").toString();
-  QString args = settings.value("local_ginga_passive_args").toString();
-  settings.endGroup();
+  //GlobalSettings settings;
+  //_settings->beginGroup("runginga");
+  QString command = _settings->value("local_ginga_cmd").toString();
+  QString args = _settings->value("local_ginga_passive_args").toString();
+  //_settings->endGroup();
 
   /* PARAMETERS */
   //\todo Other parameters
@@ -215,11 +215,11 @@ void RunViewPlugin::functionRunActivePlugin()
 {
   int i;
   bool ok;
-  GlobalSettings settings;
-  settings.beginGroup("runginga");
-  QString command = settings.value("local_ginga_cmd").toString();
-  QString args = settings.value("local_ginga_active_args").toString();
-  settings.endGroup();
+  //GlobalSettings settings;
+  //_settings->beginGroup("runginga");
+  QString command = _settings->value("local_ginga_cmd").toString();
+  QString args = _settings->value("local_ginga_active_args").toString();
+  //_settings->endGroup();
 
   /* PARAMETERS */
   //\todo Other parameters
@@ -252,6 +252,7 @@ void RunViewPlugin::init ()
   _currentProject = IPlugin::getProject();
   location = _currentProject->getLocation ();
   index = location.lastIndexOf (".");
+
 
   location = location.replace (index, location.length() - index, ".ncl");
 

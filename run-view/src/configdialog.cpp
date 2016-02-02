@@ -99,9 +99,20 @@ void ConfigDialog::loadSettings()
   }
   model->setRowCount(32);
 
+  /* setting some .ini config defaults */
+  if(!settings.contains("local_ginga_passive_args"))
+      settings.setValue("local_ginga_passive_args", "--device-class 1");
+  if(!settings.contains("local_ginga_active_args"))
+      settings.setValue("local_ginga_active_args", "--device-class 2");
+
+  QString passiveargs = settings.value("local_ginga_passive_args").toString();
+  QString activeargs = settings.value("local_ginga_active_args").toString();
+
   _runForm->executableEdit->setText(gingaLocation);
   _runForm->contextFileLocation->setText(contextLocation);
   _runForm->argsEdit->setText(args);
+  _runForm->passiveEdit->setText(passiveargs);
+  _runForm->activeEdit->setText(activeargs);
 }
 
 void ConfigDialog::setGingaLocation()
@@ -157,6 +168,10 @@ void ConfigDialog::saveSettings()
   settings.setValue(Util::V_LOCATION, _runForm->executableEdit->text());
   settings.setValue(Util::V_CONTEXT_FILE, _runForm->contextFileLocation->text());
   settings.setValue(Util::V_PARAMETERS, _runForm->argsEdit->toPlainText());
+  settings.setValue("local_ginga_passive_args",
+                    _runForm->passiveEdit->toPlainText());
+  settings.setValue("local_ginga_active_args",
+                    _runForm->activeEdit->toPlainText());
 
   if (_runForm->aspectRatioGroupBox->isChecked())
     settings.setValue(Util::V_ASPECT_RATIO,
