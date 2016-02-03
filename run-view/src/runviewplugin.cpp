@@ -184,7 +184,7 @@ void RunViewPlugin::functionRunPassivePlugin()//see ComposerMainWindow::function
   bool ok;
   //GlobalSettings settings;
   //_settings->beginGroup("runginga");
-  QString command = _settings->value("local_ginga_cmd").toString();
+  QString command = _settings->value(Util::V_LOCATION, "").toString();
   QString args = _settings->value("local_ginga_passive_args").toString();
   //_settings->endGroup();
 
@@ -217,7 +217,7 @@ void RunViewPlugin::functionRunActivePlugin()
   bool ok;
   //GlobalSettings settings;
   //_settings->beginGroup("runginga");
-  QString command = _settings->value("local_ginga_cmd").toString();
+  QString command = _settings->value(Util::V_LOCATION, "").toString();
   QString args = _settings->value("local_ginga_active_args").toString();
   //_settings->endGroup();
 
