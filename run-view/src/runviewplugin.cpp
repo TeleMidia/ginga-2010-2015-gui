@@ -156,7 +156,7 @@ void RunViewPlugin::playApplication()
     QString::number(sw) + "," + QString::number(sh);
 #elif defined __WIN32
   QString WID = "";
-  foreach (QObject *ob, _view->focusWidget()->children()) {
+  foreach (QObject *ob, _gingaView->focusWidget()->children()) {
     QWidget *w = qobject_cast<QWidget *>(ob);
     if (w) {
       unsigned long int value = (unsigned long int) w->winId();
