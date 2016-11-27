@@ -1,40 +1,37 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2013-12-24T17:20:24
-#
-#-------------------------------------------------
 TARGET = RunView
 
 include (plugins-common.pri)
 
 INCLUDEPATH += . \
-                ../desktopGUI/include \
-            include
+  ../desktopGUI/include \
+  include
 
 
-macx:LIBS +=    -L$$quote(/Library/Application Support/Composer/Extensions) \
-                -lNCLLanguageProfile
+macx:LIBS += \
+  -L$$quote(/Library/Application Support/Composer/Extensions) \
+  -lNCLLanguageProfile
 
-win32:LIBS +=   -lNCLLanguageProfile
+win32:LIBS += \
+  -lNCLLanguageProfile
 
 SOURCES += \
-    src/runviewfactory.cpp \
-    src/runviewplugin.cpp \
-    ../desktopGUI/src/gingaview.cpp \
-    ../desktopGUI/src/util.cpp \
-    ../desktopGUI/src/gingaproxy.cpp \
-    src/configdialog.cpp
+  src/runviewfactory.cpp \
+  src/runviewplugin.cpp \
+  ../desktopGUI/src/gingaview.cpp \
+  ../desktopGUI/src/util.cpp \
+  ../desktopGUI/src/gingaproxy.cpp \
+  src/configdialog.cpp
 
 HEADERS  += \
-    include/runviewfactory.h \
-    include/runviewplugin.h \
-    ../desktopGUI/include/gingaview.h \
-    ../desktopGUI/include/util.h \
-    ../desktopGUI/include/gingaproxy.h \
-    include/configdialog.h
+  include/runviewfactory.h \
+  include/runviewplugin.h \
+  ../desktopGUI/include/gingaview.h \
+  ../desktopGUI/include/util.h \
+  ../desktopGUI/include/gingaproxy.h \
+  include/configdialog.h
 
 RESOURCES += \
-    resources.qrc
+  resources.qrc
 
 FORMS += \
-    ../desktopGUI/forms/runform.ui
+  ../desktopGUI/forms/runform.ui
