@@ -20,9 +20,7 @@ The three interfaces are:
 To compile one of the above GUIs, you can enter in its directory
 (`desktop-gui`, `fullscreen-gui`, or `run-view`) and run:
 
-  > `$ qmake`
-
-  > `$ make`
+  > `$ qmake`  && `make`
 
 ## TODO
 
