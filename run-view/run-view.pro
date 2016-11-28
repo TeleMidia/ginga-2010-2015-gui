@@ -3,7 +3,7 @@ TARGET = RunView
 include (plugins-common.pri)
 
 INCLUDEPATH += . \
-  ../desktopGUI/include \
+  ../desktop-gui/include \
   include
 
 
@@ -17,21 +17,21 @@ win32:LIBS += \
 SOURCES += \
   src/runviewfactory.cpp \
   src/runviewplugin.cpp \
-  ../desktopGUI/src/gingaview.cpp \
-  ../desktopGUI/src/util.cpp \
-  ../desktopGUI/src/gingaproxy.cpp \
+  ../desktop-gui/src/gingaview.cpp \
+  ../desktop-gui/src/util.cpp \
+  ../desktop-gui/src/gingaproxy.cpp \
   src/configdialog.cpp
 
 HEADERS  += \
   include/runviewfactory.h \
   include/runviewplugin.h \
-  ../desktopGUI/include/gingaview.h \
-  ../desktopGUI/include/util.h \
-  ../desktopGUI/include/gingaproxy.h \
+  ../desktop-gui/include/gingaview.h \
+  ../desktop-gui/include/util.h \
+  ../desktop-gui/include/gingaproxy.h \
   include/configdialog.h
 
 RESOURCES += \
   resources.qrc
 
 FORMS += \
-  ../desktopGUI/forms/runform.ui
+  ../desktop-gui/forms/runform.ui
