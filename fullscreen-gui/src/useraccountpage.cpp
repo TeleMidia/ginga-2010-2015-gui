@@ -109,8 +109,8 @@ void UserAccountPage::persistValues()
   QFile userAccountFile (USER_ACCOUNT_FILE);
   if (userAccountFile.open(QIODevice::WriteOnly | QIODevice::Text)){
     userAccountFile.write(":: = 0\n");
-    userAccountFile.write(" || = 0 " + _nameItem->value().toAscii() + " 12345 " + _ageItem->value().toAscii() + " "
-                          + _locationItem->value().toAscii() + " " + _genreItem->value().toAscii() + "\n");
+    userAccountFile.write(" || = 0 " + _nameItem->value().toLatin1() + " 12345 " + _ageItem->value().toLatin1() + " "
+                          + _locationItem->value().toLatin1() + " " + _genreItem->value().toLatin1() + "\n");
   }
 
   userAccountFile.close();

@@ -185,7 +185,7 @@ void Page::updateDescription(MenuItem *item)
 
         const QPixmap *currentPixmap = _imageLabel->pixmap();
 
-        if (currentPixmap->pixmapData() != p.pixmapData()){
+        if (currentPixmap->cacheKey() != p.cacheKey()){
             QGraphicsOpacityEffect* opacityEffect = new QGraphicsOpacityEffect(this);
             opacityEffect->setOpacity(1.0);
             _imageLabel->setGraphicsEffect(opacityEffect);

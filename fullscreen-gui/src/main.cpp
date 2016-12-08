@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
         printf("Please inform the path of the first page.\n");
         return -1;
     }
-    QString path = QString::fromAscii(argv[1]);
+    QString path = QString::fromLatin1(argv[1]);
     QFileInfo fileInfo (path);
     if (!fileInfo.exists())
     {
