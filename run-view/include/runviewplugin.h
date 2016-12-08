@@ -1,8 +1,8 @@
 #ifndef RUNVIEWPLUGIN_H
 #define RUNVIEWPLUGIN_H
 
-#include <core/extensions/IPlugin.h>
-#include <core/modules/ProjectControl.h>
+#include <extensions/IPlugin.h>
+#include <modules/ProjectControl.h>
 
 #include "../include/gingaproxy.h"
 #include "../include/gingaview.h"
@@ -19,17 +19,13 @@ using namespace composer::extension;
  * \brief Run View allows user to
  *        run the application from within composer."
  */
-
 class RunViewPlugin : public IPlugin
 {
   Q_OBJECT
+
 public:
   explicit RunViewPlugin();
-  inline ~RunViewPlugin()
-  {
-    delete _runWidget;
-  }
-
+  inline ~RunViewPlugin(){ delete _runWidget; }
   inline QWidget* getWidget() { return _runWidget;}
 
 public slots:
