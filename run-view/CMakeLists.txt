@@ -53,3 +53,4 @@ target_link_libraries(run_view
   Qt5::Widgets
 )
 
+install (TARGETS run_view DESTINATION plugins)
