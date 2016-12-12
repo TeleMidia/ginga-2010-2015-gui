@@ -7,7 +7,6 @@ set (CMAKE_AUTOMOC ON)
 set (CMAKE_AUTORCC ON)
 
 find_package (Qt5Widgets REQUIRED)
-find_package (Qt5Network REQUIRED)
 
 include_directories(
   .
