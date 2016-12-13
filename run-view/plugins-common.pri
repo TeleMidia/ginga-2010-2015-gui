@@ -1,5 +1,5 @@
 TEMPLATE    =   lib
-CONFIG      +=  plugin dll
+CONFIG      +=  plugin dll c++11
 CONFIG      -=  debug
 MOC_DIR     =   .moc
 OBJECTS_DIR =   .obj
