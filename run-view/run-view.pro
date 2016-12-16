@@ -1,6 +1,6 @@
 TARGET = RunView
 
-include (plugins-common.pri)
+include (../../plugins-common.pri)
 
 INCLUDEPATH += . \
   ../desktop-gui/include \
