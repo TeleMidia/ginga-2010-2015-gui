@@ -1,28 +1,5 @@
 TEMPLATE    =   lib
-CONFIG      +=  plugin dll c++11
-CONFIG      -=  debug
-MOC_DIR     =   .moc
-OBJECTS_DIR =   .obj
-UI_DIR      =   .ui
-
-greaterThan(QT_MAJOR_VERSION, 4) {
-  QT += widgets
-}
-
-GIT_VERSION=true
-isEmpty(CPRVERSION) {
-  #GUI_VERSION=$$system(git describe --tag | sed "s/v\(.*\)-.*-.*/\1/")
-  PLUGINS_VERSION=$$system(git describe --tag | sed "s/v//")
-}
-else {
-  PLUGINS_VERSION=$$CPRVERSION
-  GIT_VERSION=false
-}
-
-message("NCL Composer Plugins build version $${PLUGINS_VERSION} (from git=$${GIT_VERSION})")
-
-VERSTR = '\\"$${PLUGINS_VERSION}\\"'
-DEFINES += NCLCOMPOSER_PLUGINS_VERSION=\"$${VERSTR}\"
+CONFIG      +=  c++11 plugin dll
 
 # Uses FORCERELEASE variable because CONFIG and SUBDIR force three executions
 # if qmake and the last one does not preserves CONFIG from command line.
@@ -38,6 +15,41 @@ else {
   message ("plugins-common.pri DEBUG build!")
 }
 
+release: DESTDIR = $$PWD/../../bin/release/plugins
+debug:   DESTDIR = $$PWD/../../bin/debug/plugins
+OBJECTS_DIR = $$DESTDIR/.obj
+MOC_DIR = $$DESTDIR/.moc
+RCC_DIR = $$DESTDIR/.qrc
+UI_DIR = $$DESTDIR/.ui
+
+greaterThan(QT_MAJOR_VERSION, 4) {
+  QT += widgets
+}
+else {
+  # check for whitespace
+  X = $$PWD
+  test_var = $$find(X, "\\s")
+  !isEmpty(test_var) {
+    warning("We have found spaces on your source path. Sue to an knwon issue, If you are using qmake 2.x, this may be a problem, due to a known issue. If you face problems building the software, maybe you would like to use a new qmake version, or move your code to an unspaced path.".)
+  }
+}
+
+GIT_VERSION=true
+
+isEmpty(CPRVERSION) {
+  #GUI_VERSION=$$system(git describe --tag | sed "s/v\(.*\)-.*-.*/\1/")
+  PLUGINS_VERSION=$$system(git describe --tag | sed "s/v//")
+}
+else {
+  PLUGINS_VERSION=$$CPRVERSION
+  GIT_VERSION=false
+}
+
+message("NCL Composer Plugins build version $${PLUGINS_VERSION} (from git=$${GIT_VERSION})")
+
+VERSTR = '\\"$${PLUGINS_VERSION}\\"'
+DEFINES += NCLCOMPOSER_PLUGINS_VERSION=\"$${VERSTR}\"
+
 macx {
   INSTALLBASE = /Applications/Composer
 } 
@@ -51,44 +63,65 @@ else:win32 {
   INSTALLBASE = "C:/Composer"
 }
 
-macx {
-  LIBS += -framework ComposerCore
-  LIBS +=  $$quote(-L/Library/Application Support/Composer/Extensions)
-  INCLUDEPATH +=  include /Library/Frameworks/ComposerCore.framework/ \
-                  /Library/Frameworks/ComposerCore.framework/core \
-                  /Library/Frameworks/ComposerCore.framework/core/extensions
+INCLUDEPATH += . \
+               $$PWD/../core/src \
+               $$PWD/ncl-profile/
 
-  target.path = $$quote(/Library/Application Support/Composer/Extensions)
+LIBS += -L$$DESTDIR/.. \
+        -L$$DESTDIR/
+
+macx {
+  LIBS += -F/Library/Frameworks -framework ComposerCore
+
+  link_ncl_profile {
+    LIBS += -L$$quote(/Library/Application Support/Composer/Plugins) -lNCLLanguageProfile
+  }
+
+  QMAKE_CXXFLAGS += -mmacosx-version-min=10.7 -std=c++11 -stdlib=libc++
+  LIBS += -mmacosx-version-min=10.7 -stdlib=libc++
+
+  INCLUDEPATH +=  /Library/Frameworks/ComposerCore.framework/ \
+                  /Library/Frameworks/ComposerCore.framework/core \
+                  /Library/Frameworks/ComposerCore.framework/core/plugins
+
+  target.path = $$quote(/Library/Application Support/Composer/PlugIns)
 }
 else:unix {
-  LIBS += -L$$INSTALLBASE/lib/composer \
-          -L$$INSTALLBASE/lib/composer/extensions -lNCLLanguageProfile
+  LIBS += -L$$INSTALLBASE/lib/composer -lComposerCore
 
-  INCLUDEPATH += include $$INSTALLBASE/include/composer \
+  link_ncl_profile {
+    LIBS += -L$$INSTALLBASE/lib/composer/plugins -lNCLLanguageProfile
+  }
+
+  INCLUDEPATH += $$INSTALLBASE/include/composer \
                  $$INSTALLBASE/include/composer/core \
-                 $$INSTALLBASE/include/composer/core/extensions
+                 $$INSTALLBASE/include/composer/plugins
 
   QMAKE_LFLAGS += -Wl,-rpath,\'\$\$ORIGIN\':\'\$\$ORIGIN/../\'
   QMAKE_LFLAGS += -Wl,-rpath,\'\$\$ORIGIN/../lib/composer\'
-  QMAKE_LFLAGS += -Wl,-rpath,\'\$\$ORIGIN/../lib/composer/extensions\'
+  QMAKE_LFLAGS += -Wl,-rpath,\'\$\$ORIGIN/../lib/composer/plugins\'
 
-  target.path = $$quote($$INSTALLBASE/lib/composer/extensions)
+  target.path = $$quote($$INSTALLBASE/lib/composer/plugins)
 }
 else:win32 {
-  LIBS += -L$$INSTALLBASE -lComposerCore1 \
-          -L$$INSTALLBASE/extensions -lNCLLanguageProfile
+  LIBS += -lComposerCore1
 
-  INCLUDEPATH += . include $$INSTALLBASE/include/composer \
+  link_ncl_profile {
+         LIBS += -lNCLLanguageProfile
+  }
+
+  INCLUDEPATH += $$INSTALLBASE/include/composer \
                  $$INSTALLBASE/include/composer/core \
-                 $$INSTALLBASE/include/composer/core/extensions
+                 $$INSTALLBASE/include/composer/plugins
 
-  target.path = $$INSTALLBASE/extensions
+  target.path = $$INSTALLBASE/plugins
 }
 
 # Set the name of the default target based on the .pro file
 DEFAULT_TARGET=$$basename(_PRO_FILE_)
 DEFAULT_TARGET=$$replace(DEFAULT_TARGET, "-", "_")
 DEFAULT_TARGET=$$replace(DEFAULT_TARGET, ".pro", "")
+
 contains(FORCERELEASE, true) {
   TARGET=$$DEFAULT_TARGET
 }
@@ -97,5 +130,3 @@ else {
 }
 
 INSTALLS += target
-DESTDIR = $$PWD/build
-#message("Building to $${TARGET}")

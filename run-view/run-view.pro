@@ -8,7 +8,7 @@ INCLUDEPATH += . \
 
 
 macx:LIBS += \
-  -L$$quote(/Library/Application Support/Composer/Extensions) \
+  -L$$quote(/Library/Application Support/Composer/Plugins) \
   -lNCLLanguageProfile
 
 win32:LIBS += \
