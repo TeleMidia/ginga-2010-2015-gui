@@ -113,6 +113,9 @@ void ConfigDialog::loadSettings()
   _runForm->argsEdit->setText(args);
   _runForm->passiveEdit->setText(passiveargs);
   _runForm->activeEdit->setText(activeargs);
+
+  _runForm->embeddedButton->setChecked(
+                        settings.value(Util::V_EMBEDDED) == "true" );
 }
 
 void ConfigDialog::setGingaLocation()
@@ -180,6 +183,8 @@ void ConfigDialog::saveSettings()
   else
     settings.setValue(Util::V_ASPECT_RATIO, "0");
 
+  settings.setValue(Util::V_EMBEDDED, _runForm->embeddedButton->isChecked()?
+                    "true" : "false");
   settings.sync();
   saveGingaPreferences();
 

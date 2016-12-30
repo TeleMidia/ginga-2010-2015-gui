@@ -1,7 +1,7 @@
 {
-  "name": "Run View",
-  "version": "0.2",
-  "compatVersion": "0.2",
+  "name": "Run",
+  "version": "${VERSION}",
+  "compatVersion": "${VERSION}",
 
   "vendor": "TeleMidia Labs",
   "copyright": "TeleMidia/PUC-Rio",
@@ -12,3 +12,4 @@
 
   "category": "NCL"
 }
+

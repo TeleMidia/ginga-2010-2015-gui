@@ -23,6 +23,7 @@ RunViewPlugin::RunViewPlugin()
 
   _runWidget = new QWidget;
   _runWidget->setFocusPolicy(Qt::ClickFocus);
+  _runWidget->setVisible(false);
 
   _projectControl = ProjectControl::getInstance();
   _gingaProxy = GingaProxy::getInstance();
@@ -38,7 +39,7 @@ RunViewPlugin::RunViewPlugin()
   connect (action_runActiveNCLPlugin,SIGNAL(triggered()),this,SLOT(functionRunActivePlugin()));
 
   //_playButton = new QPushButton();
-  _playButton = new QToolButton(0); //create a run_NCL button(It used to be created in design mode)
+  _playButton = new QToolButton(0); //create a run_NCL button (It used to be created in design mode)
   menu_Multidevice = new QMenu(0); // assign a dropdown menu to the button
   menu_Multidevice->addAction(action_runPassiveNCLPlugin);
   menu_Multidevice->addAction(action_runActiveNCLPlugin);
@@ -48,16 +49,16 @@ RunViewPlugin::RunViewPlugin()
 
   action_playApplication->setIcon(QIcon (":/icons/play"));
   //_playButton->setIcon(QIcon (":/icons/play"));
-  _playButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
+  // _playButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
   _stopButton = new QPushButton();
   _stopButton->setIcon(QIcon (":/icons/stop"));
-  _stopButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
+  // _stopButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
   _stopButton->setEnabled(false);
 
   QPushButton *configButton = new QPushButton;
   configButton->setIcon(QIcon(":/icons/config"));
-  configButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
+  // configButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
   _lineEdit = new QLineEdit();
   _lineEdit->setEnabled(false);
@@ -69,7 +70,13 @@ RunViewPlugin::RunViewPlugin()
   bottomLayout->addWidget(configButton);
 
   QVBoxLayout *layout = new QVBoxLayout;
-  layout->addWidget(_gingaView);
+  if (_settings->value(Util::V_EMBEDDED).toString() == "true")
+	layout->addWidget(_gingaView);
+  else
+    _gingaView->setVisible(false);
+    
+  layout->setSpacing(0);
+  layout->setContentsMargins(0,0,0,0);
   layout->addLayout(bottomLayout);
 
   _runWidget->setLayout(layout);
@@ -175,6 +182,7 @@ void RunViewPlugin::playApplication()
   qDebug () << argsList;
   _gingaProxy->setBinaryPath(gingaLocation);
   _gingaProxy->run(argsList);
+  _gingaView->show();
   _gingaView->setFocus();
 }
 
