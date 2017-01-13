@@ -9,9 +9,7 @@ include_directories(
   .
   include
   ../desktop-gui/include
-  "${CMAKE_SOURCE_DIR}/src/core/src"
   "${CMAKE_BINARY_DIR}/src/plugins/gingagui-all/run-view"
-  ${nclcomposer_core_SOURCE_DIR}
 )
 
 find_package (Qt5Widgets REQUIRED)
