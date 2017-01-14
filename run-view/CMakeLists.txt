@@ -5,14 +5,7 @@ set (CMAKE_INCLUDE_CURRENTDIR ON)
 set (CMAKE_AUTOMOC ON)
 set (CMAKE_AUTORCC ON)
 
-include_directories(
-  .
-  include
-  ../desktop-gui/include
-  "${CMAKE_BINARY_DIR}/src/plugins/gingagui-all/run-view"
-)
-
-find_package (Qt5Widgets REQUIRED)
+find_package(Qt5 REQUIRED COMPONENTS Widgets)
 
 set (RUN_VIEW_SOURCES
   include/runviewfactory.h
@@ -32,23 +25,25 @@ set (RUN_VIEW_SOURCES
   resources.qrc
 )
 
-set(RUN_VIEW_UI
+qt5_wrap_ui(RUN_VIEW_UI_HEADERS
   ../desktop-gui/forms/runform.ui
 )
 
-qt5_wrap_ui(RUN_VIEW_UI_HEADERS
-  ${RUN_VIEW_UI}
-)
-
-add_library(run_view
-  SHARED
+add_library(run_view SHARED
   ${RUN_VIEW_SOURCES}
   ${RUN_VIEW_UI_HEADERS}
 )
 
-target_link_libraries(run_view
+target_include_directories(run_view PRIVATE
+  .
+  include
+  ../desktop-gui/include
+  ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+target_link_libraries(run_view PRIVATE
   nclcomposer_core
   Qt5::Widgets
 )
 
-install (TARGETS run_view DESTINATION plugins)
+install(TARGETS run_view DESTINATION plugins)
