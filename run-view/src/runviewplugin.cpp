@@ -70,6 +70,9 @@ RunViewPlugin::RunViewPlugin()
   bottomLayout->addWidget(configButton);
 
   QVBoxLayout *layout = new QVBoxLayout;
+  if ( !_settings->contains(Util::V_EMBEDDED))
+    _settings->setValue(Util::V_EMBEDDED, "true");
+
   if (_settings->value(Util::V_EMBEDDED).toString() == "true")
 	layout->addWidget(_gingaView);
   else
