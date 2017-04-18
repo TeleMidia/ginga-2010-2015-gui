@@ -31,10 +31,10 @@ public:
 public slots:
   void init ();
   void playApplication ();
-  void functionRunPassivePlugin();
-  void functionRunActivePlugin();
-  void execConfigDialog ();
-  void updateGUI ();
+  void runPassiveDevice();
+  void runActiveDevice();
+  void execConfigDialog();
+  void updateGUI();
 
   inline bool eventFilter(QObject *obj, QEvent *event)
   {

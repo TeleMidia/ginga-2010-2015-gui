@@ -31,18 +31,28 @@ RunViewPlugin::RunViewPlugin()
   Util::SCREEN_HEIGHT = QApplication::desktop()->height();
   Util::SCREEN_WIDTH = QApplication::desktop()->width();
 
-  QAction *action_playApplication = new QAction("Play Application",this);
-  QAction *action_runPassiveNCLPlugin = new QAction("Run Passive",this);
-  QAction *action_runActiveNCLPlugin = new QAction("Run Active",this);
-  connect (action_playApplication,SIGNAL(triggered()),this,SLOT(playApplication()));
-  connect (action_runPassiveNCLPlugin,SIGNAL(triggered()), this, SLOT(functionRunPassivePlugin()));
-  connect (action_runActiveNCLPlugin,SIGNAL(triggered()),this,SLOT(functionRunActivePlugin()));
+  QAction *action_playApplication = new QAction(tr("Play NCL document"), this);
+  action_playApplication->setShortcut(tr("Ctrl+R"));
+
+  QAction *action_runPassiveDevice = new QAction(tr("Run passive device"), this);
+  QAction *action_runActiveDevice = new QAction(tr("Run active device"), this);
+
+  connect (action_playApplication, SIGNAL(triggered()),
+           this, SLOT(playApplication()));
+
+  connect (action_runPassiveDevice,SIGNAL(triggered()),
+           this, SLOT(runPassiveDevice()));
+
+  connect (action_runActiveDevice,SIGNAL(triggered()),
+           this, SLOT(runActiveDevice()));
 
   //_playButton = new QPushButton();
   _playButton = new QToolButton(0); //create a run_NCL button (It used to be created in design mode)
+
   menu_Multidevice = new QMenu(0); // assign a dropdown menu to the button
-  menu_Multidevice->addAction(action_runPassiveNCLPlugin);
-  menu_Multidevice->addAction(action_runActiveNCLPlugin);
+  menu_Multidevice->addAction(action_runPassiveDevice);
+  menu_Multidevice->addAction(action_runActiveDevice);
+
   _playButton->setMenu(menu_Multidevice);
   _playButton->setDefaultAction(action_playApplication);
   _playButton->setPopupMode(QToolButton::MenuButtonPopup);
@@ -160,7 +170,7 @@ void RunViewPlugin::playApplication()
 #ifdef __linux
   int sw = _gingaView->width();
   int sh = _gingaView->height();
-  unsigned long int value = (unsigned long int) _gingaView->focusWidget()->winId();
+  unsigned long int value = (unsigned long int) _gingaView->winId();
   argsList << "--parent";
   argsList << ":0.0," + QString::number(value) + ",0,0," + 
     QString::number(sw) + "," + QString::number(sh);
@@ -189,7 +199,7 @@ void RunViewPlugin::playApplication()
   _gingaView->setFocus();
 }
 
-void RunViewPlugin::functionRunPassivePlugin()//see ComposerMainWindow::functionRunPassive
+void RunViewPlugin::runPassiveDevice()//see ComposerMainWindow::runPassiveDevice
 {
   int i;
   bool ok;
@@ -222,7 +232,7 @@ void RunViewPlugin::functionRunPassivePlugin()//see ComposerMainWindow::function
   }
 }
 
-void RunViewPlugin::functionRunActivePlugin()
+void RunViewPlugin::runActiveDevice()
 {
   int i;
   bool ok;
