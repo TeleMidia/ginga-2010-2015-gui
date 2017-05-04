@@ -14,7 +14,7 @@ class RunViewFactory : public QObject,
 {
   Q_OBJECT
   Q_INTERFACES(IPluginFactory)
-  Q_PLUGIN_METADATA(IID IPluginFactory_iid FILE "run_view.json")
+  Q_PLUGIN_METADATA(IID IPluginFactory_iid FILE "run-view.json")
 
 public:
   RunViewFactory();

@@ -5,6 +5,8 @@ set (CMAKE_INCLUDE_CURRENTDIR ON)
 set (CMAKE_AUTOMOC ON)
 set (CMAKE_AUTORCC ON)
 
+configure_file(run-view.json.in run-view.json)
+
 find_package(Qt5 REQUIRED COMPONENTS Widgets)
 
 set (RUN_VIEW_SOURCES
@@ -46,4 +48,4 @@ target_link_libraries(run_view PRIVATE
   Qt5::Widgets
 )
 
-install(TARGETS run_view DESTINATION plugins)
+install(TARGETS run_view DESTINATION lib/nclcomposer/plugins)
