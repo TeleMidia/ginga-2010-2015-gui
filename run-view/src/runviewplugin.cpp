@@ -31,11 +31,11 @@ RunViewPlugin::RunViewPlugin()
   Util::SCREEN_HEIGHT = QApplication::desktop()->height();
   Util::SCREEN_WIDTH = QApplication::desktop()->width();
 
-  QAction *action_playApplication = new QAction(tr("Play NCL document"), this);
+  QAction *action_playApplication = new QAction(tr("Play NCL document"), _runWidget);
   action_playApplication->setShortcut(tr("Ctrl+R"));
 
-  QAction *action_runPassiveDevice = new QAction(tr("Run passive device"), this);
-  QAction *action_runActiveDevice = new QAction(tr("Run active device"), this);
+  QAction *action_runPassiveDevice = new QAction(tr("Run passive device"), _runWidget);
+  QAction *action_runActiveDevice = new QAction(tr("Run active device"), _runWidget);
 
   connect (action_playApplication, SIGNAL(triggered()),
            this, SLOT(playApplication()));
@@ -146,7 +146,7 @@ void RunViewPlugin::playApplication()
       if(file.open(QFile::WriteOnly | QIODevice::Truncate))
       {
         if(project->getChildren().size())
-          file.write(project->getChildren().at(0)->toString(0,false).toLatin1());
+          file.write(project->getChildren().at(0)->toString(0, false).toLatin1());
 
         file.close();
       }
