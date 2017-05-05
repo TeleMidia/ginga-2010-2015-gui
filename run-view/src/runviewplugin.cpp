@@ -154,49 +154,63 @@ void RunViewPlugin::playApplication()
   }
 
   QString gingaLocation = _settings->value(Util::V_LOCATION, "").toString();
-  QString contextLocation = _settings->value(Util::V_CONTEXT_FILE, "").toString();
   QString args = _settings->value(Util::V_PARAMETERS,
                                   Util::defaultParameters()).toString();
 
   QStringList argsList = args.split(" ");
 
-  QString vmode = QString::number(_gingaView->width()) + "x" +
-      QString::number(_gingaView->height());
-
   argsList.replaceInStrings(Util::GUI_FILE, nclFilePath);
-  /*argsList.replaceInStrings(Util::GUI_WID, QString::number((unsigned long long)
-                                                      _gingaView->winId()));*/
+  if(_settings->value(Util::V_EMBEDDED).toString() == "true")
+  {
+    QString vmode = QString::number(_gingaView->width()) +
+            "x" +
+            QString::number(_gingaView->height());
 
 #ifdef __linux
-  int sw = _gingaView->width();
-  int sh = _gingaView->height();
-  unsigned long int value = (unsigned long int) _gingaView->winId();
-  argsList << "--parent";
-  argsList << ":0.0," + QString::number(value) + ",0,0," + 
+    _gingaProxy->run(args);
+    int sw = _gingaView->width();
+    int sh = _gingaView->height();
+    unsigned long int value = (unsigned long int) _gingaView->winId();
+    argsList << "--parent";
+    argsList << ":0.0," + QString::number(value) + ",0,0," +
     QString::number(sw) + "," + QString::number(sh);
 #elif defined __WIN32
-  QString WID = "";
-  foreach (QObject *ob, _gingaView->focusWidget()->children()) {
-    QWidget *w = qobject_cast<QWidget *>(ob);
-    if (w) {
-      unsigned long int value = (unsigned long int) w->winId();
-      WID = QString::number(value);
+    QString WID = "";
+    foreach (QObject *ob, _gingaView->focusWidget()->children())
+    {
+      QWidget *w = qobject_cast<QWidget *>(ob);
+      if (w)
+      {
+        unsigned long int value = (unsigned long int) w->winId();
+        WID = QString::number(value);
+      }
     }
-  }
-  argsList << "--wid" << WID;
+    argsList << "--wid" << WID;
 #endif
 
-  argsList.replaceInStrings(Util::GUI_SCREENSIZE, vmode);
+    argsList.replaceInStrings(Util::GUI_SCREENSIZE, vmode);
+  }
 
-  argsList << "--context-dir" << contextLocation;
+  if(!_settings->value(Util::V_CONTEXT_FILE).toString().isEmpty())
+  {
+    QFileInfo fileInfo(_settings->value(Util::V_CONTEXT_FILE).toString());
+    QString contextFilePath = fileInfo.absoluteDir().path();
+    if (!contextFilePath.isEmpty())
+        argsList << "--context-dir" << contextFilePath;
+  }
 
   qDebug () << gingaLocation;
   qDebug () << nclFilePath;
   qDebug () << argsList;
+
   _gingaProxy->setBinaryPath(gingaLocation);
   _gingaProxy->run(argsList);
-  _gingaView->show();
-  _gingaView->setFocus();
+
+  if(_settings->value(Util::V_EMBEDDED).toString() == "true")
+  {
+    _gingaView->show();
+    _gingaView->setFocus();
+  }
 }
 
 void RunViewPlugin::runPassiveDevice()//see ComposerMainWindow::runPassiveDevice
