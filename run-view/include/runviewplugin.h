@@ -77,4 +77,6 @@ private:
   QSettings *_settings;
 };
 
+static Q_LOGGING_CATEGORY(CPR_PLUGIN_RUN, "cpr.plugin.run")
+
 #endif // RUNVIEWPLUGIN_H

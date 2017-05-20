@@ -29,8 +29,6 @@ QGraphicsScene* GingaView::getScene()
 
 void GingaView::keyPressEvent(QKeyEvent *event)
 {
-  qDebug () << event->key();
-
   if (!(event->modifiers() & Qt::ControlModifier || event->modifiers() &
         Qt::AltModifier))
   {

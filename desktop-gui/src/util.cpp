@@ -129,7 +129,6 @@ void Util::init() {
 
   // save
   settings.sync();
-  qDebug() << "settings.allKeys() = " << settings.allKeys();
 }
 
 QStringList Util::split(QString parameters) {

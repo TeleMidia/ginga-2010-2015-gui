@@ -199,9 +199,9 @@ void RunViewPlugin::playApplication()
         argsList << "--context-dir" << contextFilePath;
   }
 
-  qDebug () << gingaLocation;
-  qDebug () << nclFilePath;
-  qDebug () << argsList;
+  qCDebug(CPR_PLUGIN_RUN) << gingaLocation;
+  qCDebug(CPR_PLUGIN_RUN) << nclFilePath;
+  qCDebug(CPR_PLUGIN_RUN) << argsList;
 
   _gingaProxy->setBinaryPath(gingaLocation);
   _gingaProxy->run(argsList);
@@ -240,7 +240,7 @@ void RunViewPlugin::runPassiveDevice()//see ComposerMainWindow::runPassiveDevice
 
   if( ok )
   {
-    qDebug() << command << args_list;
+    qCDebug(CPR_PLUGIN_RUN) << command << args_list;
     for(i = 0; i < value; i++)
       QProcess::startDetached(command, args_list);
   }
@@ -273,7 +273,7 @@ void RunViewPlugin::runActiveDevice()
 
   if( ok )
   {
-    qDebug() << command << args_list;
+    qCDebug(CPR_PLUGIN_RUN)<< command << args_list;
     for(i = 0; i < value; i++)
       QProcess::startDetached(command, args_list);
   }
@@ -292,6 +292,8 @@ void RunViewPlugin::init ()
   location = location.replace (index, location.length() - index, ".ncl");
 
   _lineEdit->setText (location);
+
+  Util::init();
 }
 
 void RunViewPlugin::execConfigDialog()
