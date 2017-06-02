@@ -4,7 +4,7 @@
 #include <extensions/IPluginFactory.h>
 #include "runviewplugin.h"
 
-using namespace composer::extension;
+using namespace cpr::core;
 
 /*!
  * \brief Handles the creation and deletion of RunViewPlugin objects.

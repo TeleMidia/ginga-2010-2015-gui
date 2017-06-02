@@ -13,7 +13,7 @@
 #include <QMenu>
 #include <QAction>
 
-using namespace composer::extension;
+using namespace cpr::core;
 
 /*!
  * \brief Run View allows user to
@@ -77,6 +77,6 @@ private:
   QSettings *_settings;
 };
 
-static Q_LOGGING_CATEGORY(CPR_PLUGIN_RUN, "cpr.plugin.run")
+inline Q_LOGGING_CATEGORY(CPR_PLUGIN_RUN, "cpr.plugin.run")
 
 #endif // RUNVIEWPLUGIN_H
