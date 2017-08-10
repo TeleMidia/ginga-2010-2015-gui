@@ -112,7 +112,7 @@ void GingaProxy::finished(int code, QProcess::ExitStatus status)
 
 bool GingaProxy::eventFilter(QObject *obj, QEvent *event)
 {
-  qDebug () << "gingaproxy::eventtype::" + event->type();
+  qDebug () << "gingaproxy::eventtype::" << event->type();
 
   return QObject::eventFilter(obj, event);
 }

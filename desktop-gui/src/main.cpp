@@ -13,12 +13,10 @@ int Util::SCREEN_WIDTH;
 
 int main(int argc, char *argv[])
 {
-    qDebug() << argc << argv;
-
     QApplication application(argc, argv);
     application.addLibraryPath(QDir::currentPath());
     application.setApplicationName("GingaGui");
-    application.setOrganizationName("Telemidia Lab");
+    application.setOrganizationName("TeleMidia Lab");
     application.setOrganizationDomain("telemidia.puc-rio.br");
 
     Util::init();
@@ -32,13 +30,14 @@ int main(int argc, char *argv[])
     QSettings settings;
     QString lang = settings.value(Util::V_LANG).toString();
 
-    qDebug() << lang;
-
-    if (lang == "pt_br"){
+    if (lang == "pt_br")
+    {
       QTranslator* translator = new QTranslator();
       translator->load("translations/"+lang+".qm");
       application.installTranslator(translator);
-    }else if (lang == "es"){
+    }
+    else if (lang == "es")
+    {
       QTranslator* translator = new QTranslator();
       translator->load("translations/"+lang+".qm");
       application.installTranslator(translator);
