@@ -80,13 +80,7 @@ RunViewPlugin::RunViewPlugin()
   bottomLayout->addWidget(configButton);
 
   QVBoxLayout *layout = new QVBoxLayout;
-  if ( !_settings->contains(Util::V_EMBEDDED))
-    _settings->setValue(Util::V_EMBEDDED, "true");
-
-  if (_settings->value(Util::V_EMBEDDED).toString() == "true")
-	layout->addWidget(_gingaView);
-  else
-    _gingaView->setVisible(false);
+  layout->addWidget(_gingaView);
     
   layout->setSpacing(0);
   layout->setContentsMargins(0,0,0,0);
@@ -97,6 +91,7 @@ RunViewPlugin::RunViewPlugin()
 
   /*connect (_playButton, SIGNAL(pressed()),
            SLOT(playApplication())); */
+
   connect (_stopButton, SIGNAL(pressed()),
            _gingaProxy, SLOT(stop()));
   connect (configButton, SIGNAL(pressed()),
@@ -105,14 +100,12 @@ RunViewPlugin::RunViewPlugin()
            SLOT(updateGUI()));
   connect (_gingaProxy, SIGNAL(gingaFinished(int,QProcess::ExitStatus)),
            SLOT(updateGUI()));
+  connect (_gingaProxy, SIGNAL(gingaError(QProcess::ProcessError)),
+           this, SLOT (handleError (QProcess::ProcessError)));
   connect (_gingaView, SIGNAL(selected(QString)),
            _gingaProxy, SLOT(sendCommand(QString)));
 
-  QString aspectRatio = _settings->value(Util::V_ASPECT_RATIO, "").toString();
-  if (aspectRatio == Util::WIDE)
-    _gingaView->resize(_gingaView->width(),_gingaView->width() * 9 / 16);
-  else if (aspectRatio == Util::STANDARD)
-    _gingaView->resize(_gingaView->width(),_gingaView->width() * 3 / 4);
+  loadPreferences();
 }
 
 void RunViewPlugin::updateGUI()
@@ -127,6 +120,23 @@ void RunViewPlugin::updateGUI()
     _playButton->setEnabled(true);
     _stopButton->setEnabled(false);
   }
+}
+
+void RunViewPlugin::loadPreferences ()
+{
+  QString aspectRatio = _settings->value(Util::V_ASPECT_RATIO, "").toString();
+  if (aspectRatio == Util::WIDE)
+    _gingaView->resize(_gingaView->width(),_gingaView->width() * 9 / 16);
+  else if (aspectRatio == Util::STANDARD)
+    _gingaView->resize(_gingaView->width(),_gingaView->width() * 3 / 4);
+
+  if ( !_settings->contains(Util::V_EMBEDDED))
+    _settings->setValue(Util::V_EMBEDDED, "true");
+
+  if (_settings->value(Util::V_EMBEDDED).toString() == "true")
+    _gingaView->setVisible(true);
+  else
+    _gingaView->setVisible(false);
 }
 
 void RunViewPlugin::playApplication()
@@ -208,12 +218,11 @@ void RunViewPlugin::playApplication()
 
   if(_settings->value(Util::V_EMBEDDED).toString() == "true")
   {
-    _gingaView->show();
     _gingaView->setFocus();
   }
 }
 
-void RunViewPlugin::runPassiveDevice()//see ComposerMainWindow::runPassiveDevice
+void RunViewPlugin::runPassiveDevice() //see ComposerMainWindow::runPassiveDevice
 {
   int i;
   bool ok;
@@ -298,8 +307,17 @@ void RunViewPlugin::init ()
 
 void RunViewPlugin::execConfigDialog()
 {
-  ConfigDialog *configDialog = new ConfigDialog(_runWidget);
-  configDialog->exec();
+  ConfigDialog configDialog(_runWidget);
+  configDialog.exec();
 
-  delete configDialog;
+  loadPreferences();
+}
+
+void RunViewPlugin::handleError (QProcess::ProcessError error)
+{
+  QString errorMsg = tr ("There was an error trying to run player: ");
+  if (error == QProcess::FailedToStart)
+    errorMsg += tr ("Failed to start.");
+
+  QMessageBox::warning (0, tr ("Error"), errorMsg);
 }

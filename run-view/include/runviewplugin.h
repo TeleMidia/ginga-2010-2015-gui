@@ -30,11 +30,13 @@ public:
 
 public slots:
   void init ();
+  void loadPreferences ();
   void playApplication ();
   void runPassiveDevice();
   void runActiveDevice();
   void execConfigDialog();
   void updateGUI();
+  void handleError (QProcess::ProcessError error);
 
   inline bool eventFilter(QObject *obj, QEvent *event)
   {
