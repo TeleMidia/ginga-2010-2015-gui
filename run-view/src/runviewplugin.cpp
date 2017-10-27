@@ -25,7 +25,7 @@ RunViewPlugin::RunViewPlugin()
   _runWidget->setFocusPolicy(Qt::ClickFocus);
   _runWidget->setVisible(false);
 
-  _projectControl = ProjectControl::getInstance();
+  _projectControl = ProjectControl::instance ();
   _gingaProxy = GingaProxy::getInstance();
 
   Util::SCREEN_HEIGHT = QApplication::desktop()->height();
