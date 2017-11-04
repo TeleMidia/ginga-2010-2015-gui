@@ -155,8 +155,8 @@ void RunViewPlugin::playApplication()
       QFile file(nclFilePath);
       if(file.open(QFile::WriteOnly | QIODevice::Truncate))
       {
-        if(project->getChildren().size())
-          file.write(project->getChildren().at(0)->toString(0, false).toLatin1());
+        if(project->children().size())
+          file.write(project->children().at(0)->toString(0, false).toLatin1());
 
         file.close();
       }
