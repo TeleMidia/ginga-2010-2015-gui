@@ -26,7 +26,7 @@ class RunViewPlugin : public IPlugin
 public:
   explicit RunViewPlugin();
   inline ~RunViewPlugin(){ delete _runWidget; }
-  inline QWidget* getWidget() { return _runWidget;}
+  inline QWidget* widget() override { return _runWidget;}
 
 public slots:
   void init ();
