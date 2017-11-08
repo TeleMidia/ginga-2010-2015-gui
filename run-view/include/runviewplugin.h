@@ -29,7 +29,7 @@ public:
   inline QWidget* widget() override { return _runWidget;}
 
 public slots:
-  void init ();
+  void init () override;
   void loadPreferences ();
   void playApplication ();
   void runPassiveDevice();
@@ -38,7 +38,7 @@ public slots:
   void updateGUI();
   void handleError (QProcess::ProcessError error);
 
-  inline bool eventFilter(QObject *obj, QEvent *event)
+  inline bool eventFilter(QObject *obj, QEvent *event) override
   {
     if (event->type() == QEvent::Resize)
     {
