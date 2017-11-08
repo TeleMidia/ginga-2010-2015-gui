@@ -10,14 +10,12 @@ configure_file(run-view.json.in run-view.json)
 find_package(Qt5 REQUIRED COMPONENTS Widgets)
 
 set (RUN_VIEW_SOURCES
-  include/runviewfactory.h
   include/runviewplugin.h
   ../desktop-gui/include/gingaview.h
   ../desktop-gui/include/util.h
   ../desktop-gui/include/gingaproxy.h
   include/configdialog.h
 
-  src/runviewfactory.cpp
   src/runviewplugin.cpp
   ../desktop-gui/src/gingaview.cpp
   ../desktop-gui/src/util.cpp
