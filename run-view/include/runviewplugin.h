@@ -90,17 +90,11 @@ private:
 class RunViewFactory : public QObject, public IPluginFactoryTpl<RunViewPlugin>
 {
   Q_OBJECT
-  CPR_PLUGIN_METADATA ("run-view.json")
+  CPR_PLUGIN_METADATA ("br.puc-rio.telemidia.RunView", "run-view.json")
 
 public:
   RunViewFactory () {}
   ~RunViewFactory () { GingaProxy::deleteInstance (); }
-
-  QString
-  id () const
-  {
-    return "br.puc-rio.telemidia.RunView";
-  }
 };
 
 inline Q_LOGGING_CATEGORY (CPR_PLUGIN_RUN, "cpr.plugin.run")
