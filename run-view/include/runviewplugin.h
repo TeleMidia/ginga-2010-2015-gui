@@ -90,7 +90,7 @@ private:
 class RunViewFactory : public QObject, public IPluginFactoryTpl<RunViewPlugin>
 {
   Q_OBJECT
-  CPR_PLUGIN_METADATA ("br.puc-rio.telemidia.RunView", "run-view.json")
+  CPR_PLUGIN_METADATA ("br.puc-rio.telemidia.run", "run-view.json")
 
 public:
   RunViewFactory () {}
