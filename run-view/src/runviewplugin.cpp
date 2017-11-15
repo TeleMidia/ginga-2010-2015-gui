@@ -141,7 +141,7 @@ void RunViewPlugin::loadPreferences ()
 
 void RunViewPlugin::playApplication()
 {
-  QString location = _currentProject->getLocation();
+  QString location = _currentProject->location();
   QString nclFilePath = location.mid (0, location.lastIndexOf(".")) + ".ncl";
 
   if (_currentProject->isDirty())
@@ -151,7 +151,7 @@ void RunViewPlugin::playApplication()
                                        QMessageBox::Yes, QMessageBox::No);
     if (answer == QMessageBox::Yes)
     {
-      _projectControl->saveProject(_currentProject->getLocation());
+      _projectControl->saveProject(_currentProject->location());
       QFile file(nclFilePath);
       if(file.open(QFile::WriteOnly | QIODevice::Truncate))
       {
@@ -294,7 +294,7 @@ void RunViewPlugin::init ()
   int index;
   
   _currentProject = project ();
-  location = _currentProject->getLocation ();
+  location = _currentProject->location ();
   index = location.lastIndexOf (".");
 
 
